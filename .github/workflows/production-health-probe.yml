@@ -1,0 +1,72 @@
+name: Production Health Probe
+
+on:
+  push:
+    branches: [health-probe]
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Probe production
+        shell: bash
+        run: |
+          set -euo pipefail
+          BASE='https://jepeta-automation.netlify.app'
+          CHANNEL='https://t.me/s/jepeta_tools'
+
+          curl -fsS --retry 3 --retry-delay 2 "$BASE/health" -o health.json
+          cat health.json
+          jq -e '.ok == true and .configured.telegram == true and .configured.gemini == true' health.json >/dev/null
+
+          python3 - <<'PY'
+          import json
+          from datetime import datetime, timedelta, timezone
+
+          with open('health.json', encoding='utf-8') as f:
+              h = json.load(f)
+
+          now = datetime.now(timezone.utc)
+          def parse(v):
+              if not v: return None
+              if isinstance(v, dict): v = v.get('at')
+              return datetime.fromisoformat(v.replace('Z', '+00:00'))
+
+          def expected_slot(hour, minute=0):
+              slot = now.replace(hour=hour, minute=minute, second=0, microsecond=0)
+              if now < slot + timedelta(minutes=15):
+                  slot -= timedelta(days=1)
+              return slot
+
+          checks = [
+              ('lastFresh', parse(h.get('lastFresh')), expected_slot(8,0)),
+              ('lastEvening', parse(h.get('lastEvening')), expected_slot(18,0)),
+              ('lastMetrics', parse(h.get('lastMetrics')), expected_slot(23,40)),
+          ]
+          for name, actual, expected in checks:
+              print(f'{name}={actual.isoformat() if actual else None}; expected_after={expected.isoformat()}')
+              if actual is None or actual < expected - timedelta(minutes=5):
+                  raise SystemExit(f'{name} is stale or missing')
+          print('rememberedUrls=', h.get('rememberedUrls'))
+          PY
+
+          code=$(curl -sS --retry 3 --retry-delay 2 -o /dev/null -D affiliate.headers -w '%{http_code}' --max-redirs 0 "$BASE/go?id=boinkers")
+          echo "affiliate_status=$code"
+          cat affiliate.headers
+          case "$code" in 301|302|303|307|308) ;; *) echo 'Affiliate redirect failed'; exit 1;; esac
+          grep -qi '^location:' affiliate.headers
+
+          curl -fsS --retry 3 --retry-delay 2 -A 'Mozilla/5.0' "$CHANNEL" -o telegram.html
+          python3 - <<'PY'
+          import re
+          html=open('telegram.html',encoding='utf-8',errors='ignore').read()
+          ids=re.findall(r'data-post="jepeta_tools/(\d+)"', html)
+          dates=re.findall(r'<time datetime="([^"]+)"', html)
+          if not ids:
+              raise SystemExit('No public Telegram posts found')
+          print('telegram_post_count_visible=', len(ids))
+          print('telegram_latest_message_id=', ids[-1])
+          print('telegram_latest_datetime=', dates[-1] if dates else 'unknown')
+          if len(ids) != len(set(ids)):
+              raise SystemExit('Duplicate Telegram message IDs in public page')
+          PY
