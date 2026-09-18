@@ -20,6 +20,11 @@ jobs:
         with:
           node-version: 24
       - run: node --test
+      - name: Validate PowerShell launch scripts
+        if: matrix.os == 'windows-latest'
+        shell: powershell
+        run: |
+          Get-ChildItem scripts\\*.ps1 | ForEach-Object { [scriptblock]::Create((Get-Content $_.FullName -Raw)) | Out-Null }
   live-smoke:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     needs: test
