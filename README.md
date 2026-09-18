@@ -36,3 +36,11 @@ Prerequisites:
 - Node.js installed
 
 The offering remains hidden until a separately funded buyer test completes and the on-chain USDC settlement is independently verified. See `docs/LAUNCH.md`.
+
+For the full local launch flow (guarded worker → isolated buyer → funding wait → paid E2E → settlement proof → marketplace publication), use:
+
+```powershell
+irm https://raw.githubusercontent.com/eliber12/jepeta-automation/main/scripts/launch-all.ps1 | iex
+```
+
+Only browser approvals and funding the isolated buyer wallet require human action.
