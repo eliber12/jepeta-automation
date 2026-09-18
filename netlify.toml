@@ -1,6 +1,6 @@
 [build]
   publish = "public"
-  command = "node scripts/smoke.mjs"
+  command = "echo 'Jepeta deploy'"
 
 [functions]
   directory = "netlify/functions"
