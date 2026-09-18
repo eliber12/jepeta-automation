@@ -1,6 +1,6 @@
 {
   "name": "jepeta-automation",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "private": true,
   "type": "module",
   "engines": {
@@ -13,8 +13,7 @@
     "risk:pilot": "node worker/run.mjs start --live",
     "risk:publish": "node worker/run.mjs publish",
     "risk:stop": "node worker/run.mjs stop",
-    "test:live": "node scripts/live-smoke.mjs",
-    "worker": "node scripts/acp-worker.mjs"
+    "test:live": "node scripts/live-smoke.mjs"
   },
   "dependencies": {
     "@netlify/blobs": "11.1.0",
