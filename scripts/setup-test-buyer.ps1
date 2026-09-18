@@ -28,7 +28,9 @@ if (-not $buyer) {
   $buyer = $createdRaw | Out-String | ConvertFrom-Json
 }
 
-$buyerId = [string]($buyer.id ?? $buyer.data.id)
+$buyerId = ""
+if ($buyer -and $buyer.id) { $buyerId = [string]$buyer.id }
+elseif ($buyer -and $buyer.data -and $buyer.data.id) { $buyerId = [string]$buyer.data.id }
 if (-not $buyerId) {
   $agentsRaw = & acp agent list --json
   $agents = $agentsRaw | Out-String | ConvertFrom-Json
