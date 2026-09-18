@@ -1,5 +1,5 @@
 import type { Config } from "@netlify/functions";
-import { healthSnapshot } from "./_shared/engine.mjs";
+import { healthSnapshot } from "./_shared/engine.mts";
 
 export default async () => {
   return Response.json(await healthSnapshot(), {
