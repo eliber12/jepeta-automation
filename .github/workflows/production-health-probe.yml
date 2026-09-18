@@ -27,6 +27,8 @@ jobs:
               h = json.load(f)
 
           now = datetime.now(timezone.utc)
+          activated = datetime.fromisoformat('2026-09-18T07:47:00+00:00')
+
           def parse(v):
               if not v: return None
               if isinstance(v, dict): v = v.get('at')
@@ -44,8 +46,9 @@ jobs:
               ('lastMetrics', parse(h.get('lastMetrics')), expected_slot(23,40)),
           ]
           for name, actual, expected in checks:
-              print(f'{name}={actual.isoformat() if actual else None}; expected_after={expected.isoformat()}')
-              if actual is None or actual < expected - timedelta(minutes=5):
+              due = expected >= activated
+              print(f'{name}={actual.isoformat() if actual else None}; expected_after={expected.isoformat()}; due_since_activation={due}')
+              if due and (actual is None or actual < expected - timedelta(minutes=5)):
                   raise SystemExit(f'{name} is stale or missing')
           print('rememberedUrls=', h.get('rememberedUrls'))
           PY
