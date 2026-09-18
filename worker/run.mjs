@@ -69,8 +69,7 @@ async function main() {
   }
   try {
     connect(); log(live ? 'PILOT_WORKER_STARTED' : 'READ_ONLY_WORKER_STARTED');
-    const stopAt = Date.now() + 24 * 60 * 60 * 1000;
-    while (running && Date.now() < stopAt && !await exists(path.join(dir, 'STOP'))) {
+    while (running && !await exists(path.join(dir, 'STOP'))) {
       if (!listener) connect();
       try {
         // Reload publish flag without overwriting the single writer's job journal.
