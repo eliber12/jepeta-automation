@@ -2,3 +2,11 @@ node_modules/
 .netlify/
 .env
 .env.*
+.acp/
+.jepeta/
+*.pem
+*.key
+state.json
+heartbeat.json
+marketplace.json
+*.log
