@@ -1,5 +1,5 @@
 import type { Config } from "@netlify/functions";
-import { captureMetrics } from "./_shared/engine.mjs";
+import { captureMetrics } from "./_shared/engine.mts";
 
 export default async () => {
   await captureMetrics();
