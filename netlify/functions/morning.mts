@@ -1,5 +1,5 @@
 import type { Config } from "@netlify/functions";
-import { publish } from "./_shared/engine.mjs";
+import { publish } from "./_shared/engine.mts";
 
 export default async () => {
   await publish("fresh");
