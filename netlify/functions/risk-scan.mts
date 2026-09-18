@@ -6,16 +6,11 @@ function json(body: unknown, status = 200) {
     status,
     headers: {
       "Cache-Control": "no-store",
-      "Access-Control-Allow-Origin": "*",
-      "Access-Control-Allow-Headers": "content-type",
-      "Access-Control-Allow-Methods": "GET,POST,OPTIONS",
     },
   });
 }
 
 export default async (req: Request) => {
-  if (req.method === "OPTIONS") return json({ ok: true });
-
   try {
     const url = new URL(req.url);
     let tokenAddress = url.searchParams.get("tokenAddress") || "";
