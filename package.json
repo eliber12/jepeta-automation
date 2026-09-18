@@ -1,16 +1,17 @@
 {
   "name": "jepeta-automation",
-  "version": "1.0.3",
+  "version": "1.1.0",
   "private": true,
   "type": "module",
-  "engines": {
-    "node": ">=20"
-  },
+  "engines": { "node": ">=20" },
   "scripts": {
-    "test": "node --test tests/*.test.mjs"
+    "test": "node --test",
+    "risk:doctor": "node worker/run.mjs doctor",
+    "risk:observe": "node worker/run.mjs start",
+    "risk:pilot": "node worker/run.mjs start --live",
+    "risk:publish": "node worker/run.mjs publish",
+    "risk:stop": "node worker/run.mjs stop",
+    "test:live": "node scripts/live-smoke.mjs"
   },
-  "dependencies": {
-    "@netlify/blobs": "11.1.0",
-    "@netlify/functions": "6.0.0"
-  }
+  "dependencies": { "@netlify/blobs": "11.1.0", "@netlify/functions": "6.0.0" }
 }

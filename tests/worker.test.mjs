@@ -1,0 +1,39 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { CONFIG, inspectJob, processJob, assertOffering } from '../worker/core.mjs';
+import { ACP_CONTRACT, USDC, COMPLETED_TOPIC, TRANSFER_TOPIC, receiptCredit, verifySettlement } from '../worker/settlement.mjs';
+const A='0x1111111111111111111111111111111111111111', BUYER='0x2222222222222222222222222222222222222222';
+const NOW=Date.now();
+function fixture(){
+ const job={onChainJobId:'7',chainId:8453,legacy:false,providerAddress:CONFIG.provider,clientAddress:BUYER,evaluatorAddress:BUYER,description:CONFIG.name,budget:'0',jobStatus:'OPEN',expiredAt:new Date(NOW+300000).toISOString(),hookAddress:null};
+ const sys=event=>({kind:'system',chainId:8453,onChainJobId:'7',event:{jobId:'7',...event},timestamp:NOW});
+ const history={jobId:'7',chainId:8453,entries:[sys({type:'job.created',client:BUYER,provider:CONFIG.provider,evaluator:BUYER,hook:'0x0000000000000000000000000000000000000000'}),{kind:'message',chainId:8453,onChainJobId:'7',from:BUYER,contentType:'requirement',content:JSON.stringify({tokenAddress:A})}]};
+ return {job,history,sys};
+}
+const report={riskScore:25,riskLevel:'MEDIUM',honeypot:false,dangerousPermissions:[],liquidityRisk:'UNKNOWN',holderConcentration:'UNKNOWN',tradingActivity:'UNKNOWN',warnings:['Incomplete data'],summary:'Test fixture only'};
+const args=f=>({...f,state:{jobs:{}},save:async()=>{},api:{setBudget:async()=>({success:true}),submit:async()=>({success:true})},scanner:async()=>report,live:true,now:NOW,blockNumber:async()=>'0x100'});
+test('open authenticated requirement quotes',()=>assert.equal(inspectJob(...Object.values(fixture()).slice(0,2),NOW).action,'quote'));
+test('foreign provider/chain/name/hook blocked',()=>{for(const patch of [{chainId:1},{providerAddress:BUYER},{description:'Trade tokens'},{hookAddress:A}]){const f=fixture();assert.throws(()=>inspectJob({...f.job,...patch},f.history,NOW));}});
+test('forged requirement from stranger is ignored',()=>{const f=fixture();f.history.entries[1].from=A;assert.equal(inspectJob(f.job,f.history,NOW).action,'wait');});
+test('changed requirements are rejected',()=>{const f=fixture();f.history.entries.push({...f.history.entries[1],content:JSON.stringify({tokenAddress:BUYER})});assert.throws(()=>inspectJob(f.job,f.history,NOW),/changed/);});
+test('expiry and working-capital intents blocked',()=>{const f=fixture();assert.throws(()=>inspectJob({...f.job,expiredAt:new Date(NOW+1000).toISOString()},f.history,NOW));assert.throws(()=>inspectJob({...f.job,intents:[{}]},f.history,NOW));});
+test('read-only mode never calls a write',async()=>{const a=args(fixture());a.live=false;a.api.setBudget=()=>{throw new Error('must not write');};const r=await processJob(a);assert.equal(r.dryRun,true);assert.equal(Object.keys(a.state.jobs).length,0);});
+test('entire mocked quote-fund-submit-complete lifecycle',async()=>{const f=fixture(), a=args(f);let quotes=0,submits=0;a.api={setBudget:async()=>{quotes++;return{success:true};},submit:async(id,text)=>{assert.equal(JSON.parse(text).riskScore,25);submits++;return{success:true};}};
+ assert.equal((await processJob(a)).action,'quoted');await processJob(a);assert.equal(quotes,1);
+ f.history.entries.push(f.sys({type:'budget.set',amount:0.03}));assert.equal((await processJob(a)).action,'wait');
+ f.history.entries.push(f.sys({type:'job.funded',amount:0.03,client:BUYER}));f.job.budget='30000';f.job.jobStatus='FUNDED';
+ assert.equal((await processJob(a)).action,'submitted');await processJob(a);assert.equal(submits,1);
+ f.history.entries.push(f.sys({type:'job.completed',evaluator:BUYER,reason:'fixture'}));await processJob(a);assert.equal(a.state.jobs['7'].completed,true);
+});
+test('underfunding is blocked',()=>{const f=fixture();f.job.jobStatus='FUNDED';f.job.budget='20000';f.history.entries.push(f.sys({type:'budget.set',amount:0.03}),f.sys({type:'job.funded',amount:0.02,client:BUYER}));assert.throws(()=>inspectJob(f.job,f.history,NOW),/funding/);});
+test('ambiguous write result not retried',async()=>{const a=args(fixture());let calls=0;a.api.setBudget=async()=>{calls++;throw new Error('timeout');};await assert.rejects(processJob(a));assert.equal((await processJob(a)).action,'needs_reconciliation');assert.equal(calls,1);});
+test('write-ahead persistence failure prevents signature',async()=>{const a=args(fixture());a.save=async()=>{throw new Error('disk full');};let calls=0;a.api.setBudget=async()=>{calls++;};await assert.rejects(processJob(a));assert.equal(calls,0);});
+test('no funded work accepted without local quote',async()=>{const f=fixture();f.job.jobStatus='FUNDED';f.job.budget='30000';f.history.entries.push(f.sys({type:'budget.set',amount:0.03}),f.sys({type:'job.funded',amount:0.03,client:BUYER}));await assert.rejects(processJob(args(f)),/untracked/);});
+test('only one pilot job can be admitted',async()=>{const a=args(fixture());a.state.jobs['8']={quoted:true};await assert.rejects(processJob(a),/One-job/);});
+test('invalid report not quoted',async()=>{const a=args(fixture());a.scanner=async()=>({});let calls=0;a.api.setBudget=async()=>{calls++;};await assert.rejects(processJob(a));assert.equal(calls,0);});
+test('offering string schema rejected',()=>assert.throws(()=>assertOffering([{id:CONFIG.offeringId,agentId:CONFIG.agentId,name:CONFIG.name,priceType:'fixed',priceValue:.03,slaMinutes:5,requiredFunds:false,requirements:'{}',deliverable:{type:'object'}}])));
+const topic=x=>'0x'+x.replace(/^0x/,'').padStart(64,'0');
+function receipt(){return{status:'0x1',blockNumber:'0x101',logs:[{address:ACP_CONTRACT,topics:[COMPLETED_TOPIC,topic('7')]},{address:USDC,topics:[TRANSFER_TOPIC,topic(ACP_CONTRACT),topic(CONFIG.provider)],data:'0x6978'}]};}
+test('receipt proves job completion AND actual USDC payout',()=>assert.equal(receiptCredit(receipt(),'7'),'27000'));
+test('wrong job/recipient/token/reverted tx never prove payment',()=>{assert.throws(()=>receiptCredit(receipt(),'8'));for(const modify of [r=>r.status='0x0',r=>r.logs[1].address=A,r=>r.logs[1].topics[2]=topic(BUYER),r=>r.logs.splice(1)]){const r=receipt();modify(r);assert.throws(()=>receiptCredit(r,'7'));}});
+test('read-only settlement end-to-end verifies two confirmations',async()=>{const rpc=async method=>({'eth_chainId':'0x2105','eth_blockNumber':'0x104','eth_getLogs':[{transactionHash:'0x'+'a'.repeat(64)}],'eth_getTransactionReceipt':receipt()}[method]);const proof=await verifySettlement('7','0x100',rpc);assert.equal(proof.creditedUSDCraw,'27000');assert.equal(proof.testTransfer,true);});

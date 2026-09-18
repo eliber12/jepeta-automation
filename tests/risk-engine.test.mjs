@@ -1,65 +1,29 @@
-import test from "node:test";
-import assert from "node:assert/strict";
-import { analyzeRisk, validateTokenAddress } from "../netlify/functions/_shared/risk-engine.mjs";
-
-const ADDRESS = "0x1111111111111111111111111111111111111111";
-
-test("validates EVM address shape", () => {
-  assert.equal(validateTokenAddress(ADDRESS), true);
-  assert.equal(validateTokenAddress("0x1234"), false);
-});
-
-test("marks honeypot as critical", () => {
-  const result = analyzeRisk({
-    address: ADDRESS,
-    goPlusToken: {},
-    honeypot: { honeypotResult: { isHoneypot: true } },
-    dexPairs: [{ liquidity: { usd: 300000 }, volume: { h24: 100000 }, txns: { h24: { buys: 10, sells: 8 } } }],
-    sourceErrors: [],
-  });
-
-  assert.equal(result.honeypot, true);
-  assert.equal(result.riskLevel, "CRITICAL");
-  assert.equal(result.riskScore, 100);
-});
-
-test("low-risk sample stays low", () => {
-  const result = analyzeRisk({
-    address: ADDRESS,
-    goPlusToken: {
-      is_honeypot: "0",
-      holders: [
-        { percent: "0.05" },
-        { percent: "0.04" },
-        { percent: "0.03" },
-        { percent: "0.02" },
-      ],
-    },
-    honeypot: { honeypotResult: { isHoneypot: false }, simulationResult: { buyTax: 1, sellTax: 1 } },
-    dexPairs: [{ liquidity: { usd: 500000 }, volume: { h24: 120000 }, txns: { h24: { buys: 120, sells: 105 } } }],
-    sourceErrors: [],
-  });
-
-  assert.equal(result.honeypot, false);
-  assert.equal(result.riskLevel, "LOW");
-  assert.ok(result.riskScore < 25);
-});
-
-test("dangerous permissions increase risk", () => {
-  const result = analyzeRisk({
-    address: ADDRESS,
-    goPlusToken: {
-      hidden_owner: "1",
-      owner_change_balance: "1",
-      transfer_pausable: "1",
-      holders: [{ percent: "0.20" }, { percent: "0.15" }, { percent: "0.10" }],
-    },
-    honeypot: { honeypotResult: { isHoneypot: false } },
-    dexPairs: [{ liquidity: { usd: 80000 }, volume: { h24: 5000 }, txns: { h24: { buys: 8, sells: 4 } } }],
-    sourceErrors: [],
-  });
-
-  assert.ok(result.riskScore >= 50);
-  assert.ok(["HIGH", "CRITICAL"].includes(result.riskLevel));
-  assert.ok(result.dangerousPermissions.includes("hidden_owner"));
-});
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { analyzeRisk, scanToken, validateRequirements, validateReport } from '../netlify/functions/_shared/risk-engine.mjs';
+import { riskHttp } from '../netlify/functions/_shared/risk-http.mjs';
+const A = '0x1111111111111111111111111111111111111111';
+export const token = { is_honeypot:'0',cannot_sell_all:'0',hidden_owner:'0',owner_change_balance:'0',selfdestruct:'0',external_call:'0',slippage_modifiable:'0',personal_slippage_modifiable:'0',transfer_pausable:'0',trading_cooldown:'0',is_blacklisted:'0',is_mintable:'0',can_take_back_ownership:'0',cannot_buy:'0',is_open_source:'1',is_proxy:'0',buy_tax:'0',sell_tax:'0',holders:[{address:'0x2222222222222222222222222222222222222222',percent:'0.05'}] };
+const pairs = [{chainId:'base',baseToken:{address:A},pairAddress:'0x3333333333333333333333333333333333333333',liquidity:{usd:500000},volume:{h24:1000},txns:{h24:{buys:10,sells:8}}}];
+const analyze = extra => analyzeRisk({address:A,goPlusToken:token,dexPairs:pairs,...extra});
+const fakeFetch = (security, market={pairs}) => async url => Response.json(url.includes('goplus') ? security : market);
+test('complete source-backed sample satisfies the fixed offering schema',()=>{const r=analyze();assert.equal(r.riskLevel,'LOW');assert.equal(r.honeypot,false);assert.equal(validateReport(r),true);});
+test('positive honeypot is critical',()=>{const r=analyze({goPlusToken:{...token,is_honeypot:'1'}});assert.equal(r.honeypot,true);assert.equal(r.riskScore,100);});
+test('missing honeypot does not turn into false',()=>assert.throws(()=>analyze({goPlusToken:{}}),/unknown/));
+test('no source data issues no report',()=>assert.throws(()=>analyze({goPlusToken:null}),/unavailable/));
+test('empty control fields are explicitly unknown, not safe',()=>{const r=analyze({goPlusToken:{...token,hidden_owner:''}});assert.equal(r.riskLevel,'MEDIUM');assert.ok(r.warnings.some(w=>w.includes('hidden_owner')));});
+test('foreign-chain pools do not improve Base liquidity',()=>{assert.equal(analyze({dexPairs:[{...pairs[0],chainId:'ethereum'}]}).liquidityRisk,'UNKNOWN');});
+test('different token cannot supply metrics',()=>{assert.equal(analyze({dexPairs:[{...pairs[0],baseToken:{address:'0x4444444444444444444444444444444444444444'}}]}).tradingActivity,'UNKNOWN');});
+test('100 percent holder is not one percent',()=>{assert.ok(analyze({goPlusToken:{...token,holders:[{address:A,percent:'1'}]}}).holderConcentration.startsWith('CRITICAL: 100.00'));});
+test('invalid ratios are unknown',()=>{assert.equal(analyze({goPlusToken:{...token,holders:[{address:A,percent:'20'}]}}).holderConcentration,'UNKNOWN');});
+test('zero liquidity is critical; null liquidity is unknown',()=>{assert.equal(analyze({dexPairs:[{...pairs[0],liquidity:{usd:0}}]}).liquidityRisk,'CRITICAL');assert.equal(analyze({dexPairs:[{...pairs[0],liquidity:{usd:null}}]}).liquidityRisk,'UNKNOWN');});
+test('invalid/extra requirements rejected',()=>{for(const v of [{tokenAddress:'bad'},{tokenAddress:A,execute:'rm -rf'},null,{tokenAddress:42}])assert.throws(()=>validateRequirements(v));});
+test('valid address normalized',()=>assert.equal(validateRequirements({tokenAddress:A}).tokenAddress,A));
+test('GoPlus HTTP 200 error payload rejected',async()=>{await assert.rejects(scanToken(A,{fetchImpl:fakeFetch({code:0,result:{[A]:token}})}),/unavailable/);});
+test('never fall back to another GoPlus token',async()=>{await assert.rejects(scanToken(A,{fetchImpl:fakeFetch({code:1,result:{'0x2222222222222222222222222222222222222222':token}})}),/exact Base token/);});
+test('end-to-end mock provider response generates report',async()=>{const r=await scanToken(A,{fetchImpl:fakeFetch({code:1,result:{[A]:token}})});assert.equal(r.honeypot,false);});
+test('market outage adds warning, no fake zero trading',async()=>{const r=await scanToken(A,{fetchImpl:async url=>{if(!url.includes('goplus'))throw new Error('offline');return Response.json({code:1,result:{[A]:token}});}});assert.equal(r.tradingActivity,'UNKNOWN');assert.notEqual(r.riskLevel,'LOW');});
+test('report disallows missing/extra fields',()=>{assert.throws(()=>validateReport({...analyze(),extra:true}));const r=analyze();delete r.honeypot;assert.throws(()=>validateReport(r));});
+test('HTTP validates JSON and does not leak errors',async()=>{const r=await riskHttp(new Request('https://example.test/api',{method:'POST',headers:{'content-type':'application/json'},body:'not-json'}));assert.equal(r.status,400);});
+test('HTTP rejects oversized/method/extra input',async()=>{assert.equal((await riskHttp(new Request('https://a.test/',{method:'DELETE'}))).status,405);assert.equal((await riskHttp(new Request('https://a.test/?tokenAddress='+A+'&x=1'))).status,400);assert.equal((await riskHttp(new Request('https://a.test/',{method:'POST',headers:{'content-type':'application/json'},body:' '.repeat(3000)}))).status,413);});
+test('HTTP returns a validated report with version header',async()=>{const r=await riskHttp(new Request('https://a.test/?tokenAddress='+A),async()=>analyze());assert.equal(r.status,200);assert.equal(r.headers.get('X-Jepeta-Version'),'2.0.0');});
