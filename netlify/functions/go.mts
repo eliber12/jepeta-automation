@@ -1,5 +1,5 @@
 import type { Config } from "@netlify/functions";
-import { recordAffiliateClick } from "./_shared/engine.mjs";
+import { recordAffiliateClick } from "./_shared/engine.mts";
 
 export default async (req: Request) => {
   const url = new URL(req.url);
