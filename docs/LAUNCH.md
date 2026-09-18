@@ -21,8 +21,8 @@ stays public. No keys or OAuth tokens belong in GitHub, public pages, or logs.
 - Provider-only lifecycle: quote exactly 0.03 USDC, wait for exact funding,
   scan, validate, submit. No trade, withdrawal, token creation, buyer fund,
   buyer completion, or working-capital transfer method is present in the worker.
-- One-job pilot, single instance, 24-hour pilot run, bounded reads and scan attempts,
-  durable write-ahead records. Ambiguous signatures stop for reconciliation,
+- One-job pre-publication pilot, single live instance, bounded reads and scan attempts,
+  durable write-ahead records. The worker stays running until explicit stop/shutdown. Ambiguous signatures stop for reconciliation,
   rather than generating repeated transactions.
 - Separate buyer/evaluator; custom settlement hooks and subscriptions are rejected.
 - Completion is not called wallet revenue until a Base transaction receipt contains
@@ -46,51 +46,53 @@ stays public. No keys or OAuth tokens belong in GitHub, public pages, or logs.
 
 ## Run on the already configured Windows computer
 
-Download/extract this repo, open its directory, then:
+Install/update the guarded worker from the public repo:
 
 ```powershell
-powershell -NoProfile -File .\scripts\start-jepeta.ps1
+irm https://raw.githubusercontent.com/eliber12/jepeta-automation/main/scripts/install-acp-worker.ps1 | iex
 ```
 
-This starts read-only observation after tests and local ACP checks. It does not
-publish, sign provider transactions, buy a job, or deposit funds.
+The installer removes the superseded experimental task, runs the full test suite,
+starts the guarded worker as a Windows scheduled task, and does not report success
+until a fresh live heartbeat exists. The PC must remain powered on and awake.
 
-Only after reviewing any gas/sponsorship charge, enable the pilot explicitly:
+A website-created signer is not enough by itself. The provider CLI signer must already
+be approved locally with the restricted/Virtuals-only policy. Never put a private key
+in this repository or in chat.
+
+### Paid E2E buyer
+
+Create an isolated buyer profile/agent:
 
 ```powershell
-powershell -NoProfile -File .\scripts\start-jepeta.ps1 -Live -InstallAutoStart
+powershell -NoProfile -ExecutionPolicy Bypass -File "$env:LOCALAPPDATA\JepetaRiskGuardApp\scripts\setup-test-buyer.ps1"
 ```
 
-A website-created signer is not proof that the CLI can use it. If the CLI reports
-`NO_SIGNER`, run the same script once with `-AuthorizeSigner`; approve the limited
-signer in your browser. Never send a private key to chat.
+The script authenticates a separate ACP profile, creates `Jepeta Buyer Test` if needed,
+sets up its restricted signer, and prints its Base wallet/QR. Fund that buyer with a
+small amount of USDC on Base. The suggested test balance is 0.10 USDC; do not exceed
+the owner's overall $7.50 test ceiling.
 
-Use a SEPARATE ACP profile/device for the buyer. Do not switch the active agent
-in the worker's profile while it is running. The service name is `Token Risk Scan`;
-provider `0xefcb0359e2cd6d1ad92cbca1e41c8946b308d7df`; chain `8453`.
-The buyer supplies `{ "tokenAddress": "0x4200000000000000000000000000000000000006" }`.
-A WETH address is a test input, not an investment recommendation.
-
-Buyer actions remain explicit: create the job; inspect the proposed 0.03 USDC;
-fund it; inspect the delivered report; complete it or reject for refund. Do not
-complete an empty or unverified report. An owner-funded test is not customer demand.
-
-After `TEST_USDC_RECEIPT_VERIFIED` and while the live worker runs:
+After the buyer has at least 0.03 USDC:
 
 ```powershell
-node .\worker\run.mjs publish
+powershell -NoProfile -ExecutionPolicy Bypass -File "$env:LOCALAPPDATA\JepetaRiskGuardApp\scripts\run-paid-e2e.ps1"
 ```
 
-Before publication, set `JEPETA_BUYER_CONFIG_DIR` locally to the authenticated buyer's separate ACP profile directory. The seller's browse automatically excludes itself, so the publication command uses the separate buyer profile for discovery.
+That script performs the guarded launch sequence end-to-end:
+create a job from the hidden offering → wait for the exact 0.03-USDC quote → fund
+escrow → wait for a schema-valid report → approve the report → wait for independent
+Base receipt verification → unhide the offering → verify marketplace discovery from
+the separate buyer profile → write `paid-e2e-proof.json`.
 
-This rechecks chain evidence before making the offering visible, then checks buyer browse.
-If browse does not return the service, it re-hides it. A separate buyer discovery
-check is still needed before describing the marketplace rollout as complete.
+The WETH address used by default is only a deterministic test input, not an
+investment recommendation. An owner-funded pilot proves settlement plumbing, not
+organic customer demand.
 
-To stop:
+To stop the provider:
 
 ```powershell
-node .\worker\run.mjs stop
+node "$env:LOCALAPPDATA\JepetaRiskGuardApp\worker\run.mjs" stop
 ```
 
 State is under `%LOCALAPPDATA%\JepetaRiskGuard`, outside the public repository.
