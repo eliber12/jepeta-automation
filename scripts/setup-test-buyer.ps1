@@ -18,14 +18,17 @@ if ($LASTEXITCODE -ne 0) { throw 'Buyer ACP authentication failed.' }
 
 $agentsRaw = & acp agent list --json
 if ($LASTEXITCODE -ne 0) { throw 'Could not list buyer-profile agents.' }
-$agents = $agentsRaw | Out-String | ConvertFrom-Json
-$buyer = @($agents) | Where-Object { $_.name -eq $BuyerName } | Select-Object -First 1
+$agentsResult = $agentsRaw | Out-String | ConvertFrom-Json
+$buyer = @($agentsResult.data) | Where-Object { $_.name -eq $BuyerName } | Select-Object -First 1
 
 if (-not $buyer) {
   Write-Host 'Creating a separate buyer agent and restricted signer...'
-  $createdRaw = & acp agent create --name $BuyerName --description 'Independent buyer/evaluator used only for Jepeta Risk Guard paid end-to-end verification.' --signer --policy restricted --json
+  & acp agent create --name $BuyerName --description 'Independent buyer/evaluator used only for Jepeta Risk Guard paid end-to-end verification.' --image '' --signer --policy restricted
   if ($LASTEXITCODE -ne 0) { throw 'Buyer agent creation or signer approval failed.' }
-  $buyer = $createdRaw | Out-String | ConvertFrom-Json
+  $agentsRaw = & acp agent list --json
+  if ($LASTEXITCODE -ne 0) { throw 'Could not refresh buyer-profile agents.' }
+  $agentsResult = $agentsRaw | Out-String | ConvertFrom-Json
+  $buyer = @($agentsResult.data) | Where-Object { $_.name -eq $BuyerName } | Select-Object -First 1
 }
 
 $buyerId = ""
@@ -33,8 +36,8 @@ if ($buyer -and $buyer.id) { $buyerId = [string]$buyer.id }
 elseif ($buyer -and $buyer.data -and $buyer.data.id) { $buyerId = [string]$buyer.data.id }
 if (-not $buyerId) {
   $agentsRaw = & acp agent list --json
-  $agents = $agentsRaw | Out-String | ConvertFrom-Json
-  $buyer = @($agents) | Where-Object { $_.name -eq $BuyerName } | Select-Object -First 1
+  $agentsResult = $agentsRaw | Out-String | ConvertFrom-Json
+  $buyer = @($agentsResult.data) | Where-Object { $_.name -eq $BuyerName } | Select-Object -First 1
   $buyerId = [string]$buyer.id
 }
 if (-not $buyerId) { throw 'Could not resolve buyer agent ID.' }
