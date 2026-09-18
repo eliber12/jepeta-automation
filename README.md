@@ -14,3 +14,5 @@ Production automation for the Telegram channel [@jepeta_tools](https://t.me/jepe
 - `GEMINI_API_KEY`
 
 Do not commit secrets to this repository.
+
+Deployment source: public GitHub repository connected to Netlify.
