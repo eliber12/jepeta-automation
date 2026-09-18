@@ -1,3 +1,5 @@
+import { appendFileSync, mkdirSync } from "node:fs";
+import { dirname } from "node:path";
 import { spawn } from "node:child_process";
 import {
   AGENT_WALLET, BASE_CHAIN_ID, DEFAULT_RISK_API, OFFERING_PRICE_USDC,
@@ -7,10 +9,14 @@ import {
 const RISK_API = process.env.JEPETA_RISK_API || DEFAULT_RISK_API;
 const activeJobs = new Map();
 let shuttingDown = false;
+const LOG_FILE = process.env.JEPETA_WORKER_LOG || (process.env.LOCALAPPDATA ? process.env.LOCALAPPDATA + "\\JepetaRiskGuard\\worker.log" : "");
 
 function log(message, extra = "") {
   const line = "[" + new Date().toISOString() + "] " + message + (extra ? " " + extra : "");
   process.stdout.write(line + "\n");
+  if (LOG_FILE) {
+    try { mkdirSync(dirname(LOG_FILE), { recursive: true }); appendFileSync(LOG_FILE, line + "\n"); } catch {}
+  }
 }
 
 function spawnAcp(args) {
