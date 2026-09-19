@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { setTimeout as sleep } from 'node:timers/promises';
-import { validateReport, ENGINE_VERSION } from '../netlify/functions/_shared/risk-engine.mjs';
+import { ENGINE_VERSION } from '../netlify/functions/_shared/risk-engine.mjs';
 
 const base = 'https://jepeta-automation.netlify.app';
 
@@ -18,6 +18,18 @@ assert.ok(ready, 'Expected deployment not live yet.');
 
 const page = await fetch(base, { signal: AbortSignal.timeout(15000) });
 assert.equal(page.status, 200);
+
+const manifestResponse = await fetch(base + '/agent.json', { signal: AbortSignal.timeout(15000) });
+assert.equal(manifestResponse.status, 200, 'Agent manifest is not public');
+const manifest = await manifestResponse.json();
+assert.equal(manifest.agentId, '01a0b446-374c-7eb8-8fe8-cd1a9945ea70');
+assert.equal(manifest.commerce.offeringId, '01a0b464-2334-7c1b-a88e-467c77d83327');
+assert.equal(manifest.commerce.price.amount, '0.03');
+
+for (const path of ['/openapi.json', '/llms.txt']) {
+  const staticResponse = await fetch(base + path, { signal: AbortSignal.timeout(15000) });
+  assert.equal(staticResponse.status, 200, `${path} is not public`);
+}
 
 const healthResponse = await fetch(base + '/health', {
   headers: { 'cache-control': 'no-cache' },
@@ -64,11 +76,22 @@ const response = await fetch(base + '/api/risk-scan', {
 });
 assert.equal(response.status, 200, `Live source-backed WETH scan failed: ${await response.clone().text()}`);
 const report = await response.json();
-validateReport(report);
+assert.ok(['LOW','MEDIUM','HIGH','CRITICAL'].includes(report.riskLevel));
+assert.equal(typeof report.riskScore, 'number');
+assert.equal(typeof report.honeypot, 'boolean');
+assert.equal(typeof report.summary, 'string');
 assert.ok(report.summary.includes(weth));
+assert.equal(report.paidReport?.protocol, 'Virtuals ACP v2');
+assert.equal(report.paidReport?.priceUSDC, '0.03');
+assert.equal('dangerousPermissions' in report, false, 'Free preview leaked paid dangerousPermissions');
+assert.equal('liquidityRisk' in report, false, 'Free preview leaked paid liquidityRisk');
+assert.equal('holderConcentration' in report, false, 'Free preview leaked paid holderConcentration');
+assert.equal('tradingActivity' in report, false, 'Free preview leaked paid tradingActivity');
 
 console.log(JSON.stringify({
   liveApiVerified: true,
+  agentManifestVerified: true,
+  freePaidSeparationVerified: true,
   engine: ENGINE_VERSION,
   token: weth,
   riskLevel: report.riskLevel,
