@@ -133,7 +133,7 @@ export function assertOffering(offers) {
 
 function activePilotJobs(state) {
   return Object.values(state.jobs).filter(r =>
-    !r?.terminal && !r?.preflightBlocked && !r?.settlement && !r?.completed);
+    !r?.terminal && !r?.preflightBlocked && !r?.settlement);
 }
 
 /** Write-ahead journal. A crash/ambiguous signature NEVER silently repeats a financial write. */
