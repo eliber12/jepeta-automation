@@ -13,7 +13,7 @@ const log = (event, detail = {}) => console.log(JSON.stringify({ at: new Date().
 async function exists(p) { try { await stat(p); return true; } catch (e) { if (e.code === 'ENOENT') return false; throw e; } }
 async function main() {
   const command = process.argv[2] || 'doctor';
-  if (!['doctor','start','publish','stop'].includes(command)) throw new Error('Use doctor, start, publish or stop.');
+  if (!['doctor','start','publish','pilot-public','stop'].includes(command)) throw new Error('Use doctor, start, publish, pilot-public or stop.');
   await mkdir(dir, { recursive: true, mode: 0o700 });
   if (command === 'stop') { await writeFile(path.join(dir, 'STOP'), 'stop'); log('STOP_REQUESTED'); return; }
   const api = createAcpClient();
@@ -26,6 +26,37 @@ async function main() {
   let state = await exists(file) ? JSON.parse(await readFile(file, 'utf8')) : { version: 1, jobs: {}, marketplaceVerified: false };
   if (state.version !== 1 || !state.jobs || typeof state.jobs !== 'object') throw new Error('Invalid state file; refusing to reset financial history.');
   const save = async () => { await writeFile(file + '.tmp', JSON.stringify(state, null, 2), { mode: 0o600 }); await rename(file + '.tmp', file); };
+  if (command === 'pilot-public') {
+    const heartbeatPath = path.join(dir, 'heartbeat.json');
+    if (!await exists(heartbeatPath)) throw new Error('Live worker heartbeat missing. Do not publish.');
+    const heartbeat = JSON.parse(await readFile(heartbeatPath, 'utf8'));
+    if (!heartbeat.live || Date.now() - Date.parse(heartbeat.at) > 90000)
+      throw new Error('Live worker heartbeat is stale. Do not publish.');
+    const unfinished = Object.values(state.jobs).some(j => !j?.settlement && !j?.terminal);
+    if (unfinished) throw new Error('An unfinished pilot job already exists. Do not open another public slot.');
+    if (Object.keys(state.jobs).length >= CONFIG.pilotMaxJobs && !state.marketplaceVerified)
+      throw new Error('The one-job pilot ledger is already consumed. Review it before reopening.');
+    await writeFile(gateFile, JSON.stringify({
+      pilotPublic: true,
+      pendingUntil: Date.now() + 60000,
+      openedAt: new Date().toISOString()
+    }), { mode: 0o600 });
+    try {
+      await api.publish();
+      const listed = assertOffering(await api.offerings());
+      if (listed.isHidden !== false) throw new Error('Public pilot visibility change was not confirmed.');
+      await writeFile(gateFile, JSON.stringify({
+        pilotPublic: true,
+        openedAt: new Date().toISOString()
+      }), { mode: 0o600 });
+      log('PUBLIC_ONE_JOB_PILOT_ENABLED', { priceUSDC: CONFIG.price });
+      return;
+    } catch (error) {
+      await api.hide().catch(() => log('URGENT_HIDE_OFFERING_MANUALLY'));
+      await unlink(gateFile).catch(() => {});
+      throw error;
+    }
+  }
   if (command === 'publish') {
     const proof = Object.values(state.jobs).find(j => j.completed && j.settlement?.creditedUSDCraw);
     if (!proof) throw new Error('Paid end-to-end settlement has not been verified. Offering remains hidden.');
@@ -77,7 +108,8 @@ async function main() {
         const current = assertOffering(await api.offerings());
         const gate = await exists(gateFile) ? JSON.parse(await readFile(gateFile, 'utf8')) : {};
         if (gate.pendingUntil > Date.now()) { await sleep(5000); continue; }
-        if (current.isHidden === false && !state.marketplaceVerified) {
+        const publicPilot = gate.pilotPublic === true && !state.marketplaceVerified;
+        if (current.isHidden === false && !state.marketplaceVerified && !publicPilot) {
           if (live) await api.hide();
           throw new Error('Unexpected public listing before settlement verification.');
         }
@@ -95,6 +127,29 @@ async function main() {
               log('TEST_USDC_RECEIPT_VERIFIED', state.jobs[id].settlement);
             }
           } catch (error) { log('JOB_REQUIRES_ATTENTION', { jobId: id, reason: error.message }); }
+        }
+        if (gate.pilotPublic === true && !state.marketplaceVerified) {
+          const records = Object.values(state.jobs);
+          const settled = records.find(r => r?.completed && r?.settlement?.creditedUSDCraw);
+          const activePilot = records.some(r => !r?.settlement && !r?.terminal);
+          if (settled) {
+            state.marketplaceVerified = true;
+            await save();
+            await writeFile(gateFile, JSON.stringify({
+              enabled: true,
+              proof: settled.settlement,
+              firstCustomerVerifiedAt: new Date().toISOString()
+            }), { mode: 0o600 });
+            const latestOffering = assertOffering(await api.offerings());
+            if (latestOffering.isHidden !== false) await api.publish();
+            log('FIRST_CUSTOMER_SETTLEMENT_VERIFIED', settled.settlement);
+          } else if (activePilot) {
+            const latestOffering = assertOffering(await api.offerings());
+            if (latestOffering.isHidden === false) {
+              await api.hide();
+              log('PUBLIC_PILOT_PAUSED_FOR_FIRST_JOB');
+            }
+          }
         }
         await writeFile(path.join(dir, 'heartbeat.json'), JSON.stringify({ at: new Date().toISOString(), live, pid: process.pid }), { mode: 0o600 });
         failures = 0;
