@@ -118,4 +118,4 @@ Write-Host "LastTaskResult: $($info.LastTaskResult)"
 Write-Host "Deployment: $AppDir"
 Write-Host "Heartbeat: $Heartbeat"
 Write-Host "Log: $(Join-Path $StateDir 'guarded-worker.log')"
-Write-Host 'Offering remains hidden until the public pilot gate is opened.'
+Write-Host 'Marketplace visibility is controlled by the durable pilot/verified gate and the live worker.'
