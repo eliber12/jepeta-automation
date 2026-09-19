@@ -73,13 +73,14 @@
     "schemas": {
       "Preview": {
         "type": "object",
-        "required": ["riskScore", "riskLevel", "honeypot", "summary", "warnings", "paidReport"],
+        "required": ["riskScore", "riskLevel", "honeypot", "summary", "warnings", "warningCount", "paidReport"],
         "properties": {
           "riskScore": { "type": "number", "minimum": 0, "maximum": 100 },
           "riskLevel": { "type": "string", "enum": ["LOW", "MEDIUM", "HIGH", "CRITICAL"] },
           "honeypot": { "type": "boolean" },
           "summary": { "type": "string" },
-          "warnings": { "type": "array", "items": { "type": "string" } },
+          "warnings": { "type": "array", "items": { "type": "string" }, "maxItems": 2 },
+          "warningCount": { "type": "integer", "minimum": 0 },
           "paidReport": {
             "type": "object",
             "description": "How to obtain the full report through ACP",
