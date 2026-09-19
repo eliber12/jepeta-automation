@@ -17,15 +17,64 @@ if (-not (Test-Path (Join-Path $AppDir 'worker\run.mjs'))) {
   throw "Active guarded deployment is missing: $AppDir"
 }
 
-Write-Host '1/4 Verifying fresh worker heartbeat...'
+Write-Host '1/4 Verifying fresh operational worker heartbeat...'
 $Heartbeat = Join-Path $StateDir 'heartbeat.json'
-if (-not (Test-Path $Heartbeat)) { throw 'Worker heartbeat file is missing.' }
-$hb = Get-Content $Heartbeat -Raw | ConvertFrom-Json
-$age = ((Get-Date).ToUniversalTime() - ([datetime]$hb.at).ToUniversalTime()).TotalSeconds
-if ($hb.live -ne $true -or $age -gt 90) {
-  throw ('Worker heartbeat is not live/fresh. Age seconds: ' + [math]::Round($age,1))
+$TaskName = 'Jepeta Risk Guard'
+
+function Get-HeartbeatStatus {
+  if (-not (Test-Path $Heartbeat)) { return $null }
+  try {
+    $value = Get-Content $Heartbeat -Raw | ConvertFrom-Json
+    $ageSeconds = ((Get-Date).ToUniversalTime() - ([datetime]$value.at).ToUniversalTime()).TotalSeconds
+    return [pscustomobject]@{
+      value = $value
+      age = $ageSeconds
+      ok = ($value.live -eq $true -and $value.operational -ne $false -and $ageSeconds -lt 90)
+    }
+  } catch {
+    return $null
+  }
 }
-Write-Host ('Worker heartbeat OK; age ' + [math]::Round($age,1) + 's.')
+
+$status = Get-HeartbeatStatus
+if (-not $status -or -not $status.ok) {
+  Write-Host 'Heartbeat is missing/stale/degraded. Restarting the existing scheduled task once...'
+  $task = Get-ScheduledTask -TaskName $TaskName -ErrorAction SilentlyContinue
+  if ($task) {
+    try { Stop-ScheduledTask -TaskName $TaskName -ErrorAction SilentlyContinue } catch {}
+    Start-Sleep -Seconds 2
+    Start-ScheduledTask -TaskName $TaskName
+  }
+
+  $deadline = (Get-Date).AddSeconds(60)
+  do {
+    Start-Sleep -Seconds 3
+    $status = Get-HeartbeatStatus
+  } while ((-not $status -or -not $status.ok) -and (Get-Date) -lt $deadline)
+}
+
+if (-not $status -or -not $status.ok) {
+  $log = Join-Path $StateDir 'guarded-worker.log'
+  $task = Get-ScheduledTask -TaskName $TaskName -ErrorAction SilentlyContinue
+  $info = Get-ScheduledTaskInfo -TaskName $TaskName -ErrorAction SilentlyContinue
+  Write-Host ''
+  Write-Host 'WORKER RECOVERY FAILED'
+  if ($task) { Write-Host ('Task state: ' + $task.State) }
+  if ($info) { Write-Host ('LastTaskResult: ' + $info.LastTaskResult) }
+  if ($status -and $status.value) {
+    Write-Host ('Heartbeat: ' + ($status.value | ConvertTo-Json -Compress))
+  } else {
+    Write-Host 'Heartbeat: missing'
+  }
+  if (Test-Path $log) {
+    Write-Host '--- guarded-worker.log (last 100 lines) ---'
+    Get-Content $log -Tail 100 | ForEach-Object { Write-Host $_ }
+    Write-Host '--- end log ---'
+  }
+  throw 'Worker is not operational. Diagnostic details are printed above.'
+}
+
+Write-Host ('Worker heartbeat OK; age ' + [math]::Round($status.age,1) + 's.')
 
 Write-Host ''
 Write-Host '2/4 Applying ACP commerce metadata without reinstalling the worker...'
