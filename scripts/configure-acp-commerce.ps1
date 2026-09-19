@@ -76,6 +76,7 @@ $DeliverableObject = [ordered]@{
   additionalProperties = $false
 }
 
+$ResourceParams = ([ordered]@{ type = 'object'; properties = [ordered]@{}; additionalProperties = $false } | ConvertTo-Json -Compress -Depth 5)
 $RequirementsSchema = $RequirementsObject | ConvertTo-Json -Compress -Depth 10
 $DeliverableSchema = $DeliverableObject | ConvertTo-Json -Compress -Depth 10
 
@@ -109,7 +110,7 @@ if ($LASTEXITCODE -ne 0) {
 $resource = $resources | Where-Object { $_.name -eq $ResourceName } | Select-Object -First 1
 
 if (-not $resource) {
-  & acp resource create --name $ResourceName --description $ResourceDescription --url $ResourceUrl --params '{}' --no-hidden --json | Out-Null
+  & acp resource create --name $ResourceName --description $ResourceDescription --url $ResourceUrl --params $ResourceParams --no-hidden --json | Out-Null
   if ($LASTEXITCODE -ne 0) {
     throw 'Could not create ACP capability resource.'
   }
@@ -120,7 +121,7 @@ if (-not $resource) {
 if (-not $resource) {
   throw 'Capability resource is not present after configuration.'
 }
-if ($resource.url -ne $ResourceUrl -or $resource.isHidden -ne $false) {
+if ($resource.url -ne $ResourceUrl -or $resource.isHidden -ne $false -or $resource.params.type -ne 'object') {
   throw 'Existing capability resource differs from the approved public configuration. Review it before replacing.'
 }
 
