@@ -8,6 +8,7 @@ const paidReport = Object.freeze({
 });
 export function publicPreview(report) {
   return {
+    previewVersion: '1.0',
     riskScore: report.riskScore,
     riskLevel: report.riskLevel,
     honeypot: report.honeypot,
