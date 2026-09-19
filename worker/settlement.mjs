@@ -39,5 +39,5 @@ export async function verifySettlement(jobId, startBlock, rpc = createRpc()) {
   const receipt = await rpc('eth_getTransactionReceipt', [logs[0].transactionHash]);
   if (!receipt || latest - BigInt(receipt.blockNumber) < 2n) throw new Error('Waiting for settlement confirmations.');
   return { jobId, transactionHash: logs[0].transactionHash, creditedUSDCraw: receiptCredit(receipt, jobId),
-    blockNumber: receipt.blockNumber, verifiedAt: new Date().toISOString(), testTransfer: true };
+    blockNumber: receipt.blockNumber, verifiedAt: new Date().toISOString(), verificationType: 'onchain_acp_usdc' };
 }
