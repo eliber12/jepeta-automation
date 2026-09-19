@@ -231,7 +231,7 @@ export async function processJob({ job, history, state, save, api, scanner, live
           },
         });
       }
-      return { id, action: failure.retryable ? 'retry_preflight' : 'unavailable', code: failure.code };
+      return { id, action: record.preflightBlocked ? 'unavailable' : 'retry_preflight', code: failure.code };
     }
 
     record.cachedReport = report;
