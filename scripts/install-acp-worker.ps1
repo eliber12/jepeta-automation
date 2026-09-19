@@ -74,6 +74,12 @@ if ($LASTEXITCODE -ne 0) { throw 'Tests failed. Guarded worker was not installed
 & acp agent use --agent-id $AgentId | Out-Host
 if ($LASTEXITCODE -ne 0) { throw 'Could not select Jepeta Risk Guard in ACP.' }
 
+# Break the bootstrap loop: the registry contract MUST be synchronized while
+# intake is hidden, before start-jepeta runs its doctor/preflight.
+$SyncOffering = Join-Path $AppDir 'scripts\sync-offering-contract.ps1'
+& powershell.exe -NoProfile -ExecutionPolicy Bypass -File $SyncOffering
+if ($LASTEXITCODE -ne 0) { throw 'ACP offering bootstrap synchronization failed; worker was not started.' }
+
 $Runner = Join-Path $AppDir 'scripts\run-live.ps1'
 $Action = New-ScheduledTaskAction -Execute 'powershell.exe' -Argument ('-NoProfile -ExecutionPolicy Bypass -File "' + $Runner + '"') -WorkingDirectory $AppDir
 $Trigger = New-ScheduledTaskTrigger -AtLogOn -User ([System.Security.Principal.WindowsIdentity]::GetCurrent().Name)
