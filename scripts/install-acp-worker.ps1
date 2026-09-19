@@ -90,7 +90,7 @@ do {
     try {
       $hb = Get-Content $Heartbeat -Raw | ConvertFrom-Json
       $age = ((Get-Date).ToUniversalTime() - ([datetime]$hb.at).ToUniversalTime()).TotalSeconds
-      if ($hb.live -eq $true -and $age -lt 30) { $ok = $true }
+      if ($hb.live -eq $true -and $hb.operational -ne $false -and $age -lt 30) { $ok = $true }
     } catch {}
   }
 } while (-not $ok -and (Get-Date) -lt $deadline)
