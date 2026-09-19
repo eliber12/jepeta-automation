@@ -45,6 +45,7 @@ Implemented in this release:
    - Failed/unsupported pilot jobs allow the public slot to reopen.
    - A verified settlement promotes the marketplace gate to verified mode.
    - A verified provider automatically reopens after worker restart.
+   - While the worker is hosted on the local Windows machine, concurrency is intentionally capped at one actionable job; excess jobs receive a structured busy/no-payment response.
 
 7. **Operator analytics**
    - Durable local \`business-metrics.json\`.
