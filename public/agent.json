@@ -53,7 +53,8 @@
       },
       "riskLevel": {
         "type": "string",
-        "enum": ["LOW", "MEDIUM", "HIGH", "CRITICAL"]
+        "enum": ["LOW", "MEDIUM", "HIGH", "CRITICAL"],
+        "description": "Risk band derived from the heuristic score."
       },
       "honeypot": {
         "type": "boolean"
@@ -63,7 +64,9 @@
         "items": { "type": "string" }
       },
       "liquidityRisk": {
-        "type": "string"
+        "type": "string",
+        "enum": ["UNKNOWN", "LOW", "MEDIUM", "HIGH", "CRITICAL"],
+        "description": "Risk band for the largest matching Base pool liquidity."
       },
       "holderConcentration": {
         "type": "string"
