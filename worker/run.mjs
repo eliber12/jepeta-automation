@@ -32,8 +32,8 @@ async function main() {
     const heartbeatPath = path.join(dir, 'heartbeat.json');
     if (!await exists(heartbeatPath)) throw new Error('Live worker heartbeat missing. Do not publish.');
     const heartbeat = JSON.parse(await readFile(heartbeatPath, 'utf8'));
-    if (!heartbeat.live || Date.now() - Date.parse(heartbeat.at) > 90000)
-      throw new Error('Live worker heartbeat is stale. Do not publish.');
+    if (!heartbeat.live || heartbeat.operational === false || Date.now() - Date.parse(heartbeat.at) > 90000)
+      throw new Error('Live operational worker heartbeat is missing/stale. Do not publish.');
     const unfinished = Object.values(state.jobs).some(j => !j?.settlement && !j?.terminal && !j?.preflightBlocked && !j?.capacityBlocked);
     if (unfinished) throw new Error('An unfinished actionable pilot job already exists. Do not open another public slot.');
     await writeFile(gateFile, JSON.stringify({
@@ -61,7 +61,8 @@ async function main() {
     const proof = Object.values(state.jobs).find(j => j.completed && j.settlement?.creditedUSDCraw);
     if (!proof) throw new Error('Paid end-to-end settlement has not been verified. Offering remains hidden.');
     const heartbeat = JSON.parse(await readFile(path.join(dir, 'heartbeat.json'), 'utf8'));
-    if (!heartbeat.live || Date.now() - Date.parse(heartbeat.at) > 90000) throw new Error('Live worker heartbeat missing; keep offering hidden.');
+    if (!heartbeat.live || heartbeat.operational === false || Date.now() - Date.parse(heartbeat.at) > 90000)
+      throw new Error('Live operational worker heartbeat missing; keep offering hidden.');
     await verifySettlement(proof.settlement.jobId, proof.startBlock); // Recheck chain, not a success banner.
     await writeFile(gateFile, JSON.stringify({ pendingUntil: Date.now() + 60000 }), { mode: 0o600 });
     try {
@@ -89,7 +90,7 @@ async function main() {
   }
   const lock = await open(lockPath, 'wx', 0o600); await lock.writeFile(String(process.pid)); await lock.close();
   await unlink(path.join(dir, 'STOP')).catch(e => { if (e.code !== 'ENOENT') throw e; });
-  const rpc = createRpc(); let running = true, listener, failures = 0;
+  const rpc = createRpc(); let running = true, listener, failures = 0, degraded = false;
   const shutdown = () => { running = false; listener?.kill(); };
   process.on('SIGINT', shutdown); process.on('SIGTERM', shutdown);
   // Persistent stream keeps the provider online; REST reconciliation recovers missed/replayed events.
@@ -169,7 +170,8 @@ async function main() {
             log('VERIFIED_MARKETPLACE_SLOT_REOPENED');
           }
         }
-        const heartbeat = { at: new Date().toISOString(), live, pid: process.pid };
+        if (degraded) log('WORKER_RECOVERED', { consecutiveFailures: failures });
+        const heartbeat = { at: new Date().toISOString(), live, operational: true, degraded: false, pid: process.pid };
         await writeFile(path.join(dir, 'heartbeat.json'), JSON.stringify(heartbeat), { mode: 0o600 });
         const latestOffering = assertOffering(await api.offerings());
         const latestGate = await exists(gateFile) ? JSON.parse(await readFile(gateFile, 'utf8')) : {};
@@ -177,8 +179,41 @@ async function main() {
         await writeFile(metricsFile + '.tmp', JSON.stringify(metrics, null, 2), { mode: 0o600 });
         await rename(metricsFile + '.tmp', metricsFile);
         failures = 0;
-      } catch (error) { failures++; log('WORKER_ERROR', { reason: error.message }); if (failures >= 3) throw error; }
-      await sleep(20000);
+        degraded = false;
+        await sleep(20000);
+      } catch (error) {
+        failures++;
+        const reason = error?.message || String(error);
+        log('WORKER_ERROR', { reason, consecutiveFailures: failures });
+
+        if (failures >= 3) {
+          if (!degraded) {
+            degraded = true;
+            log('WORKER_DEGRADED', { reason, consecutiveFailures: failures });
+            if (live) {
+              try {
+                await api.hide();
+                log('OFFERING_PAUSED_FOR_RUNTIME_DEGRADATION');
+              } catch {
+                log('URGENT_HIDE_OFFERING_MANUALLY', { reason: 'ACP unavailable during runtime degradation' });
+              }
+            }
+          }
+
+          const heartbeat = {
+            at: new Date().toISOString(),
+            live,
+            operational: false,
+            degraded: true,
+            pid: process.pid,
+            consecutiveFailures: failures,
+            lastError: reason,
+          };
+          await writeFile(path.join(dir, 'heartbeat.json'), JSON.stringify(heartbeat), { mode: 0o600 }).catch(() => {});
+        }
+
+        await sleep(Math.min(60000, Math.max(5000, failures * 5000)));
+      }
     }
   } finally {
     listener?.kill();
