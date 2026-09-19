@@ -22,7 +22,7 @@ try {
         if ($LASTEXITCODE -ne 0) { throw 'Local signer approval was not completed.' }
     }
     & $node (Join-Path $root 'worker\run.mjs') doctor
-    if ($LASTEXITCODE -ne 0) { throw 'ACP preflight failed. A website-created signer may not be linked to this computer. Do not paste a private key into chat.' }
+    if ($LASTEXITCODE -ne 0) { throw 'ACP preflight failed. See the STOPPED_NOT_READY reason immediately above; do not assume this is a signer problem.' }
     if ($Live) {
         Write-Host 'Live provider signatures enabled. Buyer funding/approval stay manual. Overall approved budget: $7.50.'
         $env:JEPETA_CHAIN_FEES_APPROVED = 'true'

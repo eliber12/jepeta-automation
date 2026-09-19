@@ -38,6 +38,26 @@ test('fresh preflight report is reused after exact funding',async()=>{const f=fi
 
 test('funded source failures are bounded and then stop scanning',async()=>{const f=fixture(),a=args(f);let scans=0,messages=0;a.scanner=async()=>{scans++;if(scans===1)return report;throw Object.assign(new Error('offline'),{status:503,code:'SECURITY_DATA_UNAVAILABLE'});};a.api={...a.api,message:async()=>{messages++;return{success:true};}};assert.equal((await processJob(a)).action,'quoted');f.history.entries.push(f.sys({type:'budget.set',amount:0.03}),f.sys({type:'job.funded',amount:0.03,client:BUYER}));f.job.budget='30000';f.job.jobStatus='FUNDED';a.now=NOW+CONFIG.reportCacheMs+1;assert.equal((await processJob(a)).action,'retry_scan');assert.equal((await processJob(a)).action,'delivery_unavailable');const callsAfterBlock=scans;assert.equal((await processJob(a)).action,'delivery_unavailable');assert.equal(scans,callsAfterBlock);assert.equal(a.state.jobs['7'].deliveryBlocked,true);assert.equal(messages,1);});
 test('offering string schema rejected',()=>assert.throws(()=>assertOffering([{id:CONFIG.offeringId,agentId:CONFIG.agentId,name:CONFIG.name,priceType:'fixed',priceValue:.03,slaMinutes:5,requiredFunds:false,requirements:'{}',deliverable:{type:'object'}}])));
+
+test('ACP offering string price is accepted when semantically equal',()=>{
+ const req={type:'object',required:['tokenAddress'],properties:{tokenAddress:{type:'string'}},additionalProperties:false};
+ const del={type:'object',required:['riskScore','riskLevel','honeypot','dangerousPermissions','liquidityRisk','holderConcentration','tradingActivity','warnings','summary'],properties:{},additionalProperties:false};
+ const o={id:CONFIG.offeringId,agentId:CONFIG.agentId,name:CONFIG.name,priceType:'fixed',priceValue:'0.03',slaMinutes:5,requiredFunds:false,requirements:req,deliverable:del};
+ assert.equal(assertOffering([o]),o);
+});
+
+test('ACP JSON-serialized schemas are normalized before validation',()=>{
+ const req={type:'object',required:['tokenAddress'],properties:{tokenAddress:{type:'string'}},additionalProperties:false};
+ const del={type:'object',required:['riskScore','riskLevel','honeypot','dangerousPermissions','liquidityRisk','holderConcentration','tradingActivity','warnings','summary'],properties:{},additionalProperties:false};
+ const o={id:CONFIG.offeringId,agentId:CONFIG.agentId,name:CONFIG.name,priceType:'FIXED',priceValue:'0.030',slaMinutes:'5',requiredFunds:false,requirements:JSON.stringify(req),deliverable:JSON.stringify(del)};
+ assert.equal(assertOffering([o]),o);
+});
+
+test('offering mismatch names the exact broken fields',()=>{
+ const req={type:'object',required:['tokenAddress'],properties:{tokenAddress:{type:'string'}},additionalProperties:false};
+ const del={type:'object',required:['riskScore','riskLevel','honeypot','dangerousPermissions','liquidityRisk','holderConcentration','tradingActivity','warnings','summary'],properties:{},additionalProperties:false};
+ assert.throws(()=>assertOffering([{id:CONFIG.offeringId,agentId:CONFIG.agentId,name:CONFIG.name,priceType:'fixed',priceValue:'0.04',slaMinutes:5,requiredFunds:false,requirements:req,deliverable:del}]),/priceValue/);
+});
 const topic=x=>'0x'+x.replace(/^0x/,'').padStart(64,'0');
 function receipt(){return{status:'0x1',blockNumber:'0x101',logs:[{address:ACP_CONTRACT,topics:[COMPLETED_TOPIC,topic('7')]},{address:USDC,topics:[TRANSFER_TOPIC,topic(ACP_CONTRACT),topic(CONFIG.provider)],data:'0x6978'}]};}
 test('receipt proves job completion AND actual USDC payout',()=>assert.equal(receiptCredit(receipt(),'7'),'27000'));

@@ -122,13 +122,54 @@ export function inspectJob(job, history, now = Date.now()) {
   return { id, action: 'quote', tokenAddress };
 }
 
+function schemaObject(value) {
+  if (value && typeof value === 'object' && !Array.isArray(value)) return value;
+  if (typeof value !== 'string') return null;
+  try {
+    const parsed = JSON.parse(value);
+    return parsed && typeof parsed === 'object' && !Array.isArray(parsed) ? parsed : null;
+  } catch {
+    return null;
+  }
+}
+
 export function assertOffering(offers) {
   const offering = offers?.find?.(o => o.id === CONFIG.offeringId);
-  if (!offering || offering.agentId !== CONFIG.agentId || offering.name !== CONFIG.name ||
-      offering.priceType !== 'fixed' || offering.priceValue !== 0.03 || offering.slaMinutes !== 5 ||
-      offering.requiredFunds !== false || offering.requirements?.type !== 'object' ||
-      offering.deliverable?.type !== 'object')
-    throw new Error('Offering configuration differs from the approved pilot.');
+  if (!offering) throw new Error('Offering contract mismatch: approved offering ID not found.');
+
+  const requirements = schemaObject(offering.requirements);
+  const deliverable = schemaObject(offering.deliverable);
+  const requiredOutput = new Set([
+    'riskScore','riskLevel','honeypot','dangerousPermissions','liquidityRisk',
+    'holderConcentration','tradingActivity','warnings','summary',
+  ]);
+  const actualRequired = new Set(Array.isArray(deliverable?.required) ? deliverable.required : []);
+
+  const mismatches = [];
+  if (offering.agentId !== CONFIG.agentId) mismatches.push('agentId');
+  if (offering.name !== CONFIG.name) mismatches.push('name');
+  if (String(offering.priceType || '').toLowerCase() !== 'fixed') mismatches.push('priceType');
+  if (Number(offering.priceValue) !== Number(CONFIG.price)) mismatches.push('priceValue');
+  if (Number(offering.slaMinutes) !== CONFIG.slaMinutes) mismatches.push('slaMinutes');
+  if (offering.requiredFunds !== false) mismatches.push('requiredFunds');
+
+  if (requirements?.type !== 'object' ||
+      requirements.additionalProperties !== false ||
+      !Array.isArray(requirements.required) ||
+      !requirements.required.includes('tokenAddress') ||
+      requirements.properties?.tokenAddress?.type !== 'string') {
+    mismatches.push('requirements');
+  }
+
+  if (deliverable?.type !== 'object' ||
+      deliverable.additionalProperties !== false ||
+      [...requiredOutput].some(key => !actualRequired.has(key))) {
+    mismatches.push('deliverable');
+  }
+
+  if (mismatches.length)
+    throw new Error('Offering contract mismatch: ' + mismatches.join(', '));
+
   return offering;
 }
 
