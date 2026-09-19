@@ -254,6 +254,8 @@ export async function processJob({ job, history, state, save, api, scanner, live
     throw new Error('This worker never proposed the budget.');
   if (record.submitAttempted)
     return { id, action: 'needs_reconciliation' };
+  if (record.deliveryBlocked)
+    return { id, action: 'delivery_unavailable', code: record.lastError?.code || 'SCAN_UNAVAILABLE' };
 
   record.fundedAt ??= iso(now);
   record.lastActivityAt = iso(now);
@@ -266,8 +268,11 @@ export async function processJob({ job, history, state, save, api, scanner, live
     report = record.cachedReport;
     record.usedCachedPreflight = true;
   } else {
-    if ((record.scanAttempts ?? 0) >= CONFIG.maxFundedScans)
-      throw new Error('Two funded scan attempts failed; buyer should reject/refund the job.');
+    if ((record.scanAttempts ?? 0) >= CONFIG.maxFundedScans) {
+      record.deliveryBlocked = true;
+      await save();
+      return { id, action: 'delivery_unavailable', code: record.lastError?.code || 'SCAN_UNAVAILABLE' };
+    }
 
     record.scanAttempts = (record.scanAttempts ?? 0) + 1;
     await save();
@@ -279,6 +284,7 @@ export async function processJob({ job, history, state, save, api, scanner, live
       const failure = scanFailure(error);
       record.lastError = { stage: 'funded', ...failure, at: iso(now) };
       const exhausted = !failure.retryable || record.scanAttempts >= CONFIG.maxFundedScans;
+      if (exhausted) record.deliveryBlocked = true;
       await save();
       if (exhausted) {
         await notifyBuyerOnce({
