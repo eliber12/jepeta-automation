@@ -76,7 +76,7 @@ $DeliverableObject = [ordered]@{
   additionalProperties = $false
 }
 
-$ResourceParams = ([ordered]@{ type = 'object'; properties = [ordered]@{}; additionalProperties = $false } | ConvertTo-Json -Compress -Depth 5)
+$ResourceParams = '{}'
 $RequirementsSchema = $RequirementsObject | ConvertTo-Json -Compress -Depth 10
 $DeliverableSchema = $DeliverableObject | ConvertTo-Json -Compress -Depth 10
 
@@ -102,27 +102,52 @@ if ($LASTEXITCODE -ne 0) {
   throw 'Offering update failed.'
 }
 
-Write-Host '2/4 Ensuring a public machine-readable capability resource...'
-$resources = @((& acp resource list --json | Out-String | ConvertFrom-Json))
-if ($LASTEXITCODE -ne 0) {
-  throw 'Could not list ACP resources.'
-}
-$resource = $resources | Where-Object { $_.name -eq $ResourceName } | Select-Object -First 1
-
-if (-not $resource) {
-  & acp resource create --name $ResourceName --description $ResourceDescription --url $ResourceUrl --params $ResourceParams --no-hidden --json | Out-Null
-  if ($LASTEXITCODE -ne 0) {
-    throw 'Could not create ACP capability resource.'
+Write-Host '2/4 Ensuring a public machine-readable capability resource (non-blocking enhancement)...'
+$resource = $null
+$resourceWarning = $null
+try {
+  $resourcesRaw = & acp resource list --json 2>&1
+  $resourceListExit = $LASTEXITCODE
+  if ($resourceListExit -eq 0) {
+    $resources = @($resourcesRaw | Out-String | ConvertFrom-Json)
+    $resource = $resources | Where-Object { $_.name -eq $ResourceName } | Select-Object -First 1
+  } else {
+    $resourceWarning = 'ACP resource list failed: ' + (($resourcesRaw | Out-String).Trim())
   }
-  $resources = @((& acp resource list --json | Out-String | ConvertFrom-Json))
-  $resource = $resources | Where-Object { $_.name -eq $ResourceName } | Select-Object -First 1
+} catch {
+  $resourceWarning = 'ACP resource list failed: ' + $_.Exception.Message
 }
 
-if (-not $resource) {
-  throw 'Capability resource is not present after configuration.'
+if (-not $resource -and -not $resourceWarning) {
+  # Upstream CLI documents/uses --params '{}' for non-interactive resource creation.
+  # Reconcile after the write because a backend error can be ambiguous.
+  $createOutput = & acp resource create --name $ResourceName --description $ResourceDescription --url $ResourceUrl --params $ResourceParams --no-hidden --json 2>&1
+  $createExit = $LASTEXITCODE
+  Start-Sleep -Seconds 2
+
+  try {
+    $resourcesRaw = & acp resource list --json 2>&1
+    if ($LASTEXITCODE -eq 0) {
+      $resources = @($resourcesRaw | Out-String | ConvertFrom-Json)
+      $resource = $resources | Where-Object { $_.name -eq $ResourceName } | Select-Object -First 1
+    }
+  } catch {}
+
+  if (-not $resource -and $createExit -ne 0) {
+    $resourceWarning = 'ACP resource create failed: ' + (($createOutput | Out-String).Trim())
+  } elseif (-not $resource) {
+    $resourceWarning = 'ACP resource create returned without a discoverable resource.'
+  }
 }
-if ($resource.url -ne $ResourceUrl -or $resource.isHidden -ne $false -or $resource.params.type -ne 'object') {
-  throw 'Existing capability resource differs from the approved public configuration. Review it before replacing.'
+
+if ($resource) {
+  if ($resource.url -ne $ResourceUrl -or $resource.isHidden -ne $false) {
+    $resourceWarning = 'Existing capability resource differs from the preferred public configuration. Resource is advisory; paid offering remains authoritative.'
+  } else {
+    Write-Host 'Capability resource is public.'
+  }
+} else {
+  Write-Warning ('Capability resource unavailable; continuing because Resources are optional discovery metadata. ' + $resourceWarning)
 }
 
 Write-Host '3/4 Verifying offering contract and signer policy...'
@@ -183,7 +208,8 @@ New-Item -ItemType Directory -Force -Path $StateDir | Out-Null
   provider = $Provider
   offeringId = $OfferingId
   offeringVisible = ($offer.isHidden -eq $false)
-  resourceVisible = ($resource.isHidden -eq $false)
+  resourceVisible = [bool]($resource -and $resource.isHidden -eq $false)
+  resourceWarning = $resourceWarning
   discoveryQueries = $foundBy
 } |
   ConvertTo-Json -Depth 5 |
@@ -194,7 +220,11 @@ Write-Host 'ACP COMMERCE CONFIGURED'
 Write-Host 'Offering: Token Risk Scan'
 Write-Host 'Price: 0.03 USDC'
 Write-Host 'SLA: 5 minutes'
-Write-Host "Resource: $ResourceUrl"
+if ($resource -and $resource.isHidden -eq $false) {
+  Write-Host "Resource: $ResourceUrl"
+} else {
+  Write-Host 'Resource: unavailable/non-blocking; agent.json remains public on Jepeta infrastructure.'
+}
 Write-Host ("Marketplace visible: " + ($offer.isHidden -eq $false))
 if ($foundBy.Count -gt 0) {
   Write-Host ("Discovery confirmed for: " + ($foundBy -join ', '))
