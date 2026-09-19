@@ -34,7 +34,7 @@ async function main() {
     const heartbeat = JSON.parse(await readFile(heartbeatPath, 'utf8'));
     if (!heartbeat.live || Date.now() - Date.parse(heartbeat.at) > 90000)
       throw new Error('Live worker heartbeat is stale. Do not publish.');
-    const unfinished = Object.values(state.jobs).some(j => !j?.settlement && !j?.terminal && !j?.preflightBlocked);
+    const unfinished = Object.values(state.jobs).some(j => !j?.settlement && !j?.terminal && !j?.preflightBlocked && !j?.capacityBlocked);
     if (unfinished) throw new Error('An unfinished actionable pilot job already exists. Do not open another public slot.');
     await writeFile(gateFile, JSON.stringify({
       pilotPublic: true,
@@ -109,12 +109,6 @@ async function main() {
         const gate = await exists(gateFile) ? JSON.parse(await readFile(gateFile, 'utf8')) : {};
         if (gate.pendingUntil > Date.now()) { await sleep(5000); continue; }
         const publicPilot = gate.pilotPublic === true && !state.marketplaceVerified;
-        if (state.marketplaceVerified && current.isHidden !== false && live) {
-          await api.publish();
-          current = assertOffering(await api.offerings());
-          if (current.isHidden !== false) throw new Error('Verified marketplace could not be reopened after worker restart.');
-          log('VERIFIED_MARKETPLACE_REOPENED');
-        }
         if (current.isHidden === false && !state.marketplaceVerified && !publicPilot) {
           if (live) await api.hide();
           throw new Error('Unexpected public listing before settlement verification.');
@@ -137,7 +131,7 @@ async function main() {
         if (gate.pilotPublic === true && !state.marketplaceVerified) {
           const records = Object.values(state.jobs);
           const settled = records.find(r => r?.completed && r?.settlement?.creditedUSDCraw);
-          const activePilot = records.some(r => !r?.settlement && !r?.terminal && !r?.preflightBlocked);
+          const activePilot = records.some(r => !r?.settlement && !r?.terminal && !r?.preflightBlocked && !r?.capacityBlocked);
           if (settled) {
             state.marketplaceVerified = true;
             await save();
@@ -161,6 +155,18 @@ async function main() {
               await api.publish();
               log('PUBLIC_PILOT_SLOT_REOPENED');
             }
+          }
+        }
+        if (state.marketplaceVerified) {
+          const records = Object.values(state.jobs);
+          const activeService = records.some(r => !r?.settlement && !r?.terminal && !r?.preflightBlocked && !r?.capacityBlocked);
+          const latestOffering = assertOffering(await api.offerings());
+          if (activeService && latestOffering.isHidden === false) {
+            await api.hide();
+            log('VERIFIED_MARKETPLACE_PAUSED_FOR_ACTIVE_JOB');
+          } else if (!activeService && latestOffering.isHidden !== false) {
+            await api.publish();
+            log('VERIFIED_MARKETPLACE_SLOT_REOPENED');
           }
         }
         const heartbeat = { at: new Date().toISOString(), live, pid: process.pid };
