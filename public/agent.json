@@ -1,0 +1,120 @@
+{
+  "schemaVersion": "1.0",
+  "name": "Jepeta Risk Guard",
+  "agentId": "01a0b446-374c-7eb8-8fe8-cd1a9945ea70",
+  "providerWallet": "0xefcb0359e2cd6d1ad92cbca1e41c8946b308d7df",
+  "network": {
+    "name": "Base",
+    "chainId": 8453
+  },
+  "commerce": {
+    "protocol": "Virtuals ACP v2",
+    "offeringId": "01a0b464-2334-7c1b-a88e-467c77d83327",
+    "offeringName": "Token Risk Scan",
+    "price": {
+      "asset": "USDC",
+      "amount": "0.03"
+    },
+    "slaMinutes": 5,
+    "requiredFunds": false
+  },
+  "purpose": "Machine-readable pre-trade ERC-20 risk screening for Base tokens.",
+  "input": {
+    "type": "object",
+    "required": ["tokenAddress"],
+    "properties": {
+      "tokenAddress": {
+        "type": "string",
+        "pattern": "^0x[a-fA-F0-9]{40}$",
+        "description": "ERC-20 token contract address on Base chain 8453"
+      }
+    },
+    "additionalProperties": false
+  },
+  "deliverable": {
+    "type": "object",
+    "required": [
+      "riskScore",
+      "riskLevel",
+      "honeypot",
+      "dangerousPermissions",
+      "liquidityRisk",
+      "holderConcentration",
+      "tradingActivity",
+      "warnings",
+      "summary"
+    ],
+    "properties": {
+      "riskScore": {
+        "type": "number",
+        "minimum": 0,
+        "maximum": 100,
+        "description": "Heuristic risk score. Higher means more observed risk. It is not a probability."
+      },
+      "riskLevel": {
+        "type": "string",
+        "enum": ["LOW", "MEDIUM", "HIGH", "CRITICAL"],
+        "description": "Risk band derived from the heuristic score."
+      },
+      "honeypot": {
+        "type": "boolean"
+      },
+      "dangerousPermissions": {
+        "type": "array",
+        "items": { "type": "string" }
+      },
+      "liquidityRisk": {
+        "type": "string",
+        "enum": ["UNKNOWN", "LOW", "MEDIUM", "HIGH", "CRITICAL"],
+        "description": "Risk band for the largest matching Base pool liquidity."
+      },
+      "holderConcentration": {
+        "type": "string"
+      },
+      "tradingActivity": {
+        "type": "string"
+      },
+      "warnings": {
+        "type": "array",
+        "items": { "type": "string" }
+      },
+      "summary": {
+        "type": "string"
+      }
+    },
+    "additionalProperties": false
+  },
+  "dataSources": [
+    {
+      "name": "GoPlus Security",
+      "purpose": "Token security controls and honeypot signal"
+    },
+    {
+      "name": "DEX Screener",
+      "purpose": "Matching Base pool liquidity and recent trading activity"
+    }
+  ],
+  "safetyProperties": {
+    "readOnlyAnalysis": true,
+    "performsTrades": false,
+    "movesBuyerFundsOutsideAcpEscrow": false,
+    "unknownSecurityDataFailsClosed": true,
+    "crossChainPoolMixing": false,
+    "differentTokenFallback": false
+  },
+  "failureSemantics": {
+    "unsupportedOrInsufficientData": "No reassuring verdict is issued. The provider does not quote unsupported tokens.",
+    "sourceOutage": "The provider retries a bounded number of times and does not fabricate missing values.",
+    "incompleteData": "Unknown fields are surfaced explicitly and cannot produce a reassuring LOW classification."
+  },
+  "engine": {
+    "version": "2.0.0",
+    "methodology": "Heuristic screening, not a smart-contract audit, safety guarantee, or investment recommendation."
+  },
+  "endpoints": {
+    "humanPreview": "https://jepeta-automation.netlify.app/",
+    "previewApi": "https://jepeta-automation.netlify.app/api/risk-scan",
+    "openapi": "https://jepeta-automation.netlify.app/openapi.json",
+    "llms": "https://jepeta-automation.netlify.app/llms.txt"
+  }
+}

@@ -1,1 +1,11 @@
-{"release":"2.0.0","checkpoint":"2026-09-18","scope":"code-release-status-not-live-account-state","worker":"implemented_requires_local_activation","paidAcpTest":"not_verified","marketplaceSales":"not_activated","incomeConfirmed":false}
+{
+  "release": "3.0.0",
+  "checkpoint": "2026-09-19",
+  "scope": "static-release-status-not-live-worker-or-revenue-state",
+  "commerceMode": "guarded-public-pilot-capable",
+  "marketplaceOfferingConfigured": true,
+  "ownerDepositRequired": false,
+  "paidSettlementVerified": "runtime-only; see local business metrics",
+  "incomeConfirmed": "runtime-only; requires verified on-chain settlement",
+  "liveRuntime": "See local guarded worker heartbeat; this static file does not claim PC uptime."
+}

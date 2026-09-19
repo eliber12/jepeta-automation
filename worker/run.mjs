@@ -6,9 +6,11 @@ import { createAcpClient } from './acp-client.mjs';
 import { CONFIG, processJob, assertOffering } from './core.mjs';
 import { scanToken } from '../netlify/functions/_shared/risk-engine.mjs';
 import { createRpc, verifySettlement } from './settlement.mjs';
+import { buildBusinessMetrics } from './metrics.mjs';
 const dir = path.join(process.env.LOCALAPPDATA || path.join(os.homedir(), '.local', 'share'), 'JepetaRiskGuard');
 const file = path.join(dir, 'state.json');
 const gateFile = path.join(dir, 'marketplace.json');
+const metricsFile = path.join(dir, 'business-metrics.json');
 const log = (event, detail = {}) => console.log(JSON.stringify({ at: new Date().toISOString(), event, ...detail }));
 async function exists(p) { try { await stat(p); return true; } catch (e) { if (e.code === 'ENOENT') return false; throw e; } }
 async function main() {
@@ -32,10 +34,8 @@ async function main() {
     const heartbeat = JSON.parse(await readFile(heartbeatPath, 'utf8'));
     if (!heartbeat.live || Date.now() - Date.parse(heartbeat.at) > 90000)
       throw new Error('Live worker heartbeat is stale. Do not publish.');
-    const unfinished = Object.values(state.jobs).some(j => !j?.settlement && !j?.terminal);
-    if (unfinished) throw new Error('An unfinished pilot job already exists. Do not open another public slot.');
-    if (Object.keys(state.jobs).length >= CONFIG.pilotMaxJobs && !state.marketplaceVerified)
-      throw new Error('The one-job pilot ledger is already consumed. Review it before reopening.');
+    const unfinished = Object.values(state.jobs).some(j => !j?.settlement && !j?.terminal && !j?.preflightBlocked && !j?.capacityBlocked);
+    if (unfinished) throw new Error('An unfinished actionable pilot job already exists. Do not open another public slot.');
     await writeFile(gateFile, JSON.stringify({
       pilotPublic: true,
       pendingUntil: Date.now() + 60000,
@@ -105,7 +105,7 @@ async function main() {
       try {
         // Reload publish flag without overwriting the single writer's job journal.
         if (await exists(file)) { const gate = await exists(gateFile) ? JSON.parse(await readFile(gateFile, 'utf8')) : {}; state.marketplaceVerified = gate.enabled === true; }
-        const current = assertOffering(await api.offerings());
+        let current = assertOffering(await api.offerings());
         const gate = await exists(gateFile) ? JSON.parse(await readFile(gateFile, 'utf8')) : {};
         if (gate.pendingUntil > Date.now()) { await sleep(5000); continue; }
         const publicPilot = gate.pilotPublic === true && !state.marketplaceVerified;
@@ -131,7 +131,7 @@ async function main() {
         if (gate.pilotPublic === true && !state.marketplaceVerified) {
           const records = Object.values(state.jobs);
           const settled = records.find(r => r?.completed && r?.settlement?.creditedUSDCraw);
-          const activePilot = records.some(r => !r?.settlement && !r?.terminal);
+          const activePilot = records.some(r => !r?.settlement && !r?.terminal && !r?.preflightBlocked && !r?.capacityBlocked);
           if (settled) {
             state.marketplaceVerified = true;
             await save();
@@ -147,11 +147,35 @@ async function main() {
             const latestOffering = assertOffering(await api.offerings());
             if (latestOffering.isHidden === false) {
               await api.hide();
-              log('PUBLIC_PILOT_PAUSED_FOR_FIRST_JOB');
+              log('PUBLIC_PILOT_PAUSED_FOR_ACTIVE_JOB');
+            }
+          } else {
+            const latestOffering = assertOffering(await api.offerings());
+            if (latestOffering.isHidden !== false) {
+              await api.publish();
+              log('PUBLIC_PILOT_SLOT_REOPENED');
             }
           }
         }
-        await writeFile(path.join(dir, 'heartbeat.json'), JSON.stringify({ at: new Date().toISOString(), live, pid: process.pid }), { mode: 0o600 });
+        if (state.marketplaceVerified) {
+          const records = Object.values(state.jobs);
+          const activeService = records.some(r => !r?.settlement && !r?.terminal && !r?.preflightBlocked && !r?.capacityBlocked);
+          const latestOffering = assertOffering(await api.offerings());
+          if (activeService && latestOffering.isHidden === false) {
+            await api.hide();
+            log('VERIFIED_MARKETPLACE_PAUSED_FOR_ACTIVE_JOB');
+          } else if (!activeService && latestOffering.isHidden !== false) {
+            await api.publish();
+            log('VERIFIED_MARKETPLACE_SLOT_REOPENED');
+          }
+        }
+        const heartbeat = { at: new Date().toISOString(), live, pid: process.pid };
+        await writeFile(path.join(dir, 'heartbeat.json'), JSON.stringify(heartbeat), { mode: 0o600 });
+        const latestOffering = assertOffering(await api.offerings());
+        const latestGate = await exists(gateFile) ? JSON.parse(await readFile(gateFile, 'utf8')) : {};
+        const metrics = buildBusinessMetrics({ state, offering: latestOffering, heartbeat, gate: latestGate });
+        await writeFile(metricsFile + '.tmp', JSON.stringify(metrics, null, 2), { mode: 0o600 });
+        await rename(metricsFile + '.tmp', metricsFile);
         failures = 0;
       } catch (error) { failures++; log('WORKER_ERROR', { reason: error.message }); if (failures >= 3) throw error; }
       await sleep(20000);

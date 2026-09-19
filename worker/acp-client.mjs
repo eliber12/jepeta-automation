@@ -43,6 +43,7 @@ export function createAcpClient() {
     balance: () => call(['wallet', 'balance', '--chain-id', '8453']),
     setBudget: id => guarded(['provider', 'set-budget', ...idArgs(id), '--amount', CONFIG.price]),
     submit: (id, deliverable) => guarded(['provider', 'submit', ...idArgs(id), '--deliverable', deliverable]),
+    message: (id, content) => guarded(['message', 'send', ...idArgs(id), '--content', content, '--content-type', 'structured']),
     buyerBrowse: async () => {
       const profile = process.env.JEPETA_BUYER_CONFIG_DIR;
       if (!profile || !existsSync(profile)) throw new Error('Set JEPETA_BUYER_CONFIG_DIR to an authenticated separate buyer profile before publication.');

@@ -2,6 +2,22 @@ import { scanToken, validateRequirements, ENGINE_VERSION } from './risk-engine.m
 const json = (body, status = 200) => Response.json(body, { status, headers: {
   'Cache-Control': 'no-store', 'X-Content-Type-Options': 'nosniff', 'X-Jepeta-Version': ENGINE_VERSION,
 }});
+const paidReport = Object.freeze({
+  protocol: 'Virtuals ACP v2', offering: 'Token Risk Scan', priceUSDC: '0.03',
+  providerWallet: '0xefcb0359e2cd6d1ad92cbca1e41c8946b308d7df',
+});
+export function publicPreview(report) {
+  return {
+    previewVersion: '1.0',
+    riskScore: report.riskScore,
+    riskLevel: report.riskLevel,
+    honeypot: report.honeypot,
+    summary: report.summary,
+    warnings: report.warnings.slice(0, 2),
+    warningCount: report.warnings.length,
+    paidReport,
+  };
+}
 export async function riskHttp(req, scanner = scanToken) {
   if (!['GET', 'POST'].includes(req.method)) return new Response(null, { status: 405, headers: { Allow: 'GET, POST' } });
   try {
@@ -20,7 +36,7 @@ export async function riskHttp(req, scanner = scanToken) {
       try { input = JSON.parse(new TextDecoder().decode(bytes)); } catch { return json({ error: 'Invalid JSON.' }, 400); }
     }
     const { tokenAddress } = validateRequirements(input);
-    return json(await scanner(tokenAddress));
+    return json(publicPreview(await scanner(tokenAddress)));
   } catch (error) {
     return json({ error: error.status ? error.message : 'Scan unavailable; no safety verdict issued.', code: error.code || 'SCAN_UNAVAILABLE' }, error.status || 503);
   }

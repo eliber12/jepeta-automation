@@ -4,17 +4,29 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Jepeta Risk Guard — Base Token Risk Scan</title>
-<meta name="description" content="Fast pre-trade risk scan for Base ERC-20 tokens. Check honeypot signals, dangerous permissions, liquidity and holder concentration.">
+<meta name="description" content="Agent-ready pre-trade risk screening for Base ERC-20 tokens. Paid through Virtuals ACP in USDC with a strict machine-readable result.">
 <meta name="robots" content="index,follow">
 <style>
 :root{color-scheme:dark}
 *{box-sizing:border-box}
 body{margin:0;background:#08111a;color:#e8f3f5;font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif}
-main{max-width:820px;margin:0 auto;padding:56px 20px 72px}
+main{max-width:920px;margin:0 auto;padding:48px 20px 72px}
 .badge{display:inline-block;padding:7px 11px;border:1px solid #28444d;border-radius:999px;color:#9bd9d1;font-size:13px}
 h1{font-size:clamp(34px,7vw,58px);line-height:1;margin:18px 0 12px}
-.lead{color:#a9bbc2;font-size:18px;line-height:1.55;max-width:680px}
-.card{margin-top:32px;padding:22px;border:1px solid #20343d;border-radius:18px;background:#0d1822}
+h2{margin:0 0 12px}
+.lead{color:#a9bbc2;font-size:18px;line-height:1.55;max-width:760px}
+.cards{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:28px}
+.card{padding:22px;border:1px solid #20343d;border-radius:18px;background:#0d1822}
+.agent{border-color:#2e5d59}
+.kicker{font-size:12px;color:#8fa5ad;text-transform:uppercase;letter-spacing:.08em}
+.price{font-size:34px;font-weight:800;margin:6px 0}
+.muted{color:#8fa5ad}
+.meta{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:16px}
+.metric{padding:12px;border-radius:12px;background:#101f2a;border:1px solid #1b3440;overflow-wrap:anywhere}
+.metric span{display:block;color:#8fa5ad;font-size:12px;margin-bottom:4px}
+.links{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}
+a{color:#74e0cf}
+.button{display:inline-block;text-decoration:none;padding:10px 13px;border:1px solid #31545d;border-radius:10px}
 label{display:block;font-weight:650;margin-bottom:9px}
 .row{display:flex;gap:10px}
 input{min-width:0;flex:1;background:#071017;color:#fff;border:1px solid #2b454f;border-radius:11px;padding:14px 15px;font:inherit}
@@ -23,22 +35,53 @@ button:disabled{opacity:.55;cursor:wait}
 #status{min-height:24px;margin:16px 0 0;color:#9fb1b8}
 #result{display:none;margin-top:20px}
 .score{font-size:42px;font-weight:800}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;margin-top:14px}
-.metric{padding:13px;border-radius:12px;background:#101f2a;border:1px solid #1b3440}
-.metric span{display:block;color:#8fa5ad;font-size:12px;margin-bottom:4px}
 ul{padding-left:22px;color:#c6d3d7}
+code{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;color:#c7eee8}
 footer{margin-top:30px;color:#70848c;font-size:13px}
-a{color:#74e0cf}
-@media(max-width:620px){.row{flex-direction:column}button{width:100%}}
+@media(max-width:720px){.cards{grid-template-columns:1fr}.row{flex-direction:column}button{width:100%}.meta{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
 <main>
-  <span class="badge">Jepeta Risk Guard · Base</span>
+  <span class="badge">Jepeta Risk Guard · Base / 8453</span>
   <h1>Token Risk Scan</h1>
-  <p class="lead">Pre-trade screening for Base ERC-20 tokens using multiple independent data sources. It checks honeypot signals, dangerous contract controls, liquidity, holder concentration and trading activity.</p>
+  <p class="lead">Pre-trade ERC-20 risk screening built for autonomous agents. The paid Virtuals ACP service returns strict JSON and uses ACP escrow; the public scanner below is intentionally a limited preview.</p>
+
+  <div class="cards">
+    <section class="card agent">
+      <div class="kicker">For AI agents · Virtuals ACP v2</div>
+      <div class="price">0.03 USDC</div>
+      <p>Submit one Base token contract and receive a structured full report with risk score, risk level, honeypot status, dangerous permissions, liquidity risk, holder concentration, trading activity, warnings and summary.</p>
+      <div class="meta">
+        <div class="metric"><span>Offering</span><b>Token Risk Scan</b></div>
+        <div class="metric"><span>SLA</span><b>5 minutes</b></div>
+        <div class="metric"><span>Payment</span><b>ACP escrow</b></div>
+        <div class="metric"><span>Provider wallet</span><code>0xefcb…d7df</code></div>
+      </div>
+      <div class="links">
+        <a class="button" href="/agent.json">Agent manifest</a>
+        <a class="button" href="/openapi.json">OpenAPI</a>
+        <a class="button" href="/llms.txt">LLM guide</a>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="kicker">Trust contract</div>
+      <h2>Fail closed, not optimistic.</h2>
+      <p class="muted">The scanner does not substitute another token or chain, does not turn missing fields into zero, and does not issue a paid verdict when required security data is unavailable.</p>
+      <div class="meta">
+        <div class="metric"><span>Security source</span><b>GoPlus</b></div>
+        <div class="metric"><span>Market source</span><b>DEX Screener</b></div>
+        <div class="metric"><span>Engine</span><b>v2.0.0</b></div>
+        <div class="metric"><span>Trades performed</span><b>None</b></div>
+      </div>
+    </section>
+  </div>
 
   <section class="card">
+    <div class="kicker">Free public preview</div>
+    <h2>Quick token check</h2>
+    <p class="muted">This preview exposes only the headline verdict. The detailed machine-readable report is the paid ACP deliverable.</p>
     <label for="token">Base token contract address</label>
     <div class="row">
       <input id="token" autocomplete="off" spellcheck="false" placeholder="0x..." maxlength="42">
@@ -50,19 +93,18 @@ a{color:#74e0cf}
       <div class="score"><span id="score"></span>/100</div>
       <strong id="level"></strong>
       <p id="summary"></p>
-      <div class="grid">
+      <div class="meta">
         <div class="metric"><span>Honeypot</span><b id="honeypot"></b></div>
-        <div class="metric"><span>Liquidity risk</span><b id="liquidity"></b></div>
-        <div class="metric"><span>Holder concentration</span><b id="holders"></b></div>
-        <div class="metric"><span>Trading activity</span><b id="trading"></b></div>
+        <div class="metric"><span>Total warnings in full report</span><b id="warningCount"></b></div>
       </div>
-      <h3>Warnings</h3>
+      <h3>Preview warnings</h3>
       <ul id="warnings"></ul>
+      <p class="muted">Full ACP output also includes dangerous permissions, liquidity risk, holder concentration and 24h trading activity.</p>
     </div>
   </section>
 
   <footer>
-    Risk screening is informational, not financial advice. Data sources can be incomplete or delayed.
+    Heuristic screening only — not a smart-contract audit, safety guarantee or investment recommendation.
     · <a href="https://t.me/jepeta_tools">Jepeta on Telegram</a>
   </footer>
 </main>
@@ -84,7 +126,7 @@ scan.addEventListener("click", async () => {
 
   scan.disabled = true;
   scan.textContent = "Scanning…";
-  status.textContent = "Checking independent risk sources…";
+  status.textContent = "Checking risk sources…";
 
   try {
     const response = await fetch("/api/risk-scan", {
@@ -99,12 +141,10 @@ scan.addEventListener("click", async () => {
     document.getElementById("level").textContent = data.riskLevel + " RISK";
     document.getElementById("summary").textContent = data.summary;
     document.getElementById("honeypot").textContent = data.honeypot ? "Detected" : "Not detected";
-    document.getElementById("liquidity").textContent = data.liquidityRisk;
-    document.getElementById("holders").textContent = data.holderConcentration;
-    document.getElementById("trading").textContent = data.tradingActivity;
+    document.getElementById("warningCount").textContent = data.warningCount;
     const list = document.getElementById("warnings");
     list.innerHTML = "";
-    (data.warnings.length ? data.warnings : ["No major warning flags returned by the available sources."]).forEach((warning) => {
+    (data.warnings.length ? data.warnings : ["No preview warning returned."]).forEach((warning) => {
       const li = document.createElement("li");
       li.textContent = warning;
       list.appendChild(li);

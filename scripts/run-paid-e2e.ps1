@@ -7,10 +7,13 @@ $Offering = 'Token Risk Scan'
 $ChainId = 8453
 $Price = [decimal]0.03
 $StateDir = Join-Path $env:LOCALAPPDATA 'JepetaRiskGuard'
-$AppDir = Join-Path $env:LOCALAPPDATA 'JepetaRiskGuardApp'
+$ActiveAppFile = Join-Path $StateDir 'active-app.txt'
 $BuyerDir = Join-Path $StateDir 'buyer-profile'
 $Heartbeat = Join-Path $StateDir 'heartbeat.json'
 $Journal = Join-Path $StateDir 'state.json'
+if (-not (Test-Path $ActiveAppFile)) { throw 'Active guarded deployment pointer missing.' }
+$AppDir = (Get-Content $ActiveAppFile -Raw).Trim()
+if (-not (Test-Path (Join-Path $AppDir 'worker\run.mjs'))) { throw 'Active guarded deployment is missing.' }
 
 function Invoke-AcpJson([string[]]$Args) {
   $raw = & acp @Args --json
