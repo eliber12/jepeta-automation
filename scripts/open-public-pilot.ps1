@@ -3,13 +3,18 @@ $ErrorActionPreference = 'Stop'
 Set-StrictMode -Version Latest
 
 $Main = 'https://raw.githubusercontent.com/eliber12/jepeta-automation/main/scripts'
-$AppDir = Join-Path $env:LOCALAPPDATA 'JepetaRiskGuardApp'
+$StateDir = Join-Path $env:LOCALAPPDATA 'JepetaRiskGuard'
+$ActiveAppFile = Join-Path $StateDir 'active-app.txt'
 $OfferingId = '01a0b464-2334-7c1b-a88e-467c77d83327'
 
 Write-Host '=== Jepeta Risk Guard public one-job pilot ==='
 Write-Host '1/3 Refreshing guarded worker...'
 $installer = Invoke-WebRequest "$Main/install-acp-worker.ps1" -UseBasicParsing
 Invoke-Expression $installer.Content
+
+if (-not (Test-Path $ActiveAppFile)) { throw 'Active guarded deployment pointer missing.' }
+$AppDir = (Get-Content $ActiveAppFile -Raw).Trim()
+if (-not (Test-Path (Join-Path $AppDir 'worker\run.mjs'))) { throw 'Active guarded deployment is missing.' }
 
 Write-Host ''
 Write-Host '2/3 Opening exactly one public paid pilot slot...'
