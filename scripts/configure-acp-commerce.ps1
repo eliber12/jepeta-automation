@@ -58,11 +58,13 @@ if ($offer.name -ne 'Token Risk Scan' -or [decimal]$offer.priceValue -ne [decima
 }
 $policy = (& acp agent signer-policy --agent-id $AgentId --json | Out-String | ConvertFrom-Json)
 if ($LASTEXITCODE -ne 0) { throw 'Could not inspect signer policy.' }
-if ($policy.matched -eq $false) {
+$policyFields = @($policy.PSObject.Properties.Name)
+if ($policyFields -contains 'matched' -and $policy.matched -eq $false) {
   throw 'Could not match the local CLI signer to a wallet policy. Keep the offering paused until the signer is verified.'
 }
-if (-not $policy.signerId -or @($policy.policyIds).Count -eq 0) {
-  throw 'Signer has no wallet policy. Keep the offering paused until a restricted ACP policy is attached.'
+if (-not ($policyFields -contains 'signerId') -or -not $policy.signerId -or
+    -not ($policyFields -contains 'policyIds') -or @($policy.policyIds).Count -eq 0) {
+  throw 'Signer has no provable wallet policy. Keep the offering paused until a restricted ACP policy is attached.'
 }
 
 Write-Host '4/4 Testing marketplace discovery from multiple agent queries...'
