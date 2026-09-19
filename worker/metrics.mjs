@@ -52,8 +52,9 @@ export function buildBusinessMetrics({ state, offering, heartbeat, gate, now = D
       completed: records.filter(r => r?.completed).length,
       settled: records.filter(r => r?.settlement?.creditedUSDCraw).length,
       unsupported: records.filter(r => r?.preflightBlocked).length,
+      busy: records.filter(r => r?.capacityBlocked).length,
       terminal: records.filter(r => r?.terminal).length,
-      active: records.filter(r => !r?.terminal && !r?.preflightBlocked && !r?.settlement).length,
+      active: records.filter(r => !r?.terminal && !r?.preflightBlocked && !r?.capacityBlocked && !r?.settlement).length,
     },
     scans: {
       preflightAttempts: records.reduce((n,r) => n + Number(r?.preflightAttempts || 0), 0),
