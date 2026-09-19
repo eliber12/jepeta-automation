@@ -48,6 +48,7 @@ Write-Host ("Submitted          : " + $metrics.jobs.submitted)
 Write-Host ("Completed          : " + $metrics.jobs.completed)
 Write-Host ("Settled            : " + $metrics.jobs.settled)
 Write-Host ("Unsupported        : " + $metrics.jobs.unsupported)
+Write-Host ("Busy/capacity      : " + $metrics.jobs.busy)
 Write-Host ("Terminal           : " + $metrics.jobs.terminal)
 Write-Host ("Active             : " + $metrics.jobs.active)
 Write-Host ''
