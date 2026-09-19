@@ -23,7 +23,16 @@ async function main() {
   if (who.id !== CONFIG.agentId || who.walletAddress?.toLowerCase() !== CONFIG.provider) throw new Error('Select Jepeta Risk Guard before starting.');
   const offering = assertOffering(await api.offerings());
   await api.jobs(); // Verifies local signer/auth initialization without moving funds.
-  log('LOCAL_PREFLIGHT_OK', { agent: CONFIG.agentId, offering: CONFIG.offeringId, hidden: offering.isHidden });
+  log('LOCAL_PREFLIGHT_OK', {
+    agent: CONFIG.agentId,
+    offering: CONFIG.offeringId,
+    hidden: offering.isHidden,
+    priceValue: offering.priceValue,
+    priceType: offering.priceType,
+    slaMinutes: offering.slaMinutes,
+    requirementsShape: Array.isArray(offering.requirements) ? 'array' : typeof offering.requirements,
+    deliverableShape: Array.isArray(offering.deliverable) ? 'array' : typeof offering.deliverable,
+  });
   if (command === 'doctor') return;
   let state = await exists(file) ? JSON.parse(await readFile(file, 'utf8')) : { version: 1, jobs: {}, marketplaceVerified: false };
   if (state.version !== 1 || !state.jobs || typeof state.jobs !== 'object') throw new Error('Invalid state file; refusing to reset financial history.');
