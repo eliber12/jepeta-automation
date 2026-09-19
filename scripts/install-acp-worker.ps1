@@ -17,6 +17,23 @@ if (-not (Get-Command acp -ErrorAction SilentlyContinue)) { throw 'ACP CLI is no
 
 New-Item -ItemType Directory -Force -Path $StateDir | Out-Null
 
+
+# Pause new marketplace intake before touching the live worker. Existing funded
+# jobs remain in the durable StateDir journal and are reconciled after restart.
+try {
+  & acp agent use --agent-id $AgentId --json | Out-Null
+  if ($LASTEXITCODE -ne 0) { throw 'provider selection failed' }
+  $offers = @((& acp offering list --json | Out-String | ConvertFrom-Json))
+  $currentOffer = $offers | Where-Object { $_.id -eq '01a0b464-2334-7c1b-a88e-467c77d83327' } | Select-Object -First 1
+  if ($currentOffer -and $currentOffer.isHidden -eq $false) {
+    & acp offering update --offering-id '01a0b464-2334-7c1b-a88e-467c77d83327' --hidden --json | Out-Null
+    if ($LASTEXITCODE -ne 0) { throw 'offering pause failed' }
+    Write-Host 'Marketplace intake paused for safe worker upgrade.'
+  }
+} catch {
+  throw 'Could not safely pause marketplace intake before upgrade. Existing worker was left untouched.'
+}
+
 # Stop/remove previous Jepeta tasks. We deliberately DO NOT delete the previous
 # code directory because Windows may still have that directory as a process CWD.
 foreach ($name in @($LegacyTask, $TaskName)) {
