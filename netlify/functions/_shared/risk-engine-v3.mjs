@@ -2,6 +2,7 @@ import {
   ENGINE_VERSION as V2_ENGINE_VERSION,
   scanToken as scanTokenV2,
   validateReport as validateV2Report,
+  validateTokenAddress,
 } from './risk-engine.mjs';
 
 export const ENGINE_VERSION_V3 = '3.0.0-alpha.1';
@@ -226,8 +227,9 @@ function buildSignals(report) {
   return { hardBlockers, reasonCodes, evidence };
 }
 
-export function buildDecisionLayerV3(report, { observedAt = new Date() } = {}) {
+export function buildDecisionLayerV3(report, { observedAt = new Date(), tokenAddress } = {}) {
   validateV2Report(report);
+  if (!validateTokenAddress(tokenAddress)) throw new Error('v3 decision report requires a valid Base tokenAddress.');
 
   const when = observedAt instanceof Date ? observedAt : new Date(observedAt);
   if (!Number.isFinite(when.getTime())) throw new Error('observedAt must be a valid date.');
@@ -258,6 +260,8 @@ export function buildDecisionLayerV3(report, { observedAt = new Date() } = {}) {
 
   const output = {
     decisionVersion: ENGINE_VERSION_V3,
+    chainId: 8453,
+    tokenAddress: tokenAddress.toLowerCase(),
     policyVerdict,
     hardBlockers: signals.hardBlockers,
     reasonCodes: signals.reasonCodes,
@@ -284,7 +288,7 @@ export function buildDecisionLayerV3(report, { observedAt = new Date() } = {}) {
 
 export function validateDecisionReportV3(value) {
   const fields = [
-    'decisionVersion','policyVerdict','hardBlockers','reasonCodes','dataQuality',
+    'decisionVersion','chainId','tokenAddress','policyVerdict','hardBlockers','reasonCodes','dataQuality',
     'sourceStatus','evidence','observedAt','decisionSummary','riskScore','riskLevel',
     'honeypot','dangerousPermissions','liquidityRisk','holderConcentration',
     'tradingActivity','warnings','summary','baseEngineVersion',
@@ -293,6 +297,10 @@ export function validateDecisionReportV3(value) {
   if (!value || typeof value !== 'object' || Array.isArray(value)) throw new Error('Invalid v3 decision report.');
   if (fields.some(k => !(k in value)) || Object.keys(value).some(k => !fields.includes(k))) {
     throw new Error('Invalid v3 decision report fields.');
+  }
+
+  if (value.chainId !== 8453 || !validateTokenAddress(value.tokenAddress)) {
+    throw new Error('Invalid v3 subject.');
   }
 
   if (!['BLOCK','REVIEW','NO_HARD_BLOCK_DETECTED'].includes(value.policyVerdict)) {
@@ -348,5 +356,8 @@ export function validateDecisionReportV3(value) {
 
 export async function scanTokenV3(address, options = {}) {
   const report = await scanTokenV2(address, options);
-  return buildDecisionLayerV3(report, { observedAt: options.now || new Date() });
+  return buildDecisionLayerV3(report, {
+    observedAt: options.now || new Date(),
+    tokenAddress: address,
+  });
 }
