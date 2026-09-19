@@ -105,10 +105,16 @@ async function main() {
       try {
         // Reload publish flag without overwriting the single writer's job journal.
         if (await exists(file)) { const gate = await exists(gateFile) ? JSON.parse(await readFile(gateFile, 'utf8')) : {}; state.marketplaceVerified = gate.enabled === true; }
-        const current = assertOffering(await api.offerings());
+        let current = assertOffering(await api.offerings());
         const gate = await exists(gateFile) ? JSON.parse(await readFile(gateFile, 'utf8')) : {};
         if (gate.pendingUntil > Date.now()) { await sleep(5000); continue; }
         const publicPilot = gate.pilotPublic === true && !state.marketplaceVerified;
+        if (state.marketplaceVerified && current.isHidden !== false && live) {
+          await api.publish();
+          current = assertOffering(await api.offerings());
+          if (current.isHidden !== false) throw new Error('Verified marketplace could not be reopened after worker restart.');
+          log('VERIFIED_MARKETPLACE_REOPENED');
+        }
         if (current.isHidden === false && !state.marketplaceVerified && !publicPilot) {
           if (live) await api.hide();
           throw new Error('Unexpected public listing before settlement verification.');
