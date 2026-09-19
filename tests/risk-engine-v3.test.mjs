@@ -40,8 +40,10 @@ const baseReport = extra => analyzeRisk({
 });
 
 test('v3 clean complete report becomes NO_HARD_BLOCK_DETECTED', () => {
-  const out = buildDecisionLayerV3(baseReport(), { observedAt:'2026-09-19T20:00:01.000Z' });
+  const out = buildDecisionLayerV3(baseReport(), { observedAt:'2026-09-19T20:00:01.000Z', tokenAddress:A });
   assert.equal(out.decisionVersion, ENGINE_VERSION_V3);
+  assert.equal(out.chainId, 8453);
+  assert.equal(out.tokenAddress, A);
   assert.equal(out.policyVerdict, 'NO_HARD_BLOCK_DETECTED');
   assert.equal(out.dataQuality, 'HIGH');
   assert.deepEqual(out.hardBlockers, []);
@@ -53,7 +55,7 @@ test('v3 clean complete report becomes NO_HARD_BLOCK_DETECTED', () => {
 });
 
 test('v3 honeypot is an unambiguous BLOCK', () => {
-  const out = buildDecisionLayerV3(baseReport({ goPlusToken:{ ...token, is_honeypot:'1' } }));
+  const out = buildDecisionLayerV3(baseReport({ goPlusToken:{ ...token, is_honeypot:'1' } }), { tokenAddress:A });
   assert.equal(out.policyVerdict, 'BLOCK');
   assert.ok(out.hardBlockers.includes('HONEYPOT_DETECTED'));
   assert.ok(out.reasonCodes.includes('HONEYPOT_DETECTED'));
@@ -61,27 +63,27 @@ test('v3 honeypot is an unambiguous BLOCK', () => {
 });
 
 test('v3 cannot_sell_all is a hard blocker', () => {
-  const out = buildDecisionLayerV3(baseReport({ goPlusToken:{ ...token, cannot_sell_all:'1' } }));
+  const out = buildDecisionLayerV3(baseReport({ goPlusToken:{ ...token, cannot_sell_all:'1' } }), { tokenAddress:A });
   assert.equal(out.policyVerdict, 'BLOCK');
   assert.ok(out.hardBlockers.includes('CANNOT_SELL_ALL'));
 });
 
 test('v3 cannot_buy is a hard blocker', () => {
-  const out = buildDecisionLayerV3(baseReport({ goPlusToken:{ ...token, cannot_buy:'1' } }));
+  const out = buildDecisionLayerV3(baseReport({ goPlusToken:{ ...token, cannot_buy:'1' } }), { tokenAddress:A });
   assert.equal(out.policyVerdict, 'BLOCK');
   assert.ok(out.hardBlockers.includes('CANNOT_BUY'));
 });
 
 test('v3 risky but not blocked becomes REVIEW', () => {
   const riskyPair = [{ ...pairs[0], liquidity:{ usd:25000 } }];
-  const out = buildDecisionLayerV3(baseReport({ dexPairs:riskyPair }));
+  const out = buildDecisionLayerV3(baseReport({ dexPairs:riskyPair }), { tokenAddress:A });
   assert.equal(out.policyVerdict, 'REVIEW');
   assert.ok(out.reasonCodes.includes('LIQUIDITY_HIGH'));
   assert.equal(out.hardBlockers.length, 0);
 });
 
 test('v3 incomplete market data cannot receive clean decision', () => {
-  const out = buildDecisionLayerV3(baseReport({ dexPairs:[] }));
+  const out = buildDecisionLayerV3(baseReport({ dexPairs:[] }), { tokenAddress:A });
   assert.equal(out.policyVerdict, 'REVIEW');
   assert.equal(out.dataQuality, 'LOW');
   assert.equal(out.sourceStatus.dexScreener.status, 'PARTIAL');
@@ -91,7 +93,7 @@ test('v3 incomplete market data cannot receive clean decision', () => {
 
 test('v3 source outage is explicit and lowers data quality', () => {
   const report = baseReport({ dexPairs:[], sourceErrors:['DEX Screener'] });
-  const out = buildDecisionLayerV3(report);
+  const out = buildDecisionLayerV3(report, { tokenAddress:A });
   assert.equal(out.policyVerdict, 'REVIEW');
   assert.equal(out.dataQuality, 'LOW');
   assert.equal(out.sourceStatus.dexScreener.status, 'UNAVAILABLE');
@@ -99,7 +101,7 @@ test('v3 source outage is explicit and lowers data quality', () => {
 });
 
 test('v3 unknown security controls force review', () => {
-  const out = buildDecisionLayerV3(baseReport({ goPlusToken:{ ...token, hidden_owner:'' } }));
+  const out = buildDecisionLayerV3(baseReport({ goPlusToken:{ ...token, hidden_owner:'' } }), { tokenAddress:A });
   assert.equal(out.policyVerdict, 'REVIEW');
   assert.equal(out.dataQuality, 'LOW');
   assert.equal(out.sourceStatus.goPlus.status, 'PARTIAL');
@@ -107,12 +109,12 @@ test('v3 unknown security controls force review', () => {
 });
 
 test('v3 validator rejects fake BLOCK verdict with no blockers', () => {
-  const out = buildDecisionLayerV3(baseReport());
+  const out = buildDecisionLayerV3(baseReport(), { tokenAddress:A });
   assert.throws(() => validateDecisionReportV3({ ...out, policyVerdict:'BLOCK' }), /hard blocker/i);
 });
 
 test('v3 validator rejects extra fields', () => {
-  const out = buildDecisionLayerV3(baseReport());
+  const out = buildDecisionLayerV3(baseReport(), { tokenAddress:A });
   assert.throws(() => validateDecisionReportV3({ ...out, surprise:true }), /fields/);
 });
 
