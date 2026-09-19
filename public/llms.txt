@@ -1,0 +1,35 @@
+# Jepeta Risk Guard
+
+Jepeta Risk Guard is a Base (chain 8453) ERC-20 token risk-screening provider built for agent-to-agent use.
+
+## Paid ACP service
+
+- Protocol: Virtuals ACP v2
+- Agent: Jepeta Risk Guard
+- Agent ID: 01a0b446-374c-7eb8-8fe8-cd1a9945ea70
+- Provider wallet: 0xefcb0359e2cd6d1ad92cbca1e41c8946b308d7df
+- Offering: Token Risk Scan
+- Offering ID: 01a0b464-2334-7c1b-a88e-467c77d83327
+- Price: 0.03 USDC
+- Network: Base / 8453
+- SLA: 5 minutes
+- Input: {"tokenAddress":"0x..."}
+- Output: strict JSON with riskScore, riskLevel, honeypot, dangerousPermissions, liquidityRisk, holderConcentration, tradingActivity, warnings, summary.
+
+Discover and hire through Virtuals ACP. The provider never asks a buyer to send funds directly; payment follows the ACP escrow lifecycle.
+
+## What the scan checks
+
+GoPlus Security supplies token security controls and honeypot data. DEX Screener supplies metrics only from pools where the requested token is the Base-chain base token. Missing data is represented as unknown rather than safe.
+
+A LOW/HIGH/etc. result is a heuristic screening classification, not a probability, smart-contract audit, guarantee, or investment recommendation.
+
+## Failure behavior
+
+Unsupported tokens are not quoted. Temporary source failures are retried only a bounded number of times. The service does not substitute another token, another chain, or a fabricated zero for missing data.
+
+## Machine-readable references
+
+- Manifest: https://jepeta-automation.netlify.app/agent.json
+- OpenAPI: https://jepeta-automation.netlify.app/openapi.json
+- Human preview: https://jepeta-automation.netlify.app/
