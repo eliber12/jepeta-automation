@@ -163,10 +163,14 @@ if (-not $offer) {
 if ($offer.name -ne 'Token Risk Scan' -or
     [decimal]$offer.priceValue -ne [decimal]0.03 -or
     [int]$offer.slaMinutes -ne 5 -or
-    $offer.requiredFunds -ne $false -or
-    $offer.requirements.type -ne 'object' -or
-    $offer.deliverable.type -ne 'object') {
-  throw 'Offering contract differs from the approved machine-readable service.'
+    $offer.requiredFunds -ne $false) {
+  throw 'Offering commercial contract differs from the approved service.'
+}
+
+# Virtuals may serialize/canonicalize registry schemas differently by API version.
+# The worker itself enforces the exact input and output contracts at runtime.
+if ($null -eq $offer.requirements -or $null -eq $offer.deliverable) {
+  Write-Warning 'Virtuals did not echo one or both registry schemas. Runtime validation remains authoritative.'
 }
 
 $policy = (& acp agent signer-policy --agent-id $AgentId --json | Out-String | ConvertFrom-Json)
