@@ -97,7 +97,27 @@ do {
 
 if (-not $ok) {
   $log = Join-Path $StateDir 'guarded-worker.log'
-  throw "Guarded worker did not publish a fresh live heartbeat. Check $log"
+  $task = Get-ScheduledTask -TaskName $TaskName -ErrorAction SilentlyContinue
+  $info = Get-ScheduledTaskInfo -TaskName $TaskName -ErrorAction SilentlyContinue
+
+  Write-Host ''
+  Write-Host 'GUARDED WORKER STARTUP FAILED'
+  if ($task) { Write-Host ("Task state: " + $task.State) }
+  if ($info) { Write-Host ("LastTaskResult: " + $info.LastTaskResult) }
+  Write-Host ("Deployment: " + $AppDir)
+  Write-Host ("Heartbeat expected: " + $Heartbeat)
+  Write-Host ("Log: " + $log)
+
+  if (Test-Path $log) {
+    Write-Host ''
+    Write-Host '--- guarded-worker.log (last 80 lines) ---'
+    Get-Content $log -Tail 80 | ForEach-Object { Write-Host $_ }
+    Write-Host '--- end log ---'
+  } else {
+    Write-Host 'No guarded-worker.log was created.'
+  }
+
+  throw 'Guarded worker did not publish a fresh live heartbeat. Diagnostic details are printed above.'
 }
 
 # Mark this immutable deployment as the active code only AFTER live proof.
