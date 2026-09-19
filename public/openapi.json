@@ -73,8 +73,9 @@
     "schemas": {
       "Preview": {
         "type": "object",
-        "required": ["riskScore", "riskLevel", "honeypot", "summary", "warnings", "warningCount", "paidReport"],
+        "required": ["previewVersion", "riskScore", "riskLevel", "honeypot", "summary", "warnings", "warningCount", "paidReport"],
         "properties": {
+          "previewVersion": { "const": "1.0" },
           "riskScore": { "type": "number", "minimum": 0, "maximum": 100 },
           "riskLevel": { "type": "string", "enum": ["LOW", "MEDIUM", "HIGH", "CRITICAL"] },
           "honeypot": { "type": "boolean" },
