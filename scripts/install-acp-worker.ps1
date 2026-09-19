@@ -39,7 +39,16 @@ $Source = Join-Path $Extract 'jepeta-automation-main'
 if (-not (Test-Path (Join-Path $Source 'worker\run.mjs'))) { throw 'Downloaded package is incomplete.' }
 
 # Replace app code only. Financial journal/state is in StateDir and is preserved.
-Remove-Item $AppDir -Recurse -Force -ErrorAction SilentlyContinue
+# The installer may itself be launched while the shell's current directory is AppDir.
+# Windows cannot remove/move over the current working directory, so leave it first.
+Set-Location $env:TEMP
+
+for ($attempt = 1; $attempt -le 5 -and (Test-Path $AppDir); $attempt++) {
+  Remove-Item $AppDir -Recurse -Force -ErrorAction SilentlyContinue
+  if (Test-Path $AppDir) { Start-Sleep -Seconds 2 }
+}
+if (Test-Path $AppDir) { throw "Could not replace $AppDir because it is still in use. Close any Explorer/terminal window rooted there and retry." }
+
 Move-Item $Source $AppDir
 
 Set-Location $AppDir
