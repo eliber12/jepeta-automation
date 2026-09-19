@@ -11,6 +11,7 @@ export const CONFIG = Object.freeze({
   priceRaw: '30000',
   slaMinutes: 5,
   pilotMaxJobs: 1,
+  maxConcurrentJobs: 1,
   budgetUSD: 7.5,
   reportCacheMs: 120000,
   maxPreflightScans: 2,
@@ -131,9 +132,9 @@ export function assertOffering(offers) {
   return offering;
 }
 
-function activePilotJobs(state) {
+function activeServiceJobs(state) {
   return Object.values(state.jobs).filter(r =>
-    !r?.terminal && !r?.preflightBlocked && !r?.settlement);
+    !r?.terminal && !r?.preflightBlocked && !r?.capacityBlocked && !r?.settlement);
 }
 
 /** Write-ahead journal. A crash/ambiguous signature NEVER silently repeats a financial write. */
@@ -175,10 +176,39 @@ export async function processJob({ job, history, state, save, api, scanner, live
   let record = state.jobs[id];
   if (!record) {
     if (action !== 'quote') throw new Error('No local quote record; refusing to submit an untracked job.');
-    if (activePilotJobs(state).length >= CONFIG.pilotMaxJobs && !state.marketplaceVerified)
-      throw new Error('One concurrent pilot job limit reached.');
     if (Object.keys(state.jobs).length >= 100)
       throw new Error('Pilot ledger limit reached; review actual costs first.');
+
+    if (activeServiceJobs(state).length >= CONFIG.maxConcurrentJobs) {
+      record = state.jobs[id] = {
+        tokenAddress,
+        job,
+        buyer: addr(job.clientAddress),
+        createdAt: iso(now),
+        capacityBlocked: true,
+        lastError: {
+          stage: 'capacity',
+          code: 'PROVIDER_BUSY',
+          retryable: true,
+          message: 'Provider is at its guarded local concurrency limit.',
+          at: iso(now),
+        },
+      };
+      await save();
+      await notifyBuyerOnce({
+        record, save, api, id, key: 'capacityNotice',
+        payload: {
+          stage: 'capacity',
+          status: 'busy',
+          code: 'PROVIDER_BUSY',
+          retryable: true,
+          paymentRequested: false,
+          message: 'Provider is processing another job. No payment was requested; create a new job after the current slot reopens.',
+        },
+      });
+      return { id, action: 'busy', code: 'PROVIDER_BUSY' };
+    }
+
     record = state.jobs[id] = {
       tokenAddress,
       job,
@@ -190,6 +220,8 @@ export async function processJob({ job, history, state, save, api, scanner, live
 
   if (record.tokenAddress !== tokenAddress)
     throw new Error('Requirement differs from quoted token.');
+  if (record.capacityBlocked)
+    return { id, action: 'busy', code: 'PROVIDER_BUSY' };
 
   if (action === 'quote') {
     if (record.preflightBlocked)
