@@ -1,0 +1,98 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Jepeta Risk Guard Preview API",
+    "version": "2.0.0",
+    "description": "Free limited preview for Base token risk screening. The paid Virtuals ACP offering returns the full machine-readable report."
+  },
+  "servers": [
+    { "url": "https://jepeta-automation.netlify.app" }
+  ],
+  "paths": {
+    "/api/risk-scan": {
+      "get": {
+        "summary": "Get a limited Base token risk preview",
+        "parameters": [
+          {
+            "name": "tokenAddress",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^0x[a-fA-F0-9]{40}$"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Limited public preview",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Preview" }
+              }
+            }
+          },
+          "422": { "description": "Exact token is not safely covered" },
+          "503": { "description": "Required risk source unavailable" }
+        }
+      },
+      "post": {
+        "summary": "Get a limited Base token risk preview",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["tokenAddress"],
+                "properties": {
+                  "tokenAddress": {
+                    "type": "string",
+                    "pattern": "^0x[a-fA-F0-9]{40}$"
+                  }
+                },
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Limited public preview",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Preview" }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Preview": {
+        "type": "object",
+        "required": ["riskScore", "riskLevel", "honeypot", "summary", "warnings", "paidReport"],
+        "properties": {
+          "riskScore": { "type": "number", "minimum": 0, "maximum": 100 },
+          "riskLevel": { "type": "string", "enum": ["LOW", "MEDIUM", "HIGH", "CRITICAL"] },
+          "honeypot": { "type": "boolean" },
+          "summary": { "type": "string" },
+          "warnings": { "type": "array", "items": { "type": "string" } },
+          "paidReport": {
+            "type": "object",
+            "description": "How to obtain the full report through ACP",
+            "properties": {
+              "protocol": { "const": "Virtuals ACP v2" },
+              "offering": { "const": "Token Risk Scan" },
+              "priceUSDC": { "const": "0.03" },
+              "providerWallet": { "const": "0xefcb0359e2cd6d1ad92cbca1e41c8946b308d7df" }
+            }
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  }
+}
