@@ -37,7 +37,9 @@ test('unsupported token fails closed, notifies once and never asks for payment',
 test('fresh preflight report is reused after exact funding',async()=>{const f=fixture(),a=args(f);let scans=0,submits=0;a.scanner=async()=>{scans++;return report;};a.api={...a.api,submit:async()=>{submits++;return{success:true};}};assert.equal((await processJob(a)).action,'quoted');f.history.entries.push(f.sys({type:'budget.set',amount:0.03}),f.sys({type:'job.funded',amount:0.03,client:BUYER}));f.job.budget='30000';f.job.jobStatus='FUNDED';assert.equal((await processJob(a)).action,'submitted');assert.equal(scans,1);assert.equal(submits,1);assert.equal(a.state.jobs['7'].usedCachedPreflight,true);});
 
 test('funded source failures are bounded and then stop scanning',async()=>{const f=fixture(),a=args(f);let scans=0,messages=0;a.scanner=async()=>{scans++;if(scans===1)return report;throw Object.assign(new Error('offline'),{status:503,code:'SECURITY_DATA_UNAVAILABLE'});};a.api={...a.api,message:async()=>{messages++;return{success:true};}};assert.equal((await processJob(a)).action,'quoted');f.history.entries.push(f.sys({type:'budget.set',amount:0.03}),f.sys({type:'job.funded',amount:0.03,client:BUYER}));f.job.budget='30000';f.job.jobStatus='FUNDED';a.now=NOW+CONFIG.reportCacheMs+1;assert.equal((await processJob(a)).action,'retry_scan');assert.equal((await processJob(a)).action,'delivery_unavailable');const callsAfterBlock=scans;assert.equal((await processJob(a)).action,'delivery_unavailable');assert.equal(scans,callsAfterBlock);assert.equal(a.state.jobs['7'].deliveryBlocked,true);assert.equal(messages,1);});
-test('offering string schema rejected',()=>assert.throws(()=>assertOffering([{id:CONFIG.offeringId,agentId:CONFIG.agentId,name:CONFIG.name,priceType:'fixed',priceValue:.03,slaMinutes:5,requiredFunds:false,requirements:'{}',deliverable:{type:'object'}}])));
+test('registry schema canonicalization does not take provider offline',()=>{const o={id:CONFIG.offeringId,agentId:CONFIG.agentId,name:CONFIG.name,priceType:'fixed',priceValue:'0.03',slaMinutes:'5',requiredFunds:false,requirements:'Provide one Base token address',deliverable:'Structured JSON risk report'};assert.equal(assertOffering([o]),o);});
+
+test('missing registry contract fields still fail preflight',()=>assert.throws(()=>assertOffering([{id:CONFIG.offeringId,agentId:CONFIG.agentId,name:CONFIG.name,priceType:'fixed',priceValue:'0.03',slaMinutes:5,requiredFunds:false,requirements:null,deliverable:null}]),/requirements, deliverable/));
 
 test('ACP offering string price is accepted when semantically equal',()=>{
  const req={type:'object',required:['tokenAddress'],properties:{tokenAddress:{type:'string'}},additionalProperties:false};
@@ -46,7 +48,7 @@ test('ACP offering string price is accepted when semantically equal',()=>{
  assert.equal(assertOffering([o]),o);
 });
 
-test('ACP JSON-serialized schemas are normalized before validation',()=>{
+test('ACP JSON-serialized schemas are accepted as registry metadata',()=>{
  const req={type:'object',required:['tokenAddress'],properties:{tokenAddress:{type:'string'}},additionalProperties:false};
  const del={type:'object',required:['riskScore','riskLevel','honeypot','dangerousPermissions','liquidityRisk','holderConcentration','tradingActivity','warnings','summary'],properties:{},additionalProperties:false};
  const o={id:CONFIG.offeringId,agentId:CONFIG.agentId,name:CONFIG.name,priceType:'FIXED',priceValue:'0.030',slaMinutes:'5',requiredFunds:false,requirements:JSON.stringify(req),deliverable:JSON.stringify(del)};

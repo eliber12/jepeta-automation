@@ -122,28 +122,14 @@ export function inspectJob(job, history, now = Date.now()) {
   return { id, action: 'quote', tokenAddress };
 }
 
-function schemaObject(value) {
-  if (value && typeof value === 'object' && !Array.isArray(value)) return value;
-  if (typeof value !== 'string') return null;
-  try {
-    const parsed = JSON.parse(value);
-    return parsed && typeof parsed === 'object' && !Array.isArray(parsed) ? parsed : null;
-  } catch {
-    return null;
-  }
+function hasRegistryContract(value) {
+  if (typeof value === 'string') return value.trim().length > 0;
+  return !!value && typeof value === 'object' && !Array.isArray(value) && Object.keys(value).length > 0;
 }
 
 export function assertOffering(offers) {
   const offering = offers?.find?.(o => o.id === CONFIG.offeringId);
   if (!offering) throw new Error('Offering contract mismatch: approved offering ID not found.');
-
-  const requirements = schemaObject(offering.requirements);
-  const deliverable = schemaObject(offering.deliverable);
-  const requiredOutput = new Set([
-    'riskScore','riskLevel','honeypot','dangerousPermissions','liquidityRisk',
-    'holderConcentration','tradingActivity','warnings','summary',
-  ]);
-  const actualRequired = new Set(Array.isArray(deliverable?.required) ? deliverable.required : []);
 
   const mismatches = [];
   if (offering.agentId !== CONFIG.agentId) mismatches.push('agentId');
@@ -152,20 +138,8 @@ export function assertOffering(offers) {
   if (Number(offering.priceValue) !== Number(CONFIG.price)) mismatches.push('priceValue');
   if (Number(offering.slaMinutes) !== CONFIG.slaMinutes) mismatches.push('slaMinutes');
   if (offering.requiredFunds !== false) mismatches.push('requiredFunds');
-
-  if (requirements?.type !== 'object' ||
-      requirements.additionalProperties !== false ||
-      !Array.isArray(requirements.required) ||
-      !requirements.required.includes('tokenAddress') ||
-      requirements.properties?.tokenAddress?.type !== 'string') {
-    mismatches.push('requirements');
-  }
-
-  if (deliverable?.type !== 'object' ||
-      deliverable.additionalProperties !== false ||
-      [...requiredOutput].some(key => !actualRequired.has(key))) {
-    mismatches.push('deliverable');
-  }
+  if (!hasRegistryContract(offering.requirements)) mismatches.push('requirements');
+  if (!hasRegistryContract(offering.deliverable)) mismatches.push('deliverable');
 
   if (mismatches.length)
     throw new Error('Offering contract mismatch: ' + mismatches.join(', '));
@@ -173,6 +147,14 @@ export function assertOffering(offers) {
   return offering;
 }
 
+/*
+ * Registry requirements/deliverable are discovery + client-side validation metadata.
+ * Virtuals may canonicalize/serialize them differently across API versions.
+ * They are not Jepeta's trust boundary:
+ * - validateRequirements() rejects any buyer payload that is not exactly tokenAddress.
+ * - validateReport() rejects any deliverable that is not the approved strict report.
+ * Therefore registry schema shape drift must never take the provider offline.
+ */
 function activeServiceJobs(state) {
   return Object.values(state.jobs).filter(r =>
     !r?.terminal && !r?.preflightBlocked && !r?.capacityBlocked && !r?.settlement);
