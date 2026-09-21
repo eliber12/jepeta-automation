@@ -5,14 +5,14 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#090d0e">
 <title>Jepeta Risk Guard — Base Token Risk Scanner</title>
-<meta name="description" content="Scan any Base token for honeypot, mintability, taxes, liquidity and holder risk before execution. Free preview; full evidence via Virtuals ACP.">
+<meta name="description" content="Scan any Base token for honeypot, mintability, taxes, liquidity and holder risk before execution. Free preview; full evidence for humans via Telegram Stars and autonomous agents via Virtuals ACP.">
 <meta name="robots" content="index,follow">
 <link rel="canonical" href="https://eliber12.github.io/jepeta-automation/">
 <link rel="describedby" href="llms.txt">
 <link rel="alternate" type="text/markdown" href="index.md">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Jepeta Risk Guard — Base Token Risk Scanner">
-<meta property="og:description" content="Honeypot, mintability, taxes, liquidity and holder risk before execution. Free scan. Full evidence report: 0.03 USDC.">
+<meta property="og:description" content="Honeypot, mintability, taxes, liquidity and holder risk before execution. Free scan. Full evidence via Telegram Stars for humans or 0.03 USDC via Virtuals ACP for agents.">
 <meta property="og:url" content="https://eliber12.github.io/jepeta-automation/">
 <meta property="og:image" content="https://eliber12.github.io/jepeta-automation/og-jepeta.png">
 <meta property="og:image:width" content="1200">
@@ -20,7 +20,7 @@
 <meta property="og:image:alt" content="Jepeta Risk Guard — Base token risk before execution">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Jepeta Risk Guard — Base Token Risk Scanner">
-<meta name="twitter:description" content="Free Base token risk preview. Full evidence report via Virtuals ACP.">
+<meta name="twitter:description" content="Free Base token risk preview. Full evidence via Telegram Stars for humans or Virtuals ACP for autonomous agents.">
 <meta name="twitter:image" content="https://eliber12.github.io/jepeta-automation/og-jepeta.png">
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":["SoftwareApplication","WebApplication"],"name":"Jepeta Risk Guard","applicationCategory":"SecurityApplication","operatingSystem":"Web","url":"https://eliber12.github.io/jepeta-automation/","description":"Read-only Base ERC-20 pre-trade risk scanner for honeypot, mintability, taxes, liquidity and holder concentration.","offers":[{"@type":"Offer","name":"Free Preview","price":"0","priceCurrency":"USD"},{"@type":"Offer","name":"Token Risk Scan — Full Evidence Report","price":"0.03","priceCurrency":"USDC","url":"https://app.virtuals.io/acp/agent/01a0b446-374c-7eb8-8fe8-cd1a9945ea70"}],"softwareVersion":"4.0.0","featureList":["PASS/WARN/BLOCK screening","Honeypot signal","Mintability signal","Buy and sell tax","Liquidity context","Holder concentration","Observed LP lock coverage","Machine-readable JSON API"]}
@@ -83,7 +83,7 @@
       <article id="result" hidden aria-label="Token scan results">
         <div class="result-top"><span class="eyebrow">SCAN RESULT</span><span class="tag" id="risk-badge"></span></div>
         <div class="result-score-row"><div class="score-dial" id="score-dial"><div><strong id="score"></strong><span>/ 100</span></div></div><div class="verdict-block"><span class="micro">MACHINE DECISION</span><h3 id="verdict-title"></h3><code id="verdict"></code></div></div>
-        <p class="score-caveat">Heuristic risk score. Not a probability of loss.</p>
+        <p class="score-caveat">Observed heuristic risk score. Missing evidence is reflected separately in data quality; this is not a probability of loss.</p>
         <div class="result-tabs" role="tablist" aria-label="Result format"><button id="summary-tab" role="tab" aria-selected="true" aria-controls="summary-panel" data-result-tab="summary">Overview</button><button id="json-tab" role="tab" aria-selected="false" aria-controls="json-panel" tabindex="-1" data-result-tab="json">JSON <svg class="icon"><use href="#i-code"/></svg></button></div>
         <div id="summary-panel" role="tabpanel" aria-labelledby="summary-tab"><div class="result-metrics"><div><span>Honeypot</span><strong id="honeypot"></strong></div><div><span>Mintable</span><strong id="mintable"></strong></div><div><span>Data quality</span><strong id="quality"></strong></div></div><div class="raw-metrics" aria-label="Raw security and market metrics"><div><span>Buy tax</span><strong id="buy-tax"></strong></div><div><span>Sell tax</span><strong id="sell-tax"></strong></div><div><span>Top-10 holders</span><strong id="top10"></strong></div><div><span>LP locked</span><strong id="lp-locked"></strong></div><div><span>Liquidity</span><strong id="liquidity-usd"></strong></div><div><span>Warnings</span><strong id="warning-count"></strong></div></div><div class="source-status"><span>Sources</span><code>GoPlus: <b id="source-goplus"></b></code><code>DEX Screener: <b id="source-dex"></b></code></div><p class="decision-summary" id="summary"></p><ul id="warnings" class="warning-list"></ul></div>
         <div id="json-panel" role="tabpanel" aria-labelledby="json-tab" hidden><pre><code id="result-json"></code></pre></div>
@@ -107,7 +107,7 @@
 <article class="price-card"><div class="price-heading"><span class="micro">PUBLIC PREVIEW</span><span class="tag">LIVE · FREE</span></div><h3>Fast screening signal.</h3><div class="price-value">Free<span>/ token preview</span></div><ul class="check-list"><li>PASS / WARN / BLOCK machine decision</li><li>Honeypot, mintability, taxes and source status</li><li>Observed concentration, LP lock and liquidity</li></ul><a href="#scanner" class="button secondary">Run a free scan <svg class="icon"><use href="#i-arrow"/></svg></a></article>
 <article class="price-card evidence"><div class="price-heading"><span class="micro">FULL EVIDENCE REPORT</span><span class="tag">LIVE · TELEGRAM + ACP</span></div><h3>Inspect exactly why the token was flagged.</h3><div class="price-value">2<span>checkout rails / one report</span></div><ul class="check-list"><li>Dangerous permissions and contract evidence</li><li>Liquidity-risk + holder concentration assessment</li><li>24h trading activity + full warnings and summary</li></ul><a class="button primary" href="https://t.me/Jepeta_bot" target="_blank" rel="noopener noreferrer" data-track="telegram_outbound" data-placement="pricing">Human checkout — Telegram Stars <svg class="icon"><use href="#i-out"/></svg></a><a class="button secondary" href="https://app.virtuals.io/acp/agent/01a0b446-374c-7eb8-8fe8-cd1a9945ea70" target="_blank" rel="noopener noreferrer" data-track="acp_outbound" data-placement="pricing">Agent checkout — 0.03 USDC <svg class="icon"><use href="#i-out"/></svg></a><p class="price-note">Humans buy the digital report inside Telegram with Stars; the current Stars price is shown by the bot. Autonomous agents use Virtuals ACP at 0.03 USDC. The report product and evidence contract are the same.</p></article>
 </div>
-<div class="sample-report"><div class="sample-copy"><span class="eyebrow">REAL FULL-REPORT SAMPLE</span><h3>See exactly what 0.03 USDC buys.</h3><p>Captured from a live Jepeta full scan of AERO on 2026-09-21. The sample preserves the paid deliverable shape; live values can change.</p><a class="text-link" href="sample-full-report.json" target="_blank" rel="noopener noreferrer" data-track="docs_opened" data-placement="sample_report">Open sample JSON <svg class="icon"><use href="#i-out"/></svg></a></div><pre><code>{
+<div class="sample-report"><div class="sample-copy"><span class="eyebrow">REAL FULL-REPORT SAMPLE</span><h3>See exactly what the Full Report contains.</h3><p>Captured from a live Jepeta full scan of AERO on 2026-09-21. The sample preserves the paid deliverable shape; live values can change.</p><a class="text-link" href="sample-full-report.json" target="_blank" rel="noopener noreferrer" data-track="docs_opened" data-placement="sample_report">Open sample JSON <svg class="icon"><use href="#i-out"/></svg></a></div><pre><code>{
   "riskScore": 35,
   "riskLevel": "MEDIUM",
   "honeypot": false,
