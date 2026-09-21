@@ -1,0 +1,651 @@
+# Jepeta Risk Guard
+
+> Read-only pre-trade risk intelligence for Base ERC-20 tokens. Jepeta gives people and autonomous agents a strict machine-readable screening result before a swap or buy, while keeping uncertainty explicit.
+
+Canonical site: https://eliber12.github.io/jepeta-automation/
+
+Public API: https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-scan
+
+Network: Base / chain ID 8453
+
+Public schema: 4.0.0
+
+---
+
+## What Jepeta is
+
+Jepeta Risk Guard is a narrow pre-trade screening service.
+
+It accepts one exact Base ERC-20 contract address and combines:
+
+- GoPlus Security for token-level security signals.
+- DEX Screener for exact matching Base market and liquidity context.
+- Jepeta policy logic for a strict PASS / WARN / BLOCK machine decision.
+
+Jepeta does not:
+
+- connect to a user wallet;
+- sign transactions;
+- execute trades;
+- move buyer funds outside Virtuals ACP escrow;
+- substitute another token when the requested contract lacks coverage;
+- substitute data from another chain;
+- convert unknown required security values into reassuring false values.
+
+A Jepeta result is a screening signal, not a smart-contract audit, investment recommendation, safety guarantee, or probability of loss.
+
+---
+
+## Quick start for an AI agent
+
+Request:
+
+```http
+GET https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-scan?tokenAddress=0x...
+Accept: application/json
+```
+
+Input requirement:
+
+- `tokenAddress` must be one exact Base ERC-20 contract address.
+- Format: `0x` followed by exactly 40 hexadecimal characters.
+- Zero and burn addresses are rejected.
+- Do not send a ticker, token name, wallet address, ENS name, or pool address.
+
+Minimal JavaScript:
+
+```js
+const tokenAddress = "0x...";
+
+const response = await fetch(
+  "https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-scan" +
+  "?tokenAddress=" + encodeURIComponent(tokenAddress)
+);
+
+const body = await response.json();
+
+if (!response.ok) {
+  throw new Error(body.code || "SCAN_UNAVAILABLE");
+}
+
+switch (body.decision) {
+  case "BLOCK":
+    // Stop the execution path.
+    break;
+  case "WARN":
+    // Require additional policy checks or human review.
+    break;
+  case "PASS":
+    // Continue only if your own policy also permits it.
+    break;
+}
+```
+
+Important: `PASS` does not mean safe. It means no configured BLOCK or WARN condition was observed in the available data at scan time.
+
+---
+
+## Strict public response contract
+
+A successful public response is a closed JSON object using:
+
+```json
+{
+  "schema_version": "4.0.0",
+  "chain_id": 8453,
+  "token_address": "0x...",
+  "decision": "PASS | WARN | BLOCK",
+  "risk_score": 0,
+  "risk_level": "LOW | MEDIUM | HIGH | CRITICAL",
+  "is_honeypot": false,
+  "is_mintable": false,
+  "buy_tax_percent": null,
+  "sell_tax_percent": null,
+  "top10_holder_concentration_percent": null,
+  "top10_holder_count": 0,
+  "lp_locked_percent_observed": null,
+  "lp_holder_sample_count": 0,
+  "liquidity_usd": null,
+  "data_quality": "HIGH | MEDIUM | LOW",
+  "source_status": {
+    "goplus": "OK",
+    "dexscreener": "OK | PARTIAL | RATE_LIMITED | UNAVAILABLE"
+  },
+  "warnings": [],
+  "observed_at": "ISO-8601 timestamp",
+  "paid_report": {
+    "protocol": "Virtuals ACP v2",
+    "offering": "Token Risk Scan",
+    "priceUSDC": "0.03",
+    "providerWallet": "0xefcb0359e2cd6d1ad92cbca1e41c8946b308d7df"
+  }
+}
+```
+
+Do not rely on undocumented fields.
+
+The authoritative schema is:
+
+- [OpenAPI 4.0.0](https://eliber12.github.io/jepeta-automation/openapi.json)
+- [Agent manifest](https://eliber12.github.io/jepeta-automation/agent.json)
+
+---
+
+## Decision semantics
+
+### PASS
+
+Meaning:
+
+- no configured hard blocker was observed;
+- no configured WARN condition was observed;
+- required GoPlus booleans were explicitly available;
+- the response still reflects only the sources and evidence available at scan time.
+
+PASS must never be interpreted as:
+
+- token is safe;
+- contract is audited;
+- trade should be executed;
+- loss is unlikely;
+- liquidity cannot disappear;
+- the token cannot change later.
+
+Recommended machine behavior:
+
+- treat PASS as one input to your own execution policy;
+- verify token identity independently;
+- enforce your own position, slippage, liquidity, and transaction rules.
+
+### WARN
+
+Meaning:
+
+At least one material condition requires review.
+
+Examples can include:
+
+- mintability;
+- upgradeability or dangerous contract controls;
+- high tax;
+- low or uncertain liquidity;
+- concentrated holders;
+- degraded market-data quality.
+
+Recommended machine behavior:
+
+- do not treat WARN as equivalent to PASS;
+- apply stricter policy checks;
+- request deeper evidence when the transaction matters.
+
+### BLOCK
+
+Meaning:
+
+A configured hard blocker was observed.
+
+Examples include:
+
+- explicit GoPlus honeypot signal;
+- configured cannot-buy / cannot-sell style blockers.
+
+Recommended machine behavior:
+
+- stop the automated execution path.
+
+---
+
+## Security booleans
+
+### is_honeypot
+
+Type: boolean.
+
+Source: GoPlus Security.
+
+Guarantee:
+
+A successful Jepeta v4 response always contains a real boolean.
+
+If GoPlus cannot determine honeypot status, Jepeta does not convert unknown into `false`; it returns HTTP 422 instead.
+
+### is_mintable
+
+Type: boolean.
+
+Source: GoPlus Security.
+
+Guarantee:
+
+A successful Jepeta v4 response always contains a real boolean.
+
+If GoPlus cannot determine mintability, Jepeta does not convert unknown into `false`; it returns HTTP 422 instead.
+
+---
+
+## Raw metric dictionary
+
+### buy_tax_percent
+
+Source: GoPlus.
+
+Meaning:
+
+Reported buy-tax ratio converted to a percentage.
+
+Examples:
+
+- `0` = reported 0% buy tax.
+- `12.5` = reported 12.5% buy tax.
+- `null` = GoPlus did not provide a usable value.
+
+Never convert `null` into zero.
+
+### sell_tax_percent
+
+Source: GoPlus.
+
+Meaning:
+
+Reported sell-tax ratio converted to a percentage.
+
+`null` means unavailable, not 0%.
+
+### top10_holder_concentration_percent
+
+Source: GoPlus holder records.
+
+Meaning:
+
+Observed sum of valid holder percentages from up to 10 holder records returned by GoPlus.
+
+This is useful for concentration screening, but it is not a complete holder-distribution audit.
+
+### top10_holder_count
+
+Number of valid holder records used for the observed top-10 concentration metric.
+
+Range: 0 to 10.
+
+### lp_locked_percent_observed
+
+Source: GoPlus LP-holder records.
+
+Meaning:
+
+Observed sum of LP percentages marked locked within the up-to-10 LP-holder records returned by GoPlus.
+
+Important limitation:
+
+This is observed LP-lock coverage from the returned sample. It is not proof that the same percentage of every liquidity position or all liquidity in the market is locked.
+
+### lp_holder_sample_count
+
+Number of usable LP-holder records included in the observed lock calculation.
+
+Range: 0 to 10.
+
+### liquidity_usd
+
+Source: DEX Screener.
+
+Meaning:
+
+USD liquidity of the largest exact matching Base pair found for the requested token.
+
+`null` means exact matching liquidity could not be confirmed from the current market response.
+
+---
+
+## Data quality
+
+`data_quality` summarizes completeness of public evidence.
+
+Values:
+
+- `HIGH`: strong public-field coverage.
+- `MEDIUM`: some public metrics are unavailable or incomplete.
+- `LOW`: multiple public evidence gaps exist.
+
+Data quality is separate from risk.
+
+A token can have:
+
+- low risk score with medium data quality;
+- high risk score with high data quality;
+- BLOCK with partial market context.
+
+Agents should evaluate both `decision` and `data_quality`.
+
+---
+
+## Source status
+
+### source_status.goplus
+
+Successful responses require:
+
+```text
+OK
+```
+
+GoPlus is the required security source.
+
+If the required GoPlus call cannot support a strict verdict, Jepeta fails closed instead of returning a successful preview.
+
+### source_status.dexscreener
+
+Possible values:
+
+- `OK`: exact market request returned usable context.
+- `PARTIAL`: market response exists but exact usable liquidity context is incomplete.
+- `RATE_LIMITED`: DEX Screener rate-limited the request.
+- `UNAVAILABLE`: market source could not be reached or parsed.
+
+DEX Screener degradation can reduce market completeness without fabricating values.
+
+---
+
+## HTTP errors and retry behavior
+
+### 400 — invalid request
+
+Examples:
+
+- malformed address;
+- extra unexpected query parameters;
+- invalid request shape.
+
+Typical code:
+
+```text
+INVALID_ADDRESS
+```
+
+Action:
+
+Fix the input. Do not retry unchanged invalid input.
+
+### 422 — required security evidence unavailable
+
+Typical codes can include:
+
+```text
+TOKEN_NOT_COVERED
+HONEYPOT_UNKNOWN
+MINTABLE_STATUS_UNKNOWN
+```
+
+Meaning:
+
+Jepeta cannot issue the strict v4 security verdict for this exact token.
+
+Action:
+
+Do not interpret this as PASS.
+
+### 429 — GoPlus rate limited
+
+Typical code:
+
+```text
+GOPLUS_RATE_LIMITED
+```
+
+Jepeta also returns:
+
+```http
+Retry-After: 60
+```
+
+Action:
+
+Back off before retrying.
+
+Do not spin aggressive retries.
+
+### 503 — required provider unavailable
+
+Typical code:
+
+```text
+GOPLUS_UNAVAILABLE
+```
+
+Meaning:
+
+Required security data is temporarily unavailable.
+
+Action:
+
+Treat the scan as unavailable. Do not manufacture a local PASS result.
+
+---
+
+## Human sharing URLs
+
+Canonical human scan link:
+
+```text
+https://eliber12.github.io/jepeta-automation/?token=0x...#scanner
+```
+
+Opening a valid `?token=` link runs a fresh scan.
+
+Legacy `?tokenAddress=` links are accepted by the website and normalized to `?token=`.
+
+A shared URL does not store or freeze a previous verdict.
+
+---
+
+## Live one-click examples
+
+These contracts are included only to demonstrate the live scanner.
+
+They were verified against Jepeta on 2026-09-21.
+
+Because they are live contracts and upstream data changes, their future decision can change. Always use the fresh API response as authoritative.
+
+- PASS demo / BRETT  
+  `0x532f27101965dd16442e59d40670faf5ebb142e4`
+
+- WARN demo / AERO  
+  `0x940181a94a35a4569e4529a3cdfb74e38fd98631`
+
+- BLOCK honeypot demo / TAP  
+  `0x3eacac56ea67611250b236af99fc7b01ba62aa96`
+
+Human scanner:
+
+- [Run the Jepeta scanner](https://eliber12.github.io/jepeta-automation/#scanner)
+
+---
+
+## Paid Virtuals ACP report
+
+Jepeta also sells a deeper evidence report through Virtuals ACP v2.
+
+Commercial contract:
+
+- Agent: `Jepeta Risk Guard`
+- Agent ID: `01a0b446-374c-7eb8-8fe8-cd1a9945ea70`
+- Offering: `Token Risk Scan`
+- Offering ID: `01a0b464-2334-7c1b-a88e-467c77d83327`
+- Network: Base / 8453
+- Price: 0.03 USDC
+- Listed SLA: 5 minutes
+- Provider wallet: `0xefcb0359e2cd6d1ad92cbca1e41c8946b308d7df`
+- Payment lifecycle: Virtuals ACP escrow
+
+Paid deliverable fields include:
+
+- `riskScore`
+- `riskLevel`
+- `honeypot`
+- `dangerousPermissions`
+- `liquidityRisk`
+- `holderConcentration`
+- `tradingActivity`
+- `warnings`
+- `summary`
+
+The public v4 preview and the paid ACP deliverable are intentionally separate contracts.
+
+The website does not process ACP payment.
+
+---
+
+## Recommended agent policy
+
+A practical integration should:
+
+1. Resolve the exact token contract on Base.
+2. Validate address format locally.
+3. Call Jepeta before the intended swap/buy.
+4. Reject any HTTP error as “no usable Jepeta verdict”.
+5. Stop on `BLOCK`.
+6. Apply review/escalation logic on `WARN`.
+7. On `PASS`, still enforce your own execution policy.
+8. Check `data_quality` and `source_status`.
+9. Never convert `null` raw metrics into reassuring zeros.
+10. Never cache a verdict indefinitely; token and market conditions can change.
+
+For higher-value decisions, obtain the paid evidence report rather than treating the free preview as exhaustive.
+
+---
+
+## Trust and safety model
+
+Jepeta is designed around fail-closed behavior for required security evidence.
+
+Core guarantees:
+
+- exact requested Base contract only;
+- chain ID 8453 only;
+- explicit required security booleans;
+- no wrong-token fallback;
+- no cross-chain pool substitution;
+- no wallet connection;
+- no trade execution;
+- no direct buyer-fund custody;
+- no fabricated source values;
+- upstream degradation surfaced explicitly.
+
+The risk score is heuristic.
+
+It is not:
+
+- a probability;
+- an audit score;
+- an expected-return estimate;
+- a price prediction;
+- a recommendation to buy, sell, hold, or avoid an asset.
+
+---
+
+## Data sources
+
+### GoPlus Security
+
+Used for:
+
+- honeypot signal;
+- mintability;
+- contract security controls;
+- buy/sell tax where available;
+- holder records;
+- LP-holder records.
+
+Required for a successful strict security verdict.
+
+### DEX Screener
+
+Used for:
+
+- exact matching Base pair context;
+- liquidity in USD;
+- market completeness signals.
+
+Market degradation is represented explicitly instead of being silently treated as zero liquidity.
+
+---
+
+## Public machine references
+
+- [Jepeta human scanner](https://eliber12.github.io/jepeta-automation/): interactive Base token scanner.
+- [OpenAPI schema](https://eliber12.github.io/jepeta-automation/openapi.json): authoritative public API contract and error responses.
+- [Agent manifest](https://eliber12.github.io/jepeta-automation/agent.json): identity, ACP commerce metadata, capabilities, safety properties and schema semantics.
+- [GitHub repository](https://github.com/eliber12/jepeta-automation): public source, tests and deployment configuration.
+- [Telegram channel](https://t.me/jepeta_tools): Jepeta risk-intelligence channel.
+
+---
+
+## Source code locations
+
+Public frontend:
+
+```text
+index.html
+site.css
+site.js
+```
+
+Public machine documents:
+
+```text
+llms.txt
+agent.json
+openapi.json
+```
+
+Versioned Supabase scanner source:
+
+```text
+supabase/functions/jepeta-risk-scan/index.ts
+```
+
+Runtime secrets are not stored in the public repository.
+
+---
+
+## Use Jepeta for
+
+Good fit:
+
+- pre-swap Base token screening;
+- autonomous-agent execution gates;
+- risk-aware transaction workflows;
+- explicit honeypot/mintability checks;
+- raw tax / holder / LP / liquidity context;
+- machine-readable PASS / WARN / BLOCK policy input.
+
+Not a fit:
+
+- smart-contract auditing;
+- malware detection;
+- non-Base tokens;
+- portfolio management;
+- price prediction;
+- trade execution;
+- custody;
+- guaranteed safety assessments.
+
+---
+
+## Final interpretation rule
+
+The correct interpretation hierarchy is:
+
+```text
+HTTP success?
+  -> strict schema valid?
+      -> decision
+      -> required booleans
+      -> data quality
+      -> source status
+      -> raw metrics
+      -> warnings
+      -> your own execution policy
+```
+
+Never skip directly from `PASS` to “safe to trade”.
