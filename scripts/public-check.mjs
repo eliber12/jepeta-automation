@@ -3,27 +3,18 @@ import { readFile, stat } from 'node:fs/promises';
 import { execFileSync } from 'node:child_process';
 
 const expectedTracked = new Set([
-  '.github/workflows/pages.yml',
   '.github/workflows/verify.yml',
-  '.nojekyll',
   'README.md',
   'agent.json',
   'agents.json',
   'agents.txt',
   'docs/OUTREACH.md',
-  'index.html',
   'index.md',
   'llms-full.txt',
   'llms.txt',
-  'og-jepeta.svg',
   'openapi.json',
-  'robots.txt',
   'sample-full-report.json',
-  'scripts/live-smoke.mjs',
   'scripts/public-check.mjs',
-  'site.css',
-  'site.js',
-  'sitemap.xml',
 ]);
 
 const tracked = execFileSync('git',['ls-files'],{encoding:'utf8'})
@@ -34,32 +25,31 @@ const tracked = execFileSync('git',['ls-files'],{encoding:'utf8'})
 assert.deepEqual(
   tracked,
   [...expectedTracked].sort(),
-  'Public repository contains an unexpected or missing tracked file. Review it explicitly before publishing.'
+  'Public repository must remain an exact documentation/contract allowlist.'
 );
 
 for (const file of expectedTracked) await stat(file);
 
-const html = await readFile('index.html','utf8');
-const ids = new Set([...html.matchAll(/\bid="([^"]+)"/g)].map(m=>m[1]));
-for (const href of [...html.matchAll(/\bhref="([^"]+)"/g)]
-  .map(m=>m[1])
-  .filter(x=>x.startsWith('#') && !x.startsWith('#i-') && x !== '#')) {
-  assert.ok(ids.has(href.slice(1)), 'Missing anchor target: '+href);
-}
-
-for (const fragment of [
-  'https://eliber12.github.io/jepeta-automation/',
-  'https://app.virtuals.io/acp/agent/01a0b446-374c-7eb8-8fe8-cd1a9945ea70',
-  'https://t.me/jepeta_tools',
-  'https://t.me/Jepeta_bot',
-  'openapi.json','agent.json','llms.txt','sample-full-report.json'
+for (const forbidden of [
+  'index.html','site.css','site.js','robots.txt','sitemap.xml','.nojekyll',
+  'og-jepeta.svg','scripts/live-smoke.mjs','.github/workflows/pages.yml'
 ]) {
-  assert.ok(html.includes(fragment), 'Missing public link: '+fragment);
+  assert.ok(!tracked.includes(forbidden), 'Website runtime leaked into public mirror: '+forbidden);
 }
-assert.match(html,/Telegram Stars/);
-assert.match(html,/Autonomous agents use Virtuals ACP at 0\.03 USDC/);
+assert.ok(!tracked.some(file => /^(?:worker|supabase|netlify)\//.test(file)),
+  'Private runtime directory leaked into public mirror.');
 
-const textFiles = tracked.filter(file => file !== 'scripts/public-check.mjs' && !/\.(?:png|jpg|jpeg|webp|gif|ico)$/i.test(file));
+const agent = JSON.parse(await readFile('agent.json','utf8'));
+assert.equal(agent.endpoints?.humanPreview,'https://eliber12.github.io/jepeta-core/');
+assert.equal(agent.commerce?.directUrl,'https://app.virtuals.io/acp/agent/01a0b446-374c-7eb8-8fe8-cd1a9945ea70');
+assert.equal(agent.commerce?.price?.amount,'0.03');
+assert.equal(agent.network?.chainId,8453);
+
+const readme = await readFile('README.md','utf8');
+assert.match(readme,/Production website:\s+https:\/\/eliber12\.github\.io\/jepeta-core\//);
+assert.match(readme,/does not deploy the production website/i);
+
+const textFiles = tracked.filter(file => file !== 'scripts/public-check.mjs');
 const texts = await Promise.all(textFiles.map(async file => ({file,content:await readFile(file,'utf8')})));
 
 const forbiddenContent = [
@@ -71,12 +61,9 @@ const forbiddenContent = [
   ['Supabase service-role implementation detail', new RegExp('SUPABASE_'+'SERVICE_ROLE_KEY')],
   ['private HMAC implementation detail', new RegExp('\\bHM'+'AC\\b','i')],
   ['private Vault implementation detail', new RegExp('\\bVa'+'ult\\b')],
-  ['internal full-report auth metadata', new RegExp('internalFull'+'ReportAuth')],
-  ['internal full-report OpenAPI metadata', new RegExp('"internalFull'+'Report"\\s*:')],
   ['private core raw URL', new RegExp('raw\\.githubusercontent\\.com/eliber12/jepeta-'+'core','i')],
   ['private source path', new RegExp('supabase/'+'functions/','i')],
   ['private repository link', new RegExp('github\\.com/eliber12/jepeta-'+'core','i')],
-  ['old private Pages URL', new RegExp('eliber12\\.github\\.io/jepeta-'+'core','i')],
 ];
 
 for (const {file,content} of texts) {
@@ -87,7 +74,9 @@ for (const {file,content} of texts) {
 
 console.log(JSON.stringify({
   publicSurfaceVerified:true,
+  docsOnly:true,
   trackedFiles:tracked.length,
   secretAndBoundaryScan:true,
+  canonicalWebsite:'https://eliber12.github.io/jepeta-core/',
   at:new Date().toISOString()
 }));
