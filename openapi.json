@@ -335,7 +335,6 @@
     "serverRateLimits": {
       "client": "30 requests / 60 seconds per hashed client address",
       "token": "20 requests / 60 seconds per token"
-    },
-    "internalFullReport": "Separate HMAC-authenticated endpoint; not part of the public API contract."
+    }
   }
 }
