@@ -1,12 +1,14 @@
-# Jepeta Risk Guard
+# Jepeta Risk Guard — public contracts
 
-Public web and machine-discovery surface for Jepeta Risk Guard.
+Public documentation and machine-readable contracts for Jepeta Risk Guard.
 
-- Website: https://eliber12.github.io/jepeta-automation/
+- Production website: https://eliber12.github.io/jepeta-core/
 - Free Base ERC-20 preview API: https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-scan
 - Paid report: Virtuals ACP / Token Risk Scan / 0.03 USDC
 - Telegram: https://t.me/jepeta_tools
 
-This repository intentionally contains only public website, API contract, discovery metadata, samples, and public QA. Production risk-engine logic, ACP worker logic, settlement logic, infrastructure, and operational scripts are kept in a private repository.
+This public repository intentionally contains only API/discovery contracts, samples, documentation, and boundary QA. The production website, risk engine, ACP worker, settlement logic, Supabase implementation, infrastructure, and operational scripts are kept in the private `eliber12/jepeta-core` repository.
+
+This repository does not deploy the production website.
 
 Jepeta is read-only screening, not an audit, safety guarantee, or investment recommendation.
