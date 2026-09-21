@@ -9,9 +9,11 @@ const ids = new Set([...html.matchAll(/\bid="([^"]+)"/g)].map(m=>m[1]));
 for (const href of [...html.matchAll(/\bhref="([^"]+)"/g)].map(m=>m[1]).filter(x=>x.startsWith('#') && !x.startsWith('#i-') && x !== '#')) {
   assert.ok(ids.has(href.slice(1)), 'Missing anchor target: '+href);
 }
-for (const fragment of ['https://app.virtuals.io/acp/agent/01a0b446-374c-7eb8-8fe8-cd1a9945ea70','https://t.me/jepeta_tools','openapi.json','agent.json','llms.txt','sample-full-report.json']) {
+for (const fragment of ['https://app.virtuals.io/acp/agent/01a0b446-374c-7eb8-8fe8-cd1a9945ea70','https://t.me/jepeta_tools','https://t.me/Jepeta_bot','openapi.json','agent.json','llms.txt','sample-full-report.json']) {
   assert.ok(html.includes(fragment), 'Missing public link: '+fragment);
 }
+assert.match(html,/Telegram Stars/);
+assert.match(html,/Autonomous agents use Virtuals ACP at 0\.03 USDC/);
 
 const forbidden = ['worker/','supabase/','netlify/'];
 for (const name of forbidden) {
