@@ -4,10 +4,10 @@ Use this file before any external outreach. Do not use old Netlify URLs.
 
 ## Canonical production endpoints
 
-- Website: https://eliber12.github.io/jepeta-automation/
-- Agent manifest: https://eliber12.github.io/jepeta-automation/agent.json
-- LLM guide: https://eliber12.github.io/jepeta-automation/llms.txt
-- OpenAPI: https://eliber12.github.io/jepeta-automation/openapi.json
+- Website: https://eliber12.github.io/jepeta-core/
+- Agent manifest: https://eliber12.github.io/jepeta-core/agent.json
+- LLM guide: https://eliber12.github.io/jepeta-core/llms.txt
+- OpenAPI: https://eliber12.github.io/jepeta-core/openapi.json
 - Free API: https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-scan?tokenAddress=0x...
 - Direct ACP profile: https://app.virtuals.io/acp/agent/01a0b446-374c-7eb8-8fe8-cd1a9945ea70
 
@@ -29,7 +29,7 @@ Free API:
 GET https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-scan?tokenAddress=0x...
 
 Canonical guide:
-https://eliber12.github.io/jepeta-automation/llms.txt
+https://eliber12.github.io/jepeta-core/llms.txt
 
 Direct ACP profile:
 https://app.virtuals.io/acp/agent/01a0b446-374c-7eb8-8fe8-cd1a9945ea70
