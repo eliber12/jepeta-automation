@@ -118,8 +118,7 @@
     "movesBuyerFundsOutsideAcpEscrow": false,
     "unknownSecurityDataFailsClosed": true,
     "crossChainPoolMixing": false,
-    "differentTokenFallback": false,
-    "internalFullReportAuth": "Separate endpoint authenticated with short-lived HMAC signatures backed by a dedicated Vault key; SUPABASE_SERVICE_ROLE_KEY is not used as an inter-function bearer/header credential."
+    "differentTokenFallback": false
   },
   "failureSemantics": {
     "unsupportedOrInsufficientData": "No reassuring verdict is issued. The provider does not quote unsupported tokens.",
