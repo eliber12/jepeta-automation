@@ -1,0 +1,341 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Jepeta Risk Guard Preview API",
+    "version": "4.0.0",
+    "description": "Strict, GET-only Base ERC-20 pre-trade screening preview for people and autonomous agents. Server-side rate limits and a short token cache protect upstream sources. PASS/WARN/BLOCK is a screening decision, not a safety guarantee. Full evidence is sold through Virtuals ACP."
+  },
+  "servers": [
+    {
+      "url": "https://aitgmgfumsdqecmanrab.supabase.co/functions/v1"
+    }
+  ],
+  "paths": {
+    "/jepeta-risk-scan": {
+      "get": {
+        "operationId": "scanBaseToken",
+        "summary": "Scan one exact Base ERC-20 contract",
+        "parameters": [
+          {
+            "name": "tokenAddress",
+            "in": "query",
+            "required": true,
+            "description": "Exact Base ERC-20 contract address.",
+            "schema": {
+              "type": "string",
+              "pattern": "^0x[a-fA-F0-9]{40}$"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Strict public preview",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PreviewV4"
+                }
+              }
+            },
+            "headers": {
+              "X-Jepeta-Cache": {
+                "description": "Whether this successful response was served from the short server-side token cache.",
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "HIT",
+                    "MISS"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid address or request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Method not allowed. Public scanning is GET-only.",
+            "headers": {
+              "Allow": {
+                "description": "Allowed public methods.",
+                "schema": {
+                  "type": "string",
+                  "const": "GET, OPTIONS"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Exact token lacks required GoPlus coverage or an explicit honeypot/mintable boolean",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Jepeta server-side rate limit or required GoPlus rate limit. Honor Retry-After before retrying.",
+            "headers": {
+              "Retry-After": {
+                "schema": {
+                  "type": "integer"
+                },
+                "description": "Suggested retry delay in seconds."
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Required security provider unavailable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "description": "Public endpoint. GET only. Responses may be served from a short (~30s) per-token cache. Repeated requests are server-rate-limited."
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "PreviewV4": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "schema_version",
+          "chain_id",
+          "token_address",
+          "decision",
+          "risk_score",
+          "risk_level",
+          "is_honeypot",
+          "is_mintable",
+          "buy_tax_percent",
+          "sell_tax_percent",
+          "top10_holder_concentration_percent",
+          "top10_holder_count",
+          "lp_locked_percent_observed",
+          "lp_holder_sample_count",
+          "liquidity_usd",
+          "data_quality",
+          "source_status",
+          "warnings",
+          "observed_at",
+          "paid_report"
+        ],
+        "properties": {
+          "schema_version": {
+            "const": "4.0.0"
+          },
+          "chain_id": {
+            "const": 8453
+          },
+          "token_address": {
+            "type": "string",
+            "pattern": "^0x[a-f0-9]{40}$"
+          },
+          "decision": {
+            "type": "string",
+            "enum": [
+              "PASS",
+              "WARN",
+              "BLOCK"
+            ],
+            "description": "Machine policy hint. PASS means no configured BLOCK/WARN condition was observed; it is not a safety guarantee."
+          },
+          "risk_score": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100
+          },
+          "risk_level": {
+            "type": "string",
+            "enum": [
+              "LOW",
+              "MEDIUM",
+              "HIGH",
+              "CRITICAL"
+            ]
+          },
+          "is_honeypot": {
+            "type": "boolean",
+            "description": "Explicit GoPlus honeypot signal. Unknown does not become false; it yields HTTP 422."
+          },
+          "is_mintable": {
+            "type": "boolean",
+            "description": "Explicit GoPlus mintability signal. Unknown does not become false; it yields HTTP 422."
+          },
+          "buy_tax_percent": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "minimum": 0,
+            "maximum": 100
+          },
+          "sell_tax_percent": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "minimum": 0,
+            "maximum": 100
+          },
+          "top10_holder_concentration_percent": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "minimum": 0,
+            "maximum": 100,
+            "description": "Observed sum of valid percentages from up to 10 GoPlus holder records."
+          },
+          "top10_holder_count": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 10
+          },
+          "lp_locked_percent_observed": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "minimum": 0,
+            "maximum": 100,
+            "description": "Observed locked percentage within up to 10 GoPlus LP-holder records. This is sample coverage, not proof that all liquidity is locked."
+          },
+          "lp_holder_sample_count": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 10
+          },
+          "liquidity_usd": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "minimum": 0,
+            "description": "Largest exact matching Base-pair liquidity returned by DEX Screener."
+          },
+          "data_quality": {
+            "type": "string",
+            "enum": [
+              "HIGH",
+              "MEDIUM",
+              "LOW"
+            ]
+          },
+          "source_status": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "goplus",
+              "dexscreener"
+            ],
+            "properties": {
+              "goplus": {
+                "const": "OK"
+              },
+              "dexscreener": {
+                "type": "string",
+                "enum": [
+                  "OK",
+                  "PARTIAL",
+                  "RATE_LIMITED",
+                  "UNAVAILABLE"
+                ]
+              }
+            }
+          },
+          "warnings": {
+            "type": "array",
+            "maxItems": 12,
+            "items": {
+              "type": "string"
+            }
+          },
+          "observed_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "paid_report": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "protocol",
+              "offering",
+              "priceUSDC",
+              "providerWallet"
+            ],
+            "properties": {
+              "protocol": {
+                "const": "Virtuals ACP v2"
+              },
+              "offering": {
+                "const": "Token Risk Scan"
+              },
+              "priceUSDC": {
+                "const": "0.03"
+              },
+              "providerWallet": {
+                "const": "0xefcb0359e2cd6d1ad92cbca1e41c8946b308d7df"
+              }
+            }
+          }
+        }
+      },
+      "Error": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "error",
+          "code"
+        ],
+        "properties": {
+          "error": {
+            "type": "string"
+          },
+          "code": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  },
+  "x-jepeta-implementation": {
+    "publicMethod": "GET",
+    "cacheTtlSeconds": 30,
+    "cacheRangePolicy": "15-60 seconds",
+    "serverRateLimits": {
+      "client": "30 requests / 60 seconds per hashed client address",
+      "token": "20 requests / 60 seconds per token"
+    },
+    "internalFullReport": "Separate HMAC-authenticated endpoint; not part of the public API contract."
+  }
+}
