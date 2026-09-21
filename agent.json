@@ -1,0 +1,265 @@
+{
+  "schemaVersion": "1.3",
+  "name": "Jepeta Risk Guard",
+  "agentId": "01a0b446-374c-7eb8-8fe8-cd1a9945ea70",
+  "providerWallet": "0xefcb0359e2cd6d1ad92cbca1e41c8946b308d7df",
+  "network": {
+    "name": "Base",
+    "chainId": 8453
+  },
+  "commerce": {
+    "protocol": "Virtuals ACP v2",
+    "offeringId": "01a0b464-2334-7c1b-a88e-467c77d83327",
+    "offeringName": "Token Risk Scan",
+    "price": {
+      "asset": "USDC",
+      "amount": "0.03"
+    },
+    "slaMinutes": 5,
+    "requiredFunds": false,
+    "directUrl": "https://app.virtuals.io/acp/agent/01a0b446-374c-7eb8-8fe8-cd1a9945ea70"
+  },
+  "purpose": "Machine-readable pre-trade ERC-20 risk screening for Base tokens.",
+  "input": {
+    "type": "object",
+    "required": [
+      "tokenAddress"
+    ],
+    "properties": {
+      "tokenAddress": {
+        "type": "string",
+        "pattern": "^0x[a-fA-F0-9]{40}$",
+        "description": "ERC-20 token contract address on Base chain 8453"
+      }
+    },
+    "additionalProperties": false
+  },
+  "deliverable": {
+    "type": "object",
+    "required": [
+      "riskScore",
+      "riskLevel",
+      "honeypot",
+      "dangerousPermissions",
+      "liquidityRisk",
+      "holderConcentration",
+      "tradingActivity",
+      "warnings",
+      "summary"
+    ],
+    "properties": {
+      "riskScore": {
+        "type": "number",
+        "minimum": 0,
+        "maximum": 100,
+        "description": "Heuristic risk score. Higher means more observed risk. It is not a probability."
+      },
+      "riskLevel": {
+        "type": "string",
+        "enum": [
+          "LOW",
+          "MEDIUM",
+          "HIGH",
+          "CRITICAL"
+        ],
+        "description": "Risk band derived from the heuristic score."
+      },
+      "honeypot": {
+        "type": "boolean"
+      },
+      "dangerousPermissions": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "liquidityRisk": {
+        "type": "string",
+        "enum": [
+          "UNKNOWN",
+          "LOW",
+          "MEDIUM",
+          "HIGH",
+          "CRITICAL"
+        ],
+        "description": "Risk band for the largest matching Base pool liquidity."
+      },
+      "holderConcentration": {
+        "type": "string"
+      },
+      "tradingActivity": {
+        "type": "string"
+      },
+      "warnings": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "summary": {
+        "type": "string"
+      }
+    },
+    "additionalProperties": false
+  },
+  "dataSources": [
+    {
+      "name": "GoPlus Security",
+      "purpose": "Token security controls and honeypot signal"
+    },
+    {
+      "name": "DEX Screener",
+      "purpose": "Matching Base pool liquidity and recent trading activity"
+    }
+  ],
+  "safetyProperties": {
+    "readOnlyAnalysis": true,
+    "performsTrades": false,
+    "movesBuyerFundsOutsideAcpEscrow": false,
+    "unknownSecurityDataFailsClosed": true,
+    "crossChainPoolMixing": false,
+    "differentTokenFallback": false,
+    "internalFullReportAuth": "Separate endpoint authenticated with short-lived HMAC signatures backed by a dedicated Vault key; SUPABASE_SERVICE_ROLE_KEY is not used as an inter-function bearer/header credential."
+  },
+  "failureSemantics": {
+    "unsupportedOrInsufficientData": "No reassuring verdict is issued. The provider does not quote unsupported tokens.",
+    "sourceOutage": "The provider retries a bounded number of times and does not fabricate missing values.",
+    "incompleteData": "Unknown fields are surfaced explicitly and cannot produce a reassuring LOW classification."
+  },
+  "engine": {
+    "version": "2.0.0",
+    "methodology": "Heuristic screening, not a smart-contract audit, safety guarantee, or investment recommendation."
+  },
+  "endpoints": {
+    "humanPreview": "https://eliber12.github.io/jepeta-automation/",
+    "previewApi": "https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-scan",
+    "openapi": "https://eliber12.github.io/jepeta-automation/openapi.json",
+    "llms": "https://eliber12.github.io/jepeta-automation/llms.txt",
+    "telegram": "https://t.me/jepeta_tools",
+    "fullAgentGuide": "https://eliber12.github.io/jepeta-automation/llms-full.txt",
+    "agentsAlias": "https://eliber12.github.io/jepeta-automation/agents.json"
+  },
+  "resources": [
+    {
+      "name": "free_base_token_risk_preview",
+      "description": "Free pre-trade Base ERC-20 risk preview for agents. Supply one exact token contract address before a swap or buy.",
+      "method": "GET",
+      "url": "https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-scan?tokenAddress={{tokenAddress}}",
+      "params": {
+        "type": "object",
+        "required": [
+          "tokenAddress"
+        ],
+        "properties": {
+          "tokenAddress": {
+            "type": "string",
+            "pattern": "^0x[a-fA-F0-9]{40}$",
+            "description": "Exact Base ERC-20 token contract address to scan"
+          }
+        }
+      }
+    },
+    {
+      "name": "sample_full_report",
+      "description": "Real paid-deliverable shape captured from a live Jepeta scan; values are a dated sample and can change.",
+      "method": "GET",
+      "url": "https://eliber12.github.io/jepeta-automation/sample-full-report.json"
+    }
+  ],
+  "publicPreview": {
+    "schemaVersion": "4.0.0",
+    "limited": true,
+    "method": "GET",
+    "endpoint": "https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-scan?tokenAddress={{tokenAddress}}",
+    "decisionEnum": [
+      "PASS",
+      "WARN",
+      "BLOCK"
+    ],
+    "requiredFields": [
+      "schema_version",
+      "chain_id",
+      "token_address",
+      "decision",
+      "risk_score",
+      "risk_level",
+      "is_honeypot",
+      "is_mintable",
+      "buy_tax_percent",
+      "sell_tax_percent",
+      "top10_holder_concentration_percent",
+      "top10_holder_count",
+      "lp_locked_percent_observed",
+      "lp_holder_sample_count",
+      "liquidity_usd",
+      "data_quality",
+      "source_status",
+      "warnings",
+      "observed_at",
+      "paid_report"
+    ],
+    "semantics": {
+      "PASS": "No configured BLOCK or WARN condition was observed in the available data. PASS is not a safety guarantee.",
+      "WARN": "One or more material risk or source-quality conditions require review before execution.",
+      "BLOCK": "A configured hard blocker such as a GoPlus honeypot signal was observed."
+    },
+    "rawMetrics": {
+      "top10_holder_concentration_percent": "Sum of valid percentages in the up-to-10 holder records returned by GoPlus.",
+      "lp_locked_percent_observed": "Sum of locked percentages among the up-to-10 LP-holder records returned by GoPlus. This is observed sample coverage, not a proof that all liquidity is locked.",
+      "buy_tax_percent": "GoPlus buy tax converted to percent; null when unavailable.",
+      "sell_tax_percent": "GoPlus sell tax converted to percent; null when unavailable.",
+      "liquidity_usd": "Liquidity of the largest exact matching Base pair returned by DEX Screener; null when unavailable."
+    },
+    "booleanGuarantees": {
+      "is_honeypot": "Always boolean in a successful v4 response; if GoPlus cannot determine it, the endpoint returns 422 instead of false.",
+      "is_mintable": "Always boolean in a successful v4 response; if GoPlus cannot determine it, the endpoint returns 422 instead of false."
+    },
+    "paidOnlyFields": [
+      "dangerousPermissions",
+      "liquidityRisk",
+      "holderConcentration",
+      "tradingActivity",
+      "full evidence/history context"
+    ],
+    "rateLimit": {
+      "serverSide": true,
+      "clientWindow": "30 requests / 60 seconds per hashed client address",
+      "tokenWindow": "20 requests / 60 seconds per token",
+      "retryHeader": "Retry-After"
+    },
+    "cache": {
+      "ttlSeconds": 30,
+      "purpose": "Protect upstream GoPlus and DEX Screener quotas and reduce repeated-token latency.",
+      "responseHeader": "X-Jepeta-Cache: HIT | MISS"
+    }
+  },
+  "productLadder": [
+    {
+      "name": "Free Preview",
+      "status": "LIVE",
+      "price": "Free",
+      "delivery": "Public GET API / web scanner"
+    },
+    {
+      "name": "Full Report",
+      "status": "LIVE",
+      "price": "0.03 USDC",
+      "delivery": "Virtuals ACP v2 / Token Risk Scan"
+    },
+    {
+      "name": "Batch / API",
+      "status": "PLANNED",
+      "activationGate": "Enable only after repeated multi-token paid demand and measured unit economics."
+    },
+    {
+      "name": "Monitoring / Watchlist",
+      "status": "PLANNED",
+      "activationGate": "Enable after recurring risk-monitoring demand is observed."
+    },
+    {
+      "name": "Agent Subscription",
+      "status": "PLANNED",
+      "activationGate": "Enable after repeat buyers justify a recurring access package."
+    }
+  ]
+}
