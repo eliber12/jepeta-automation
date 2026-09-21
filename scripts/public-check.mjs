@@ -3,27 +3,18 @@ import { readFile, stat } from 'node:fs/promises';
 import { execFileSync } from 'node:child_process';
 
 const expectedTracked = new Set([
-  '.github/workflows/pages.yml',
   '.github/workflows/verify.yml',
-  '.nojekyll',
   'README.md',
   'agent.json',
   'agents.json',
   'agents.txt',
   'docs/OUTREACH.md',
-  'index.html',
   'index.md',
   'llms-full.txt',
   'llms.txt',
-  'og-jepeta.svg',
   'openapi.json',
-  'robots.txt',
   'sample-full-report.json',
-  'scripts/live-smoke.mjs',
   'scripts/public-check.mjs',
-  'site.css',
-  'site.js',
-  'sitemap.xml',
 ]);
 
 const tracked = execFileSync('git',['ls-files'],{encoding:'utf8'})
@@ -39,28 +30,24 @@ assert.deepEqual(
 
 for (const file of expectedTracked) await stat(file);
 
-const html = await readFile('index.html','utf8');
-const ids = new Set([...html.matchAll(/\bid="([^"]+)"/g)].map(m=>m[1]));
-for (const href of [...html.matchAll(/\bhref="([^"]+)"/g)]
-  .map(m=>m[1])
-  .filter(x=>x.startsWith('#') && !x.startsWith('#i-') && x !== '#')) {
-  assert.ok(ids.has(href.slice(1)), 'Missing anchor target: '+href);
-}
+const texts = await Promise.all(
+  tracked
+    .filter(file => file !== 'scripts/public-check.mjs')
+    .map(async file => ({file,content:await readFile(file,'utf8')}))
+);
 
-for (const fragment of [
-  'https://eliber12.github.io/jepeta-automation/',
+const joined = texts.map(x=>x.content).join('\n');
+for (const required of [
+  'https://eliber12.github.io/jepeta-core/',
   'https://app.virtuals.io/acp/agent/01a0b446-374c-7eb8-8fe8-cd1a9945ea70',
-  'https://t.me/jepeta_tools',
-  'https://t.me/Jepeta_bot',
-  'openapi.json','agent.json','llms.txt','sample-full-report.json'
-]) {
-  assert.ok(html.includes(fragment), 'Missing public link: '+fragment);
-}
-assert.match(html,/Telegram Stars/);
-assert.match(html,/Autonomous agents use Virtuals ACP at 0\.03 USDC/);
+  'https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-scan',
+  'https://t.me/jepeta_tools'
+]) assert.ok(joined.includes(required), 'Missing canonical public reference: '+required);
 
-const textFiles = tracked.filter(file => file !== 'scripts/public-check.mjs' && !/\.(?:png|jpg|jpeg|webp|gif|ico)$/i.test(file));
-const texts = await Promise.all(textFiles.map(async file => ({file,content:await readFile(file,'utf8')})));
+assert.ok(!tracked.includes('index.html'));
+assert.ok(!tracked.includes('site.js'));
+assert.ok(!tracked.includes('site.css'));
+assert.ok(!tracked.includes('.github/workflows/pages.yml'));
 
 const forbiddenContent = [
   ['private key', new RegExp('-----BEGIN (?:RSA |EC |OPENSSH )?'+'PRIVATE KEY-----','i')],
@@ -75,8 +62,6 @@ const forbiddenContent = [
   ['internal full-report OpenAPI metadata', new RegExp('"internalFull'+'Report"\\s*:')],
   ['private core raw URL', new RegExp('raw\\.githubusercontent\\.com/eliber12/jepeta-'+'core','i')],
   ['private source path', new RegExp('supabase/'+'functions/','i')],
-  ['private repository link', new RegExp('github\\.com/eliber12/jepeta-'+'core','i')],
-  ['old private Pages URL', new RegExp('eliber12\\.github\\.io/jepeta-'+'core','i')],
 ];
 
 for (const {file,content} of texts) {
@@ -86,7 +71,8 @@ for (const {file,content} of texts) {
 }
 
 console.log(JSON.stringify({
-  publicSurfaceVerified:true,
+  publicContractsVerified:true,
+  websiteRuntimePresent:false,
   trackedFiles:tracked.length,
   secretAndBoundaryScan:true,
   at:new Date().toISOString()
