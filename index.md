@@ -4,7 +4,7 @@ Scan any Base ERC-20 token for honeypot, mintability, taxes, liquidity and holde
 
 ## Free preview
 
-Use the [interactive scanner](https://eliber12.github.io/jepeta-automation/#scanner) or call:
+Use the [interactive scanner](https://eliber12.github.io/jepeta-core/#scanner) or call:
 
 `GET https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-scan?tokenAddress=0x...`
 
