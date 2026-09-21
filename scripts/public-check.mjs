@@ -25,5 +25,10 @@ const joined = texts.join('\n');
 assert.doesNotMatch(joined,/-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----/);
 assert.doesNotMatch(joined,/\bsk_live_[A-Za-z0-9]+\b/);
 assert.doesNotMatch(joined,/\b\d{8,12}:[A-Za-z0-9_-]{30,}\b/);
+assert.doesNotMatch(joined,/SUPABASE_SERVICE_ROLE_KEY/);
+assert.doesNotMatch(joined,/internalFullReportAuth/);
+assert.doesNotMatch(joined,/\"internalFullReport\"\s*:/);
+assert.doesNotMatch(joined,/raw\.githubusercontent\.com\/eliber12\/jepeta-core/i);
+assert.doesNotMatch(joined,/supabase\/functions\//i);
 
 console.log(JSON.stringify({publicSurfaceVerified:true,files:required.length,at:new Date().toISOString()}));
