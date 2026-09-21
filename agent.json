@@ -130,13 +130,13 @@
     "methodology": "Heuristic screening, not a smart-contract audit, safety guarantee, or investment recommendation."
   },
   "endpoints": {
-    "humanPreview": "https://eliber12.github.io/jepeta-automation/",
+    "humanPreview": "https://eliber12.github.io/jepeta-core/",
     "previewApi": "https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-scan",
-    "openapi": "https://eliber12.github.io/jepeta-automation/openapi.json",
-    "llms": "https://eliber12.github.io/jepeta-automation/llms.txt",
+    "openapi": "https://eliber12.github.io/jepeta-core/openapi.json",
+    "llms": "https://eliber12.github.io/jepeta-core/llms.txt",
     "telegram": "https://t.me/jepeta_tools",
-    "fullAgentGuide": "https://eliber12.github.io/jepeta-automation/llms-full.txt",
-    "agentsAlias": "https://eliber12.github.io/jepeta-automation/agents.json"
+    "fullAgentGuide": "https://eliber12.github.io/jepeta-core/llms-full.txt",
+    "agentsAlias": "https://eliber12.github.io/jepeta-core/agents.json"
   },
   "resources": [
     {
@@ -162,7 +162,7 @@
       "name": "sample_full_report",
       "description": "Real paid-deliverable shape captured from a live Jepeta scan; values are a dated sample and can change.",
       "method": "GET",
-      "url": "https://eliber12.github.io/jepeta-automation/sample-full-report.json"
+      "url": "https://eliber12.github.io/jepeta-core/sample-full-report.json"
     }
   ],
   "publicPreview": {
