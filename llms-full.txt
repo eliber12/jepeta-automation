@@ -598,13 +598,7 @@ agent.json
 openapi.json
 ```
 
-Versioned Supabase scanner source:
-
-```text
-supabase/functions/jepeta-risk-scan/index.ts
-```
-
-Runtime secrets are not stored in the public repository.
+Production implementation and runtime secrets are intentionally outside the public release.
 
 ---
 
