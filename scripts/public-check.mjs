@@ -59,7 +59,7 @@ for (const fragment of [
 assert.match(html,/Telegram Stars/);
 assert.match(html,/Autonomous agents use Virtuals ACP at 0\.03 USDC/);
 
-const textFiles = tracked.filter(file => !/\.(?:png|jpg|jpeg|webp|gif|ico)$/i.test(file));
+const textFiles = tracked.filter(file => file !== 'scripts/public-check.mjs' && !/\.(?:png|jpg|jpeg|webp|gif|ico)$/i.test(file));
 const texts = await Promise.all(textFiles.map(async file => ({file,content:await readFile(file,'utf8')})));
 
 const forbiddenContent = [
