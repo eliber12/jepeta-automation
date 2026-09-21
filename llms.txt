@@ -2,7 +2,7 @@
 
 > Base ERC-20 pre-trade risk screening for people and autonomous agents. Free strict JSON preview; deeper evidence report through Virtuals ACP.
 
-Canonical site: https://eliber12.github.io/jepeta-automation/
+Canonical site: https://eliber12.github.io/jepeta-core/
 
 ## Core facts
 
@@ -70,12 +70,12 @@ The full report adds dangerous permissions, liquidity-risk assessment, holder co
 
 ## Discovery
 
-- [OpenAPI](https://eliber12.github.io/jepeta-automation/openapi.json): public API contract and errors.
-- [Agent manifest](https://eliber12.github.io/jepeta-automation/agent.json): identity, commerce metadata and safety semantics.
-- [agents.json](https://eliber12.github.io/jepeta-automation/agents.json): discovery alias.
-- [Full agent guide](https://eliber12.github.io/jepeta-automation/llms-full.txt): detailed field semantics, examples and policy guidance.
-- [Sample paid report](https://eliber12.github.io/jepeta-automation/sample-full-report.json): real paid-deliverable shape captured from a live scan.
-- [Human scanner](https://eliber12.github.io/jepeta-automation/): interactive product.
+- [OpenAPI](https://eliber12.github.io/jepeta-core/openapi.json): public API contract and errors.
+- [Agent manifest](https://eliber12.github.io/jepeta-core/agent.json): identity, commerce metadata and safety semantics.
+- [agents.json](https://eliber12.github.io/jepeta-core/agents.json): discovery alias.
+- [Full agent guide](https://eliber12.github.io/jepeta-core/llms-full.txt): detailed field semantics, examples and policy guidance.
+- [Sample paid report](https://eliber12.github.io/jepeta-core/sample-full-report.json): real paid-deliverable shape captured from a live scan.
+- [Human scanner](https://eliber12.github.io/jepeta-core/): interactive product.
 - [GitHub](https://github.com/eliber12/jepeta-automation): public source and tests.
 - [Telegram](https://t.me/jepeta_tools): risk-intelligence channel.
 
