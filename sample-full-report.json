@@ -1,0 +1,16 @@
+{
+  "riskScore": 35,
+  "riskLevel": "MEDIUM",
+  "honeypot": false,
+  "dangerousPermissions": [],
+  "liquidityRisk": "LOW",
+  "holderConcentration": "Observed top-10 holders: 66.13% across 10 records",
+  "tradingActivity": "Matching pool / 24h: volume USD 4191851.28, buys 1391, sells 3642",
+  "warnings": [
+    "GoPlus reports that token supply can be minted.",
+    "Buy tax is unavailable from GoPlus.",
+    "Sell tax is unavailable from GoPlus.",
+    "Observed top-10 holder concentration is 66.13%."
+  ],
+  "summary": "WARN: MINTABLE, TOP10_CONCENTRATION_HIGH"
+}
