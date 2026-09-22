@@ -76,7 +76,8 @@ The full report adds dangerous permissions, liquidity-risk assessment, holder co
 - [Full agent guide](https://eliber12.github.io/jepeta-core/llms-full.txt): detailed field semantics, examples and policy guidance.
 - [Sample paid report](https://eliber12.github.io/jepeta-core/sample-full-report.json): real paid-deliverable shape captured from a live scan.
 - [Human scanner](https://eliber12.github.io/jepeta-core/): interactive product.
-- [GitHub](https://github.com/eliber12/jepeta-automation): public source and tests.
+- [Base honeypot and token-risk guide](https://eliber12.github.io/jepeta-core/base-honeypot-checker.html): crawlable explanation of honeypot checks, related risk signals and limitations.
+- [GitHub](https://github.com/eliber12/jepeta-automation): public documentation and machine-contract mirror.
 - [Telegram](https://t.me/jepeta_tools): risk-intelligence channel.
 
 ## Safety
