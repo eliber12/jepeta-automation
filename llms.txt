@@ -61,12 +61,13 @@ Never convert null metrics into reassuring zeroes.
 - Agent: Jepeta Risk Guard.
 - Agent ID: 01a0b446-374c-7eb8-8fe8-cd1a9945ea70.
 - Provider wallet: 0xefcb0359e2cd6d1ad92cbca1e41c8946b308d7df.
-- Offering: Token Risk Scan.
-- Offering ID: 01a0b464-2334-7c1b-a88e-467c77d83327.
+- Offering registry name: token_risk_scan.
+- Human label: Token Risk Scan.
+- Offering ID: 01a0bb7b-be32-73e8-abe6-1385a115ac16.
 - Price: 0.03 USDC.
 - Direct ACP profile: https://app.virtuals.io/acp/agent/01a0b446-374c-7eb8-8fe8-cd1a9945ea70
 
-The full report adds dangerous permissions, liquidity-risk assessment, holder concentration, 24h trading activity, full warnings and evidence-oriented summary.
+The live full report uses Jepeta decision contract v3. It adds policyVerdict, blockers/review reasons, evidence, source status, security/market/holder context, historical deltas, and compatibility risk fields used by earlier integrations.
 
 ## Discovery
 
