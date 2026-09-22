@@ -20,7 +20,7 @@ Price: **0.03 USDC** through Virtuals ACP.
 
 ## Base token risk guide
 
-- [Base honeypot checker and token-risk guide](base-honeypot-checker.html)
+- [Base honeypot checker and token-risk guide](https://eliber12.github.io/jepeta-core/base-honeypot-checker.html)
 
 ## Machine documentation
 
