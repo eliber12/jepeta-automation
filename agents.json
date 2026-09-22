@@ -17,9 +17,10 @@
   "paid": {
     "protocol": "Virtuals ACP v2",
     "agentId": "01a0b446-374c-7eb8-8fe8-cd1a9945ea70",
-    "offeringId": "01a0b464-2334-7c1b-a88e-467c77d83327",
-    "offering": "Token Risk Scan",
+    "offeringId": "01a0bb7b-be32-73e8-abe6-1385a115ac16",
+    "offering": "token_risk_scan",
     "priceUSDC": "0.03",
-    "url": "https://app.virtuals.io/acp/agent/01a0b446-374c-7eb8-8fe8-cd1a9945ea70"
+    "url": "https://app.virtuals.io/acp/agent/01a0b446-374c-7eb8-8fe8-cd1a9945ea70",
+    "displayName": "Token Risk Scan"
   }
 }

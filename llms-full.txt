@@ -469,8 +469,9 @@ Commercial contract:
 
 - Agent: `Jepeta Risk Guard`
 - Agent ID: `01a0b446-374c-7eb8-8fe8-cd1a9945ea70`
-- Offering: `Token Risk Scan`
-- Offering ID: `01a0b464-2334-7c1b-a88e-467c77d83327`
+- Offering registry name: `token_risk_scan`
+- Human label: `Token Risk Scan`
+- Offering ID: `01a0bb7b-be32-73e8-abe6-1385a115ac16`
 - Network: Base / 8453
 - Price: 0.03 USDC
 - Listed SLA: 5 minutes

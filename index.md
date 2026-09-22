@@ -16,6 +16,8 @@ The paid **Token Risk Scan** report adds dangerous permissions, liquidity-risk a
 
 Price: **0.03 USDC** through Virtuals ACP.
 
+Live registry offering: `token_risk_scan` (`01a0bb7b-be32-73e8-abe6-1385a115ac16`).
+
 [Buy full report on Jepeta's ACP profile](https://app.virtuals.io/acp/agent/01a0b446-374c-7eb8-8fe8-cd1a9945ea70)
 
 ## Base token risk guide
