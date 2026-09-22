@@ -9,15 +9,16 @@
   },
   "commerce": {
     "protocol": "Virtuals ACP v2",
-    "offeringId": "01a0b464-2334-7c1b-a88e-467c77d83327",
-    "offeringName": "Token Risk Scan",
+    "offeringId": "01a0bb7b-be32-73e8-abe6-1385a115ac16",
+    "offeringName": "token_risk_scan",
     "price": {
       "asset": "USDC",
       "amount": "0.03"
     },
     "slaMinutes": 5,
     "requiredFunds": false,
-    "directUrl": "https://app.virtuals.io/acp/agent/01a0b446-374c-7eb8-8fe8-cd1a9945ea70"
+    "directUrl": "https://app.virtuals.io/acp/agent/01a0b446-374c-7eb8-8fe8-cd1a9945ea70",
+    "displayName": "Token Risk Scan"
   },
   "purpose": "Machine-readable pre-trade ERC-20 risk screening for Base tokens.",
   "input": {
@@ -37,6 +38,22 @@
   "deliverable": {
     "type": "object",
     "required": [
+      "decisionVersion",
+      "chainId",
+      "tokenAddress",
+      "policyVerdict",
+      "hardBlockers",
+      "reviewReasons",
+      "reasonCodes",
+      "trustSignals",
+      "dataQuality",
+      "sourceStatus",
+      "securityContext",
+      "marketContext",
+      "holderContext",
+      "evidence",
+      "observedAt",
+      "decisionSummary",
       "riskScore",
       "riskLevel",
       "honeypot",
@@ -45,14 +62,160 @@
       "holderConcentration",
       "tradingActivity",
       "warnings",
-      "summary"
+      "summary",
+      "baseEngineVersion",
+      "historyContext"
     ],
     "properties": {
+      "decisionVersion": {
+        "type": "string"
+      },
+      "chainId": {
+        "type": "integer",
+        "enum": [
+          8453
+        ]
+      },
+      "tokenAddress": {
+        "type": "string",
+        "pattern": "^0x[a-fA-F0-9]{40}$"
+      },
+      "policyVerdict": {
+        "type": "string",
+        "enum": [
+          "BLOCK",
+          "REVIEW",
+          "NO_HARD_BLOCK_DETECTED"
+        ]
+      },
+      "hardBlockers": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "reviewReasons": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "reasonCodes": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "trustSignals": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "dataQuality": {
+        "type": "string",
+        "enum": [
+          "HIGH",
+          "MEDIUM",
+          "LOW"
+        ]
+      },
+      "sourceStatus": {
+        "type": "object",
+        "required": [
+          "goPlus",
+          "dexScreener"
+        ],
+        "properties": {
+          "goPlus": {
+            "type": "object",
+            "required": [
+              "status",
+              "required"
+            ],
+            "properties": {
+              "status": {
+                "type": "string"
+              },
+              "required": {
+                "type": "boolean"
+              }
+            },
+            "additionalProperties": false
+          },
+          "dexScreener": {
+            "type": "object",
+            "required": [
+              "status",
+              "required"
+            ],
+            "properties": {
+              "status": {
+                "type": "string"
+              },
+              "required": {
+                "type": "boolean"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "additionalProperties": false
+      },
+      "securityContext": {
+        "type": "object"
+      },
+      "marketContext": {
+        "type": "object"
+      },
+      "holderContext": {
+        "type": "object"
+      },
+      "evidence": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "required": [
+            "source",
+            "code",
+            "signal",
+            "value",
+            "severity"
+          ],
+          "properties": {
+            "source": {
+              "type": "string"
+            },
+            "code": {
+              "type": "string"
+            },
+            "signal": {
+              "type": "string"
+            },
+            "value": {},
+            "severity": {
+              "type": "string",
+              "enum": [
+                "BLOCKER",
+                "HIGH",
+                "MEDIUM",
+                "INFO"
+              ]
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "observedAt": {
+        "type": "string"
+      },
+      "decisionSummary": {
+        "type": "string"
+      },
       "riskScore": {
         "type": "number",
         "minimum": 0,
-        "maximum": 100,
-        "description": "Heuristic risk score. Higher means more observed risk. It is not a probability."
+        "maximum": 100
       },
       "riskLevel": {
         "type": "string",
@@ -61,8 +224,7 @@
           "MEDIUM",
           "HIGH",
           "CRITICAL"
-        ],
-        "description": "Risk band derived from the heuristic score."
+        ]
       },
       "honeypot": {
         "type": "boolean"
@@ -81,8 +243,7 @@
           "MEDIUM",
           "HIGH",
           "CRITICAL"
-        ],
-        "description": "Risk band for the largest matching Base pool liquidity."
+        ]
       },
       "holderConcentration": {
         "type": "string"
@@ -98,6 +259,133 @@
       },
       "summary": {
         "type": "string"
+      },
+      "baseEngineVersion": {
+        "type": "string"
+      },
+      "historyContext": {
+        "type": "object",
+        "required": [
+          "observationNumber",
+          "firstObservation",
+          "previousObservedAt",
+          "changedSincePrevious",
+          "eventHash",
+          "previousEventHash",
+          "materialChanges",
+          "riskScoreDelta",
+          "liquidityUSDDelta",
+          "maxHolderPercentDelta",
+          "addedHardBlockers",
+          "removedHardBlockers",
+          "addedReviewReasons",
+          "removedReviewReasons",
+          "addedDangerousPermissions",
+          "removedDangerousPermissions",
+          "addedTrustSignals",
+          "removedTrustSignals"
+        ],
+        "properties": {
+          "observationNumber": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "firstObservation": {
+            "type": "boolean"
+          },
+          "previousObservedAt": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "changedSincePrevious": {
+            "type": "boolean"
+          },
+          "eventHash": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "previousEventHash": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "materialChanges": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "riskScoreDelta": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "liquidityUSDDelta": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "maxHolderPercentDelta": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "addedHardBlockers": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "removedHardBlockers": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "addedReviewReasons": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "removedReviewReasons": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "addedDangerousPermissions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "removedDangerousPermissions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "addedTrustSignals": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "removedTrustSignals": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "additionalProperties": false
       }
     },
     "additionalProperties": false
@@ -243,7 +531,7 @@
       "name": "Full Report",
       "status": "LIVE",
       "price": "0.03 USDC",
-      "delivery": "Virtuals ACP v2 / Token Risk Scan"
+      "delivery": "Virtuals ACP v2 / token_risk_scan"
     },
     {
       "name": "Batch / API",
