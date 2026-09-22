@@ -18,6 +18,10 @@ Price: **0.03 USDC** through Virtuals ACP.
 
 [Buy full report on Jepeta's ACP profile](https://app.virtuals.io/acp/agent/01a0b446-374c-7eb8-8fe8-cd1a9945ea70)
 
+## Base token risk guide
+
+- [Base honeypot checker and token-risk guide](base-honeypot-checker.html)
+
 ## Machine documentation
 
 - [llms.txt](llms.txt)
