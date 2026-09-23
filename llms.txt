@@ -8,6 +8,7 @@ Canonical site: https://eliber12.github.io/jepeta-core/
 
 - Network: Base / chain ID 8453.
 - Public API: https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-scan
+- Public risk feed: https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-feed
 - Input: one exact ERC-20 contract address in tokenAddress.
 - Public schema: 4.0.0.
 - Decision: PASS | WARN | BLOCK.
@@ -55,6 +56,20 @@ Never convert null metrics into reassuring zeroes.
 - 429: Jepeta or GoPlus rate limit; back off and honor Retry-After.
 - 503: required provider unavailable; do not synthesize PASS.
 
+## Live risk feed
+
+GET https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-feed?limit=20&hours=24
+
+Use this feed to discover recently published Base risk signals before choosing an exact token to scan.
+
+- Schema: 1.0.0.
+- Maximum: 50 signals.
+- Window: 1-168 hours.
+- Discovery only: token, decision, risk score, trend score, source platform and timestamp.
+- Full paid evidence is intentionally excluded.
+- PASS remains a screening signal, not a safety guarantee.
+- After discovery, call the exact-token preview API or purchase the full evidence report through ACP.
+
 ## Paid report
 
 - Protocol: Virtuals ACP v2.
@@ -71,6 +86,8 @@ The live full report uses Jepeta decision contract v3. It adds policyVerdict, bl
 
 ## Discovery
 
+- [Live risk feed](https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-feed): recent publicly published Base risk signals for machine discovery.
+- [Live human risk monitor](https://eliber12.github.io/jepeta-core/base-token-risk-monitor.html): crawlable seven-day view of the latest published signal per token; it is not a census of Base or all Jepeta scans.
 - [OpenAPI](https://eliber12.github.io/jepeta-core/openapi.json): public API contract and errors.
 - [Agent manifest](https://eliber12.github.io/jepeta-core/agent.json): identity, commerce metadata and safety semantics.
 - [agents.json](https://eliber12.github.io/jepeta-core/agents.json): discovery alias.
