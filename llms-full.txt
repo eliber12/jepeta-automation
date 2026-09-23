@@ -6,6 +6,8 @@ Canonical site: https://eliber12.github.io/jepeta-core/
 
 Public API: https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-scan
 
+Risk feed: https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-feed
+
 Network: Base / chain ID 8453
 
 Public schema: 4.0.0
@@ -82,6 +84,32 @@ switch (body.decision) {
 ```
 
 Important: `PASS` does not mean safe. It means no configured BLOCK or WARN condition was observed in the available data at scan time.
+
+---
+
+## Live discovery feed
+
+Use the public feed when an autonomous agent wants to discover which Base tokens Jepeta has recently flagged or screened publicly:
+
+```http
+GET https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-feed?limit=20&hours=24
+Accept: application/json
+```
+
+The feed is intentionally narrow. It includes only published discovery signals: token address, PASS/WARN/BLOCK decision, risk score, trend score, source platform and timestamp. It does not include the paid evidence report.
+
+Recommended machine flow:
+
+1. Read the feed.
+2. Select an exact Base token relevant to your own task.
+3. Call the free exact-token preview.
+4. If deeper evidence is required, purchase `token_risk_scan` through Virtuals ACP.
+
+Do not treat feed presence, absence, or PASS as a safety guarantee.
+
+Human/crawlable monitor: https://eliber12.github.io/jepeta-core/base-token-risk-monitor.html
+
+The monitor deduplicates public feed entries by token address and shows the latest valid signal in a seven-day window. It is not a census of Base tokens and does not represent every Jepeta scan.
 
 ---
 
