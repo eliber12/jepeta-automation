@@ -9,6 +9,7 @@ const expectedTracked = new Set([
   'agents.json',
   'agents.txt',
   'docs/OUTREACH.md',
+  'docs/DISTRIBUTION.md',
   'examples/README.md',
   'examples/agent-risk-gate.mjs',
   'examples/curl.sh',
