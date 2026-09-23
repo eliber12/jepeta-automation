@@ -1,0 +1,15 @@
+#!/usr/bin/env sh
+set -eu
+
+TOKEN_ADDRESS="${1:-}"
+case "$TOKEN_ADDRESS" in
+  0x????????????????????????????????????????) ;;
+  *)
+    echo "Usage: $0 0x<40-hex-character Base token address>" >&2
+    exit 1
+    ;;
+esac
+
+curl --fail-with-body --silent --show-error --get \
+  'https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-scan' \
+  --data-urlencode "tokenAddress=$TOKEN_ADDRESS"
