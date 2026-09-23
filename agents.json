@@ -22,5 +22,6 @@
     "priceUSDC": "0.03",
     "url": "https://app.virtuals.io/acp/agent/01a0b446-374c-7eb8-8fe8-cd1a9945ea70",
     "displayName": "Token Risk Scan"
-  }
+  },
+  "riskFeed": "https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-feed"
 }
