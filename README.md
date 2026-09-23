@@ -4,6 +4,9 @@ Public documentation and machine-readable contracts for Jepeta Risk Guard.
 
 - Production website: https://eliber12.github.io/jepeta-core/
 - Free Base ERC-20 preview API: https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-scan
+- Public risk feed: https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-feed
+- Live Base risk monitor: https://eliber12.github.io/jepeta-core/base-token-risk-monitor.html
+- Developer examples: [examples/](examples/)
 - Paid report: Virtuals ACP / Token Risk Scan / 0.03 USDC
 - Telegram: https://t.me/jepeta_tools
 
