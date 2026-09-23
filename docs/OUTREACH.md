@@ -2,6 +2,8 @@
 
 Use this file before any external outreach. Do not use old Netlify URLs.
 
+Target-specific status, UTM links and submission packets: [DISTRIBUTION.md](DISTRIBUTION.md)
+
 ## Canonical production endpoints
 
 - Website: https://eliber12.github.io/jepeta-core/
