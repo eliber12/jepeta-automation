@@ -20,7 +20,7 @@ Public preview schema: 4.0.0
 
 Risk feed schema: 1.1.0
 
-OpenAPI document version: 4.2.0
+OpenAPI document version: 4.3.0
 
 Paid report: Virtuals ACP v2 / token_risk_scan / 0.03 USDC
 
@@ -122,6 +122,46 @@ Do not treat feed presence, absence, or PASS as a safety guarantee.
 Human/crawlable monitor: https://jepeta.dev/base-token-risk-monitor.html
 
 The monitor deduplicates public feed entries by token address and shows the latest valid signal in a seven-day window. It is not a census of Base tokens and does not represent every Jepeta scan.
+
+---
+
+## Permanent public evidence pages
+
+Jepeta publishes stable evidence URLs only after a token has already passed the public publication gate and has HIGH/MEDIUM data quality, explicit honeypot/mintability booleans, and at least two non-null public evidence dimensions.
+
+Machine catalog:
+
+```http
+GET https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-evidence?limit=50&offset=0
+```
+
+Exact token evidence:
+
+```http
+GET https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-evidence?tokenAddress=0x...
+```
+
+Canonical static page:
+
+```text
+https://jepeta.dev/risk/base/0xTOKEN/
+```
+
+Canonical JSON:
+
+```text
+https://jepeta.dev/risk/base/0xTOKEN/index.json
+```
+
+The page includes decision, risk score/level, honeypot, mintability, taxes, exact matching Base liquidity, observed top-10 concentration, observed LP lock, source status, warnings, methodology and timestamps.
+
+Guardrails:
+
+- ordinary scans do not automatically become pages;
+- LOW-quality or incomplete evidence is not promoted;
+- public evidence does not expose paid-only dangerous-permission flags, liquidity-risk synthesis or trading-activity evidence;
+- pages are timestamped snapshots, not audits or guarantees;
+- a fresh scan remains authoritative for current conditions.
 
 ---
 

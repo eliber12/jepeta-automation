@@ -57,5 +57,8 @@
     "DEX Screener market context can be partial, rate-limited, or unavailable; missing values are not converted to zero.",
     "The public risk feed contains published discovery signals only and is not a census of Base or all Jepeta scans."
   ],
-  "riskFeedSchemaVersion": "1.1.0"
+  "riskFeedSchemaVersion": "1.1.0",
+  "riskEvidence": "https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-evidence",
+  "riskEvidenceCatalog": "https://jepeta.dev/risk/base/",
+  "riskEvidenceSchemaVersion": "1.0.0"
 }

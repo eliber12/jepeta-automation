@@ -16,9 +16,10 @@ The free response returns a strict PASS / WARN / BLOCK decision plus core raw si
 
 - [Live Base token risk monitor](https://jepeta.dev/base-token-risk-monitor.html)
 - [Public machine risk feed](https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-feed)
+- [Permanent public risk evidence](https://jepeta.dev/risk/base/)
 - [Token Risk API guide](https://jepeta.dev/token-risk-api.html)
 
-The feed and monitor expose discovery signals only. They do not include the paid evidence report, and PASS is not a safety guarantee.
+The feed and monitor expose discovery signals only. Evidence-rich tokens that already passed the public publication gate may also receive a permanent HTML + JSON snapshot under `/risk/base/0xTOKEN/`. Ordinary scans are not auto-indexed. Paid-only evidence remains excluded, and PASS is not a safety guarantee.
 
 ## Focused Base risk guides
 
