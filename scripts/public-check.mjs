@@ -42,11 +42,11 @@ const texts = await Promise.all(
 
 const joined = texts.map(x=>x.content).join('\n');
 for (const required of [
-  'https://eliber12.github.io/jepeta-core/',
+  'https://jepeta.dev/',
   'https://app.virtuals.io/acp/agent/01a0b446-374c-7eb8-8fe8-cd1a9945ea70',
   'https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-scan',
   'https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-feed',
-  'https://eliber12.github.io/jepeta-core/base-token-risk-monitor.html',
+  'https://jepeta.dev/base-token-risk-monitor.html',
   'https://t.me/jepeta_tools'
 ]) assert.ok(joined.includes(required), 'Missing canonical public reference: '+required);
 

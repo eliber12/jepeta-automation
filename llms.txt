@@ -2,7 +2,7 @@
 
 > Base ERC-20 pre-trade risk screening for people and autonomous agents. Free strict JSON preview; deeper evidence report through Virtuals ACP.
 
-Canonical site: https://eliber12.github.io/jepeta-core/
+Canonical site: https://jepeta.dev/
 
 ## Core facts
 
@@ -71,13 +71,13 @@ The live full report uses Jepeta decision contract v3. It adds policyVerdict, bl
 
 ## Discovery
 
-- [OpenAPI](https://eliber12.github.io/jepeta-core/openapi.json): public API contract and errors.
-- [Agent manifest](https://eliber12.github.io/jepeta-core/agent.json): identity, commerce metadata and safety semantics.
-- [agents.json](https://eliber12.github.io/jepeta-core/agents.json): discovery alias.
-- [Full agent guide](https://eliber12.github.io/jepeta-core/llms-full.txt): detailed field semantics, examples and policy guidance.
-- [Sample paid report](https://eliber12.github.io/jepeta-core/sample-full-report.json): real paid-deliverable shape captured from a live scan.
-- [Human scanner](https://eliber12.github.io/jepeta-core/): interactive product.
-- [Base honeypot and token-risk guide](https://eliber12.github.io/jepeta-core/base-honeypot-checker.html): crawlable explanation of honeypot checks, related risk signals and limitations.
+- [OpenAPI](https://jepeta.dev/openapi.json): public API contract and errors.
+- [Agent manifest](https://jepeta.dev/agent.json): identity, commerce metadata and safety semantics.
+- [agents.json](https://jepeta.dev/agents.json): discovery alias.
+- [Full agent guide](https://jepeta.dev/llms-full.txt): detailed field semantics, examples and policy guidance.
+- [Sample paid report](https://jepeta.dev/sample-full-report.json): real paid-deliverable shape captured from a live scan.
+- [Human scanner](https://jepeta.dev/): interactive product.
+- [Base honeypot and token-risk guide](https://jepeta.dev/base-honeypot-checker.html): crawlable explanation of honeypot checks, related risk signals and limitations.
 - [GitHub](https://github.com/eliber12/jepeta-automation): public documentation and machine-contract mirror.
 - [Telegram](https://t.me/jepeta_tools): risk-intelligence channel.
 

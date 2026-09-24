@@ -35,7 +35,7 @@ GET https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-feed?limit
 ```
 
 Canonical contracts:
-- OpenAPI: https://eliber12.github.io/jepeta-core/openapi.json
-- Agent manifest: https://eliber12.github.io/jepeta-core/agent.json
-- LLM guide: https://eliber12.github.io/jepeta-core/llms.txt
-- Live monitor: https://eliber12.github.io/jepeta-core/base-token-risk-monitor.html
+- OpenAPI: https://jepeta.dev/openapi.json
+- Agent manifest: https://jepeta.dev/agent.json
+- LLM guide: https://jepeta.dev/llms.txt
+- Live monitor: https://jepeta.dev/base-token-risk-monitor.html

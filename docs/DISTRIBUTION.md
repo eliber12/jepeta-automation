@@ -7,14 +7,14 @@ Checked: 2026-09-24
 ## Canonical assets
 
 - Product: Jepeta Risk Guard
-- Website: https://eliber12.github.io/jepeta-core/
-- Live monitor: https://eliber12.github.io/jepeta-core/base-token-risk-monitor.html
-- OpenAPI: https://eliber12.github.io/jepeta-core/openapi.json
-- Agent manifest: https://eliber12.github.io/jepeta-core/agent.json
-- LLM guide: https://eliber12.github.io/jepeta-core/llms.txt
+- Website: https://jepeta.dev/
+- Live monitor: https://jepeta.dev/base-token-risk-monitor.html
+- OpenAPI: https://jepeta.dev/openapi.json
+- Agent manifest: https://jepeta.dev/agent.json
+- LLM guide: https://jepeta.dev/llms.txt
 - Public examples: https://github.com/eliber12/jepeta-automation/tree/main/examples
-- Logo: https://eliber12.github.io/jepeta-core/logo-jepeta.svg
-- 1200x630 image: https://eliber12.github.io/jepeta-core/og-jepeta.png
+- Logo: https://jepeta.dev/logo-jepeta.svg
+- 1200x630 image: https://jepeta.dev/og-jepeta.png
 - Telegram: https://t.me/jepeta_tools
 - Virtuals ACP: https://app.virtuals.io/acp/agent/01a0b446-374c-7eb8-8fe8-cd1a9945ea70
 
@@ -50,7 +50,7 @@ Screening only. No wallet connection, signatures, trade execution, audit guarant
 ### Base Dashboard
 
 Landing URL:
-https://eliber12.github.io/jepeta-core/?utm_source=base_dashboard&utm_medium=directory&utm_campaign=ecosystem_listing#scanner
+https://jepeta.dev/?utm_source=base_dashboard&utm_medium=directory&utm_campaign=ecosystem_listing#scanner
 
 Initial form value:
 Jepeta Risk Guard
@@ -66,7 +66,7 @@ Do not claim submission until the dashboard returns a confirmation or listing.
 ### Crypto Tools Directory
 
 Landing URL:
-https://eliber12.github.io/jepeta-core/?utm_source=crypto_tools_directory&utm_medium=directory&utm_campaign=tool_listing#scanner
+https://jepeta.dev/?utm_source=crypto_tools_directory&utm_medium=directory&utm_campaign=tool_listing#scanner
 
 Suggested primary category:
 Abuse and Scam Detector
@@ -78,7 +78,7 @@ Suggested tags:
 Base, Security, Scam Detector, Api, Analysis
 
 Thumbnail:
-https://eliber12.github.io/jepeta-core/og-jepeta.png
+https://jepeta.dev/og-jepeta.png
 
 Listing copy:
 Jepeta Risk Guard is a read-only Base token risk scanner for people and autonomous agents. Paste one exact ERC-20 address to get PASS, WARN or BLOCK plus honeypot, mintability, tax, liquidity, holder-concentration and data-quality signals. No wallet connection is required. Developers can use the GET-only JSON API, and deeper evidence is available through Telegram Stars or Virtuals ACP.
@@ -88,12 +88,12 @@ External form requirements can include a contact email and media fields. Do not 
 ### agent-tools.org
 
 Landing URL:
-https://eliber12.github.io/jepeta-core/?utm_source=agent_tools&utm_medium=directory&utm_campaign=agent_listing#developers
+https://jepeta.dev/?utm_source=agent_tools&utm_medium=directory&utm_campaign=agent_listing#developers
 
 Machine evidence:
-- https://eliber12.github.io/jepeta-core/llms.txt
-- https://eliber12.github.io/jepeta-core/openapi.json
-- https://eliber12.github.io/jepeta-core/agent.json
+- https://jepeta.dev/llms.txt
+- https://jepeta.dev/openapi.json
+- https://jepeta.dev/agent.json
 - https://github.com/eliber12/jepeta-automation/tree/main/examples
 
 Agent role:
@@ -107,7 +107,7 @@ Do not fabricate an AFS score. A third-party listing is not public until its rev
 ### agentfirst.directory
 
 Landing URL:
-https://eliber12.github.io/jepeta-core/?utm_source=agentfirst&utm_medium=directory&utm_campaign=agent_listing#developers
+https://jepeta.dev/?utm_source=agentfirst&utm_medium=directory&utm_campaign=agent_listing#developers
 
 Classification candidate:
 Agent-enabling
@@ -133,7 +133,7 @@ Proposed entry:
 Jepeta Risk Guard - read-only Base token pre-trade risk screening with honeypot, mintability, taxes, liquidity, holder concentration and machine-readable PASS/WARN/BLOCK output.
 
 Landing URL:
-https://eliber12.github.io/jepeta-core/?utm_source=quillhash&utm_medium=github_directory&utm_campaign=security_tools#scanner
+https://jepeta.dev/?utm_source=quillhash&utm_medium=github_directory&utm_campaign=security_tools#scanner
 
 Current blocker:
 The connected GitHub identity has read access to the upstream repository but no push/fork action is exposed in the current tool connection. No PR has been submitted.
