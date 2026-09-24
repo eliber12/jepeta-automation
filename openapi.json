@@ -1329,6 +1329,19 @@
     "methodology": "https://jepeta.dev/methodology.json",
     "changelog": "https://jepeta.dev/changelog.json",
     "priceUSDC": "0.03",
-    "riskEvidence": "https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-evidence"
+    "riskEvidence": "https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-evidence",
+    "questionGuides": {
+      "status": "LIVE",
+      "schemaVersion": "1.0.0",
+      "count": 20,
+      "canonicalRoot": "https://jepeta.dev/guides/",
+      "catalog": "https://jepeta.dev/guides/index.json",
+      "perPagePattern": "https://jepeta.dev/guides/<slug>/index.json",
+      "structuredData": [
+        "WebPage",
+        "Article",
+        "BreadcrumbList"
+      ]
+    }
   }
 }

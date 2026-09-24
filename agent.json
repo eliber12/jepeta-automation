@@ -428,7 +428,9 @@
     "riskFeed": "https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-feed",
     "methodology": "https://jepeta.dev/methodology.json",
     "changelog": "https://jepeta.dev/changelog.json",
-    "riskEvidence": "https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-evidence"
+    "riskEvidence": "https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-evidence",
+    "guides": "https://jepeta.dev/guides/",
+    "guideCatalog": "https://jepeta.dev/guides/index.json"
   },
   "resources": [
     {
@@ -504,6 +506,12 @@
       "description": "Catalog of indexable published Base token evidence snapshots. Ordinary scans are not listed.",
       "method": "GET",
       "url": "https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-evidence?limit=50&offset=0"
+    },
+    {
+      "name": "high_intent_question_guides",
+      "description": "Twenty evidence-grounded direct-answer guides for common Base token risk, agent/API and tool-comparison questions.",
+      "method": "GET",
+      "url": "https://jepeta.dev/guides/index.json"
     }
   ],
   "publicPreview": {
@@ -619,6 +627,21 @@
       "eligibility": "Published risk signal with HIGH/MEDIUM data quality and evidence-rich public fields.",
       "allScansIndexed": false,
       "paidEvidenceIncluded": false
+    },
+    "questionGuides": {
+      "status": "LIVE",
+      "schemaVersion": "1.0.0",
+      "catalog": "https://jepeta.dev/guides/index.json",
+      "canonicalRoot": "https://jepeta.dev/guides/",
+      "count": 20,
+      "format": "Static HTML + companion JSON",
+      "evidenceGrounded": true,
+      "structuredData": [
+        "WebPage",
+        "Article",
+        "BreadcrumbList"
+      ],
+      "comparisonPolicy": "Descriptive scope comparison; no winner claim."
     }
   },
   "description": "Base token risk scanner and machine-readable risk API",

@@ -11,6 +11,8 @@ Public documentation and machine-readable contracts for Jepeta Risk Guard.
 - Public risk feed: https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-feed
 - Public evidence API: https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-evidence
 - Public evidence catalog: https://jepeta.dev/risk/base/
+- High-intent guide catalog: https://jepeta.dev/guides/
+- Machine guide catalog: https://jepeta.dev/guides/index.json
 - Live Base risk monitor: https://jepeta.dev/base-token-risk-monitor.html
 - Developer examples: [examples/](examples/)
 - Machine methodology: https://jepeta.dev/methodology.json

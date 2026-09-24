@@ -60,5 +60,9 @@
   "riskFeedSchemaVersion": "1.1.0",
   "riskEvidence": "https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-evidence",
   "riskEvidenceCatalog": "https://jepeta.dev/risk/base/",
-  "riskEvidenceSchemaVersion": "1.0.0"
+  "riskEvidenceSchemaVersion": "1.0.0",
+  "questionGuides": "https://jepeta.dev/guides/",
+  "questionGuideCatalog": "https://jepeta.dev/guides/index.json",
+  "questionGuideCount": 20,
+  "questionGuideSchemaVersion": "1.0.0"
 }

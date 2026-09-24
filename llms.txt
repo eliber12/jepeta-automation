@@ -14,6 +14,8 @@ Changelog: https://jepeta.dev/changelog.json
 - Public risk feed: https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-feed
 - Public risk evidence API: https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-evidence
 - Indexable evidence catalog: https://jepeta.dev/risk/base/
+- High-intent guide catalog: https://jepeta.dev/guides/
+- Machine guide catalog: https://jepeta.dev/guides/index.json
 - Input: one exact ERC-20 contract address in tokenAddress.
 - Public schema: 4.0.0.
 - Decision: PASS | WARN | BLOCK.
@@ -132,3 +134,17 @@ The live full report uses Jepeta decision contract v3. It adds policyVerdict, bl
 ## Safety
 
 Jepeta is read-only. It does not connect to a buyer wallet, sign transactions, execute trades, predict prices, or provide an audit or investment recommendation.
+
+
+## High-intent answer pages
+
+Jepeta publishes 20 English, evidence-grounded guides for common Base token risk questions.
+
+- Human catalog: https://jepeta.dev/guides/
+- Machine catalog: https://jepeta.dev/guides/index.json
+- Per-page HTML: https://jepeta.dev/guides/<slug>/
+- Per-page JSON: https://jepeta.dev/guides/<slug>/index.json
+
+Each guide starts with a direct answer, links to relevant public evidence and methodology, includes limitations and a fresh-scan path, and exposes related questions. Comparison pages describe documented scope without declaring a winner.
+
+The guide pages use static HTML plus WebPage, Article and BreadcrumbList structured data. They do not use FAQPage or QAPage markup.
