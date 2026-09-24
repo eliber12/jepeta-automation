@@ -38,7 +38,9 @@
     "tokenRiskApiGuide": "https://jepeta.dev/token-risk-api.html",
     "riskMonitor": "https://jepeta.dev/base-token-risk-monitor.html",
     "sampleFullReport": "https://jepeta.dev/sample-full-report.json",
-    "paidAcp": "https://app.virtuals.io/acp/agent/01a0b446-374c-7eb8-8fe8-cd1a9945ea70"
+    "paidAcp": "https://app.virtuals.io/acp/agent/01a0b446-374c-7eb8-8fe8-cd1a9945ea70",
+    "riskEvidence": "https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-evidence",
+    "riskEvidenceCatalog": "https://jepeta.dev/risk/base/"
   },
   "exampleRequest": "GET https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-scan?tokenAddress=0x532f27101965dd16442e59d40670faf5ebb142e4",
   "exampleResponse": {
@@ -84,6 +86,18 @@
     "The public risk feed contains published discovery signals only and is not a census of Base or all Jepeta scans."
   ],
   "changes": [
+    {
+      "date": "2026-09-24",
+      "version": "GEO-T037",
+      "summary": "Added permanent evidence-rich public Base token pages.",
+      "changes": [
+        "Added public risk-evidence snapshot storage and GET-only evidence API.",
+        "Added stable HTML + JSON URLs under /risk/base/0xTOKEN/.",
+        "Indexing is gated to already-published HIGH/MEDIUM evidence-rich tokens; ordinary scans are not auto-indexed.",
+        "Paid-only dangerous-permission flags, liquidity-risk synthesis and trading-activity evidence remain excluded.",
+        "Added scheduled static regeneration, dynamic sitemap entries and IndexNow discovery."
+      ]
+    },
     {
       "date": "2026-09-24",
       "version": "GEO-T025",

@@ -427,7 +427,8 @@
     "agentsAlias": "https://jepeta.dev/agents.json",
     "riskFeed": "https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-feed",
     "methodology": "https://jepeta.dev/methodology.json",
-    "changelog": "https://jepeta.dev/changelog.json"
+    "changelog": "https://jepeta.dev/changelog.json",
+    "riskEvidence": "https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-evidence"
   },
   "resources": [
     {
@@ -478,6 +479,31 @@
       "description": "Real paid-deliverable shape captured from a live Jepeta scan; values are a dated sample and can change.",
       "method": "GET",
       "url": "https://jepeta.dev/sample-full-report.json"
+    },
+    {
+      "name": "public_risk_evidence",
+      "description": "Permanent public evidence snapshot for an evidence-rich Base token that already passed Jepeta's publication gate.",
+      "method": "GET",
+      "url": "https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-evidence?tokenAddress={{tokenAddress}}",
+      "params": {
+        "type": "object",
+        "required": [
+          "tokenAddress"
+        ],
+        "properties": {
+          "tokenAddress": {
+            "type": "string",
+            "pattern": "^0x[a-fA-F0-9]{40}$"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "public_risk_evidence_catalog",
+      "description": "Catalog of indexable published Base token evidence snapshots. Ordinary scans are not listed.",
+      "method": "GET",
+      "url": "https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-evidence?limit=50&offset=0"
     }
   ],
   "publicPreview": {
@@ -584,6 +610,15 @@
       "purpose": "Discover recent publicly published Base risk signals before deciding which exact token to scan.",
       "evidenceBoundary": "Feed entries contain discovery scores only. Full evidence remains paid through Virtuals ACP.",
       "rateLimit": "60 requests / 60 seconds per hashed client address"
+    },
+    "riskEvidence": {
+      "status": "LIVE",
+      "schemaVersion": "1.0.0",
+      "endpoint": "https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-evidence",
+      "canonicalPattern": "https://jepeta.dev/risk/base/0xTOKEN/",
+      "eligibility": "Published risk signal with HIGH/MEDIUM data quality and evidence-rich public fields.",
+      "allScansIndexed": false,
+      "paidEvidenceIncluded": false
     }
   },
   "description": "Base token risk scanner and machine-readable risk API",

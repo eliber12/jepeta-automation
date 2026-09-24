@@ -12,6 +12,8 @@ Changelog: https://jepeta.dev/changelog.json
 - Network: Base / chain ID 8453.
 - Public API: https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-scan
 - Public risk feed: https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-feed
+- Public risk evidence API: https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-evidence
+- Indexable evidence catalog: https://jepeta.dev/risk/base/
 - Input: one exact ERC-20 contract address in tokenAddress.
 - Public schema: 4.0.0.
 - Decision: PASS | WARN | BLOCK.
@@ -85,6 +87,17 @@ Use this feed to discover recently published Base risk signals before choosing a
 - PASS remains a screening signal, not a safety guarantee.
 - After discovery, call the exact-token preview API or purchase the full evidence report through ACP.
 
+## Public evidence pages
+
+Permanent public evidence is available only for evidence-rich tokens that already passed Jepeta's public publication gate.
+
+- Catalog: https://jepeta.dev/risk/base/
+- Detail API: https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-evidence?tokenAddress=0x...
+- Canonical page: https://jepeta.dev/risk/base/0xTOKEN/
+- JSON snapshot: https://jepeta.dev/risk/base/0xTOKEN/index.json
+
+Ordinary scans are not automatically indexed. Public evidence contains only public-preview signals and explicitly excludes paid-only dangerous-permission flags, liquidity-risk synthesis, and trading-activity evidence.
+
 ## Paid report
 
 - Protocol: Virtuals ACP v2.
@@ -102,6 +115,7 @@ The live full report uses Jepeta decision contract v3. It adds policyVerdict, bl
 ## Discovery
 
 - [Live risk feed](https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-feed): recent publicly published Base risk signals for machine discovery.
+- [Public evidence catalog](https://jepeta.dev/risk/base/): permanent evidence-rich token snapshots with HTML + JSON canonical URLs.
 - [Live human risk monitor](https://jepeta.dev/base-token-risk-monitor.html): crawlable seven-day view of the latest published signal per token; it is not a census of Base or all Jepeta scans.
 - [OpenAPI](https://jepeta.dev/openapi.json): public API contract and errors.
 - [Methodology](https://jepeta.dev/methodology.json): checks, sources, decisions, examples and limitations.
