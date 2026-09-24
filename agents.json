@@ -64,5 +64,8 @@
   "questionGuides": "https://jepeta.dev/guides/",
   "questionGuideCatalog": "https://jepeta.dev/guides/index.json",
   "questionGuideCount": 20,
-  "questionGuideSchemaVersion": "1.0.0"
+  "questionGuideSchemaVersion": "1.0.0",
+  "riskIntelligence": "https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-intelligence",
+  "riskIntelligenceCatalog": "https://jepeta.dev/research/",
+  "riskIntelligenceSchemaVersion": "1.0.0"
 }
