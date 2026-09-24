@@ -1,6 +1,6 @@
 # Jepeta Risk Guard — Base Token Risk Scanner
 
-Scan any Base ERC-20 token for honeypot, mintability, taxes, liquidity and holder risk before execution.
+Base token risk scanner and machine-readable risk API. Scan an exact Base ERC-20 contract for honeypot, mintability, taxes, liquidity and holder risk before execution.
 
 ## Free preview
 
@@ -9,6 +9,21 @@ Use the [interactive scanner](https://jepeta.dev/#scanner) or call:
 `GET https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-scan?tokenAddress=0x...`
 
 The free response returns a strict PASS / WARN / BLOCK decision plus core raw signals and source-quality status.
+
+## Live Base risk intelligence
+
+- [Live Base token risk monitor](https://jepeta.dev/base-token-risk-monitor.html)
+- [Public machine risk feed](https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-feed)
+- [Token Risk API guide](https://jepeta.dev/token-risk-api.html)
+
+The feed and monitor expose discovery signals only. They do not include the paid evidence report, and PASS is not a safety guarantee.
+
+## Focused Base risk guides
+
+- [Base honeypot checker and token-risk guide](https://jepeta.dev/base-honeypot-checker.html)
+- [Base token permissions checker](https://jepeta.dev/base-token-permissions-checker.html)
+- [Base token liquidity-risk checker](https://jepeta.dev/base-token-liquidity-risk-checker.html)
+- [Jepeta vs Honeypot.is](https://jepeta.dev/jepeta-vs-honeypot-is.html)
 
 ## Full evidence report
 
@@ -20,12 +35,9 @@ Live registry offering: `token_risk_scan` (`01a0bb7b-be32-73e8-abe6-1385a115ac16
 
 [Buy full report on Jepeta's ACP profile](https://app.virtuals.io/acp/agent/01a0b446-374c-7eb8-8fe8-cd1a9945ea70)
 
-## Base token risk guide
-
-- [Base honeypot checker and token-risk guide](https://jepeta.dev/base-honeypot-checker.html)
-
 ## Machine documentation
 
+- [Developer documentation](https://jepeta.dev/docs.html)
 - [llms.txt](llms.txt)
 - [Full agent guide](llms-full.txt)
 - [OpenAPI](openapi.json)
