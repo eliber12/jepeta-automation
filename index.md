@@ -1,5 +1,7 @@
 # Jepeta Risk Guard — Base Token Risk Scanner
 
+Last updated: 2026-09-24
+
 Base token risk scanner and machine-readable risk API. Scan an exact Base ERC-20 contract for honeypot, mintability, taxes, liquidity and holder risk before execution.
 
 ## Free preview
@@ -44,5 +46,7 @@ Live registry offering: `token_risk_scan` (`01a0bb7b-be32-73e8-abe6-1385a115ac16
 - [Agent manifest](agent.json)
 - [agents.json](agents.json)
 - [Sample full report](sample-full-report.json)
+- [Methodology](methodology.json)
+- [Changelog](changelog.json)
 
 Jepeta is read-only screening, not a smart-contract audit, safety guarantee or investment recommendation.

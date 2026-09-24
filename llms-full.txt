@@ -4,13 +4,25 @@
 
 Canonical site: https://jepeta.dev/
 
+Last updated: 2026-09-24
+
+Methodology: https://jepeta.dev/methodology.json
+
+Changelog: https://jepeta.dev/changelog.json
+
 Public API: https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-scan
 
 Risk feed: https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-feed
 
 Network: Base / chain ID 8453
 
-Public schema: 4.0.0
+Public preview schema: 4.0.0
+
+Risk feed schema: 1.1.0
+
+OpenAPI document version: 4.2.0
+
+Paid report: Virtuals ACP v2 / token_risk_scan / 0.03 USDC
 
 ---
 

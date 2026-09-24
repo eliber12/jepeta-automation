@@ -23,5 +23,39 @@
     "url": "https://app.virtuals.io/acp/agent/01a0b446-374c-7eb8-8fe8-cd1a9945ea70",
     "displayName": "Token Risk Scan"
   },
-  "riskFeed": "https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-feed"
+  "riskFeed": "https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-feed",
+  "canonicalUrl": "https://jepeta.dev/",
+  "lastUpdated": "2026-09-24",
+  "supportedChain": {
+    "name": "Base",
+    "chainId": 8453
+  },
+  "checks": [
+    "honeypot status",
+    "mintability",
+    "buy and sell taxes",
+    "holder concentration",
+    "observed LP lock coverage",
+    "matching Base liquidity",
+    "source status and data quality"
+  ],
+  "freeVsPaid": {
+    "free": "Public GET exact-token preview plus public discovery risk feed.",
+    "paid": "Full evidence report through Virtuals ACP v2 / token_risk_scan.",
+    "priceUSDC": "0.03"
+  },
+  "methodology": "https://jepeta.dev/methodology.json",
+  "changelog": "https://jepeta.dev/changelog.json",
+  "examples": {
+    "request": "GET https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-scan?tokenAddress=0x532f27101965dd16442e59d40670faf5ebb142e4",
+    "responseShape": "https://jepeta.dev/methodology.json#exampleResponse"
+  },
+  "limitations": [
+    "Screening only; not a smart-contract audit, safety guarantee, price prediction, or investment recommendation.",
+    "Only Base ERC-20 contracts on chain 8453 are supported.",
+    "GoPlus is required for strict honeypot and mintability evidence; unknown required values fail closed with HTTP 422.",
+    "DEX Screener market context can be partial, rate-limited, or unavailable; missing values are not converted to zero.",
+    "The public risk feed contains published discovery signals only and is not a census of Base or all Jepeta scans."
+  ],
+  "riskFeedSchemaVersion": "1.1.0"
 }

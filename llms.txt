@@ -3,6 +3,9 @@
 > Base token risk scanner and machine-readable risk API for Base ERC-20 tokens on chain 8453. Free strict JSON preview; deeper evidence report through Virtuals ACP.
 
 Canonical site: https://jepeta.dev/
+Last updated: 2026-09-24
+Methodology: https://jepeta.dev/methodology.json
+Changelog: https://jepeta.dev/changelog.json
 
 ## Core facts
 
@@ -18,6 +21,18 @@ Canonical site: https://jepeta.dev/
 - Unknown required honeypot or mintability values fail closed with HTTP 422.
 - Public endpoint is GET-only.
 - Server-side rate limiting and a short per-token cache protect upstream quotas.
+
+## Free vs paid
+
+- Free: public GET exact-token preview plus public discovery risk feed.
+- Paid: full evidence report through Virtuals ACP v2 / token_risk_scan.
+- Price: 0.03 USDC.
+
+## Example request
+
+`GET https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-scan?tokenAddress=0x532f27101965dd16442e59d40670faf5ebb142e4`
+
+The authoritative response schema is OpenAPI; a compact illustrative response shape is also published in methodology.json.
 
 ## Successful response
 
@@ -89,6 +104,8 @@ The live full report uses Jepeta decision contract v3. It adds policyVerdict, bl
 - [Live risk feed](https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-feed): recent publicly published Base risk signals for machine discovery.
 - [Live human risk monitor](https://jepeta.dev/base-token-risk-monitor.html): crawlable seven-day view of the latest published signal per token; it is not a census of Base or all Jepeta scans.
 - [OpenAPI](https://jepeta.dev/openapi.json): public API contract and errors.
+- [Methodology](https://jepeta.dev/methodology.json): checks, sources, decisions, examples and limitations.
+- [Changelog](https://jepeta.dev/changelog.json): dated machine-readable contract changes.
 - [Agent manifest](https://jepeta.dev/agent.json): identity, commerce metadata and safety semantics.
 - [agents.json](https://jepeta.dev/agents.json): discovery alias.
 - [Full agent guide](https://jepeta.dev/llms-full.txt): detailed field semantics, examples and policy guidance.

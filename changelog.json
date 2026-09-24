@@ -1,0 +1,118 @@
+{
+  "object": "jepeta_changelog",
+  "schemaVersion": "1.0.0",
+  "name": "Jepeta Risk Guard",
+  "description": "Base token risk scanner and machine-readable risk API",
+  "canonicalUrl": "https://jepeta.dev/changelog.json",
+  "serviceCanonicalUrl": "https://jepeta.dev/",
+  "lastUpdated": "2026-09-24",
+  "supportedChain": {
+    "name": "Base",
+    "chainId": 8453
+  },
+  "checks": [
+    "honeypot status",
+    "mintability",
+    "buy and sell taxes",
+    "holder concentration",
+    "observed LP lock coverage",
+    "matching Base liquidity",
+    "source status and data quality"
+  ],
+  "freeVsPaid": {
+    "free": "Public GET exact-token preview plus public discovery risk feed.",
+    "paid": "Full evidence report through Virtuals ACP v2 / token_risk_scan.",
+    "priceUSDC": "0.03"
+  },
+  "endpoints": {
+    "canonical": "https://jepeta.dev/",
+    "previewApi": "https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-scan",
+    "riskFeed": "https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-feed",
+    "openapi": "https://jepeta.dev/openapi.json",
+    "agentManifest": "https://jepeta.dev/agent.json",
+    "llms": "https://jepeta.dev/llms.txt",
+    "llmsFull": "https://jepeta.dev/llms-full.txt",
+    "methodology": "https://jepeta.dev/methodology.json",
+    "changelog": "https://jepeta.dev/changelog.json",
+    "apiDocs": "https://jepeta.dev/docs.html",
+    "tokenRiskApiGuide": "https://jepeta.dev/token-risk-api.html",
+    "riskMonitor": "https://jepeta.dev/base-token-risk-monitor.html",
+    "sampleFullReport": "https://jepeta.dev/sample-full-report.json",
+    "paidAcp": "https://app.virtuals.io/acp/agent/01a0b446-374c-7eb8-8fe8-cd1a9945ea70"
+  },
+  "exampleRequest": "GET https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-scan?tokenAddress=0x532f27101965dd16442e59d40670faf5ebb142e4",
+  "exampleResponse": {
+    "note": "Illustrative response shape only; values are not live token data.",
+    "body": {
+      "schema_version": "4.0.0",
+      "chain_id": 8453,
+      "token_address": "0x532f27101965dd16442e59d40670faf5ebb142e4",
+      "decision": "PASS",
+      "risk_score": 0,
+      "risk_level": "LOW",
+      "is_honeypot": false,
+      "is_mintable": false,
+      "buy_tax_percent": null,
+      "sell_tax_percent": null,
+      "top10_holder_concentration_percent": null,
+      "top10_holder_count": 0,
+      "lp_locked_percent_observed": null,
+      "lp_holder_sample_count": 0,
+      "liquidity_usd": null,
+      "data_quality": "LOW",
+      "source_status": {
+        "goplus": "OK",
+        "dexscreener": "UNAVAILABLE"
+      },
+      "warnings": [
+        "Illustrative response shape only."
+      ],
+      "observed_at": "2026-09-24T00:00:00Z",
+      "paid_report": {
+        "protocol": "Virtuals ACP v2",
+        "offering": "Token Risk Scan",
+        "priceUSDC": "0.03",
+        "providerWallet": "0xefcb0359e2cd6d1ad92cbca1e41c8946b308d7df"
+      }
+    }
+  },
+  "limitations": [
+    "Screening only; not a smart-contract audit, safety guarantee, price prediction, or investment recommendation.",
+    "Only Base ERC-20 contracts on chain 8453 are supported.",
+    "GoPlus is required for strict honeypot and mintability evidence; unknown required values fail closed with HTTP 422.",
+    "DEX Screener market context can be partial, rate-limited, or unavailable; missing values are not converted to zero.",
+    "The public risk feed contains published discovery signals only and is not a census of Base or all Jepeta scans."
+  ],
+  "changes": [
+    {
+      "date": "2026-09-24",
+      "version": "GEO-T025",
+      "summary": "Unified machine-readable AI/agent surface.",
+      "changes": [
+        "Added canonical methodology.json and changelog.json.",
+        "Added last-updated, canonical, free-vs-paid, endpoint, example, and limitation metadata across machine surfaces.",
+        "Risk feed envelope upgraded to schemaVersion 1.1.0 with embedded Jepeta service metadata.",
+        "OpenAPI document upgraded to 4.2.0 and linked to methodology and changelog."
+      ]
+    },
+    {
+      "date": "2026-09-24",
+      "version": "GEO-T024",
+      "summary": "Established the canonical Jepeta Risk Guard entity.",
+      "changes": [
+        "Canonical domain set to jepeta.dev.",
+        "Linked Organization, SoftwareApplication/WebApplication, and WebAPI structured entities.",
+        "Aligned external identity references across public surfaces."
+      ]
+    },
+    {
+      "date": "2026-09-23",
+      "version": "RiskFeed-1.0.0",
+      "summary": "Published the bounded public Base risk discovery feed.",
+      "changes": [
+        "Added recent public PASS/WARN/BLOCK discovery signals.",
+        "Kept paid evidence excluded from the public feed."
+      ]
+    }
+  ]
+}

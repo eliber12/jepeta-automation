@@ -16,6 +16,8 @@ const expectedTracked = new Set([
   'index.md',
   'llms-full.txt',
   'llms.txt',
+  'methodology.json',
+  'changelog.json',
   'openapi.json',
   'sample-full-report.json',
   'scripts/public-check.mjs',
@@ -47,6 +49,8 @@ for (const required of [
   'https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-scan',
   'https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-feed',
   'https://jepeta.dev/base-token-risk-monitor.html',
+  'https://jepeta.dev/methodology.json',
+  'https://jepeta.dev/changelog.json',
   'https://t.me/jepeta_tools'
 ]) assert.ok(joined.includes(required), 'Missing canonical public reference: '+required);
 
