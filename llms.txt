@@ -16,6 +16,8 @@ Changelog: https://jepeta.dev/changelog.json
 - Indexable evidence catalog: https://jepeta.dev/risk/base/
 - High-intent guide catalog: https://jepeta.dev/guides/
 - Machine guide catalog: https://jepeta.dev/guides/index.json
+- Public risk intelligence API: https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-intelligence
+- Original research catalog: https://jepeta.dev/research/
 - Input: one exact ERC-20 contract address in tokenAddress.
 - Public schema: 4.0.0.
 - Decision: PASS | WARN | BLOCK.
