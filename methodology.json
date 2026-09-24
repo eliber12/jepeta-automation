@@ -96,7 +96,9 @@
     "riskEvidence": "https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-evidence",
     "riskEvidenceCatalog": "https://jepeta.dev/risk/base/",
     "questionGuides": "https://jepeta.dev/guides/",
-    "questionGuideCatalog": "https://jepeta.dev/guides/index.json"
+    "questionGuideCatalog": "https://jepeta.dev/guides/index.json",
+    "riskIntelligence": "https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-intelligence",
+    "research": "https://jepeta.dev/research/"
   },
   "exampleRequest": "GET https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-scan?tokenAddress=0x532f27101965dd16442e59d40670faf5ebb142e4",
   "exampleResponse": {
@@ -171,5 +173,17 @@
       "FAQPage",
       "QAPage"
     ]
+  },
+  "researchPolicy": {
+    "schemaVersion": "1.0.0",
+    "unit": "unique Base token",
+    "deduplication": "Latest usable observation per token per month.",
+    "qualityGate": [
+      "HIGH",
+      "MEDIUM"
+    ],
+    "minimumPublicSample": 100,
+    "representativeCensus": false,
+    "limitation": "Published percentages describe Jepeta's observed usable sample and must not be generalized to the entire Base ecosystem."
   }
 }
