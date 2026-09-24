@@ -430,7 +430,9 @@
     "changelog": "https://jepeta.dev/changelog.json",
     "riskEvidence": "https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-evidence",
     "guides": "https://jepeta.dev/guides/",
-    "guideCatalog": "https://jepeta.dev/guides/index.json"
+    "guideCatalog": "https://jepeta.dev/guides/index.json",
+    "riskIntelligence": "https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-intelligence",
+    "research": "https://jepeta.dev/research/"
   },
   "resources": [
     {
@@ -512,6 +514,12 @@
       "description": "Twenty evidence-grounded direct-answer guides for common Base token risk, agent/API and tool-comparison questions.",
       "method": "GET",
       "url": "https://jepeta.dev/guides/index.json"
+    },
+    {
+      "name": "monthly_base_risk_research",
+      "description": "Aggregate monthly Jepeta Base risk telemetry. One latest HIGH/MEDIUM-quality observation per unique token; observational sample, not a census of Base.",
+      "method": "GET",
+      "url": "https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-intelligence?limit=24"
     }
   ],
   "publicPreview": {
@@ -642,6 +650,15 @@
         "BreadcrumbList"
       ],
       "comparisonPolicy": "Descriptive scope comparison; no winner claim."
+    },
+    "riskIntelligence": {
+      "status": "LIVE",
+      "schemaVersion": "1.0.0",
+      "endpoint": "https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-intelligence",
+      "canonicalRoot": "https://jepeta.dev/research/",
+      "methodology": "Latest HIGH/MEDIUM-quality observation per unique token per month.",
+      "minimumPublicSample": 100,
+      "representativeOfAllBaseTokens": false
     }
   },
   "description": "Base token risk scanner and machine-readable risk API",

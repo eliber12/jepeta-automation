@@ -764,3 +764,33 @@ https://jepeta.dev/guides/index.json
 Structured-data policy: WebPage + Article + BreadcrumbList. FAQPage and QAPage are intentionally not used because these are authored answer resources, not user-generated Q&A or a repeated FAQ block.
 
 Comparison pages are descriptive and source-grounded. Jepeta does not label itself the winner.
+
+---
+
+## Original Jepeta Base risk research
+
+Machine-readable aggregate telemetry:
+
+```http
+GET https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-intelligence?limit=24
+```
+
+Human/indexable research catalog:
+
+- https://jepeta.dev/research/
+
+Methodology:
+
+- one latest HIGH/MEDIUM-quality Jepeta observation per unique Base token per month;
+- minimum public sample: 100 usable unique tokens;
+- repeated scans do not overweight one token;
+- the sample is observational and is not a census of all Base tokens;
+- published percentages must not be generalized to the whole Base ecosystem.
+
+Each report has canonical HTML plus companion JSON under:
+
+```text
+https://jepeta.dev/research/base-risk-YYYY-MM/
+https://jepeta.dev/research/base-risk-YYYY-MM/index.json
+```
+
