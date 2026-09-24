@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0",
   "name": "Jepeta Risk Guard",
-  "description": "Read-only Base ERC-20 pre-trade risk screening for people and autonomous agents.",
+  "description": "Base token risk scanner and machine-readable risk API",
   "canonicalAgentManifest": "https://jepeta.dev/agent.json",
   "llms": "https://jepeta.dev/llms.txt",
   "fullGuide": "https://jepeta.dev/llms-full.txt",
@@ -22,5 +22,6 @@
     "priceUSDC": "0.03",
     "url": "https://app.virtuals.io/acp/agent/01a0b446-374c-7eb8-8fe8-cd1a9945ea70",
     "displayName": "Token Risk Scan"
-  }
+  },
+  "riskFeed": "https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-feed"
 }

@@ -1,9 +1,9 @@
 {
   "openapi": "3.1.0",
   "info": {
-    "title": "Jepeta Risk Guard Preview API",
-    "version": "4.0.0",
-    "description": "Strict, GET-only Base ERC-20 pre-trade screening preview for people and autonomous agents. Server-side rate limits and a short token cache protect upstream sources. PASS/WARN/BLOCK is a screening decision, not a safety guarantee. Full evidence is sold through Virtuals ACP."
+    "title": "Jepeta Risk Guard API",
+    "version": "4.1.0",
+    "description": "Base token risk scanner and machine-readable risk API. GET-only Base ERC-20 risk intelligence for people and autonomous agents: exact-token screening plus a recent public signal feed. PASS/WARN/BLOCK is screening, not a safety guarantee. Full evidence is sold through Virtuals ACP."
   },
   "servers": [
     {
@@ -119,6 +119,96 @@
           }
         },
         "description": "Public endpoint. GET only. Responses may be served from a short (~30s) per-token cache. Repeated requests are server-rate-limited."
+      }
+    },
+    "/jepeta-risk-feed": {
+      "get": {
+        "operationId": "listRecentBaseRiskSignals",
+        "summary": "List recent publicly published Base risk signals",
+        "description": "Discovery-only feed. It exposes recent token, decision, risk/trend scores and timestamps already published by Jepeta; it does not expose paid evidence.",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 50,
+              "default": 20
+            }
+          },
+          {
+            "name": "hours",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 168,
+              "default": 24
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Recent public risk signals",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RiskFeedV1"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid query parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Method not allowed. Risk feed is GET-only.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limited. Honor Retry-After.",
+            "headers": {
+              "Retry-After": {
+                "schema": {
+                  "type": "integer"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Risk feed unavailable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
       }
     }
   },
@@ -325,6 +415,158 @@
             "type": "string"
           }
         }
+      },
+      "RiskSignalV1": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "chainId",
+          "tokenAddress",
+          "decision",
+          "riskScore",
+          "trendScore",
+          "observedAt",
+          "sourcePlatform",
+          "scanUrl"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^publication:[0-9]+$"
+          },
+          "chainId": {
+            "const": 8453
+          },
+          "tokenAddress": {
+            "type": "string",
+            "pattern": "^0x[a-f0-9]{40}$"
+          },
+          "decision": {
+            "type": "string",
+            "enum": [
+              "PASS",
+              "WARN",
+              "BLOCK"
+            ]
+          },
+          "riskScore": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100
+          },
+          "trendScore": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100
+          },
+          "observedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "sourcePlatform": {
+            "type": "string",
+            "enum": [
+              "telegram",
+              "farcaster"
+            ]
+          },
+          "scanUrl": {
+            "type": "string",
+            "format": "uri"
+          }
+        }
+      },
+      "RiskFeedV1": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "object",
+          "schemaVersion",
+          "chainId",
+          "generatedAt",
+          "windowHours",
+          "count",
+          "signals",
+          "paidReport",
+          "semantics"
+        ],
+        "properties": {
+          "object": {
+            "const": "jepeta_risk_feed"
+          },
+          "schemaVersion": {
+            "const": "1.0.0"
+          },
+          "chainId": {
+            "const": 8453
+          },
+          "generatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "windowHours": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 168
+          },
+          "count": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 50
+          },
+          "signals": {
+            "type": "array",
+            "maxItems": 50,
+            "items": {
+              "$ref": "#/components/schemas/RiskSignalV1"
+            }
+          },
+          "paidReport": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "protocol",
+              "offering",
+              "offeringId",
+              "priceUSDC"
+            ],
+            "properties": {
+              "protocol": {
+                "const": "Virtuals ACP v2"
+              },
+              "offering": {
+                "const": "token_risk_scan"
+              },
+              "offeringId": {
+                "const": "01a0bb7b-be32-73e8-abe6-1385a115ac16"
+              },
+              "priceUSDC": {
+                "const": "0.03"
+              }
+            }
+          },
+          "semantics": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "discoveryOnly",
+              "fullEvidenceIncluded",
+              "passIsSafetyGuarantee"
+            ],
+            "properties": {
+              "discoveryOnly": {
+                "const": true
+              },
+              "fullEvidenceIncluded": {
+                "const": false
+              },
+              "passIsSafetyGuarantee": {
+                "const": false
+              }
+            }
+          }
+        }
       }
     }
   },
@@ -335,6 +577,13 @@
     "serverRateLimits": {
       "client": "30 requests / 60 seconds per hashed client address",
       "token": "20 requests / 60 seconds per token"
+    },
+    "riskFeed": {
+      "schemaVersion": "1.0.0",
+      "maxItems": 50,
+      "maxWindowHours": 168,
+      "clientRateLimit": "60 requests / 60 seconds per hashed client address",
+      "evidenceBoundary": "Public discovery signals only; paid full evidence is excluded."
     }
   }
 }
