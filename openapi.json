@@ -340,6 +340,78 @@
           }
         }
       }
+    },
+    "/jepeta-risk-intelligence": {
+      "get": {
+        "operationId": "getBaseRiskIntelligence",
+        "summary": "Get aggregate monthly Jepeta Base risk research",
+        "description": "Returns observational aggregate telemetry only. One latest HIGH/MEDIUM-quality observation per unique token is counted per month. The sample is not a census of all Base tokens.",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 60,
+              "default": 24
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Monthly research catalog",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid query",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Method not allowed. Research API is GET-only.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limited. Honor Retry-After.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Research service unavailable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -1342,6 +1414,15 @@
         "Article",
         "BreadcrumbList"
       ]
+    },
+    "riskIntelligence": {
+      "status": "LIVE",
+      "schemaVersion": "1.0.0",
+      "endpoint": "https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-intelligence",
+      "canonicalRoot": "https://jepeta.dev/research/",
+      "methodology": "Latest HIGH/MEDIUM-quality observation per unique Base token per month.",
+      "minimumPublicSample": 100,
+      "representativeOfAllBaseTokens": false
     }
   }
 }
