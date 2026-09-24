@@ -2,7 +2,7 @@
 
 > Read-only pre-trade risk intelligence for Base ERC-20 tokens. Jepeta gives people and autonomous agents a strict machine-readable screening result before a swap or buy, while keeping uncertainty explicit.
 
-Canonical site: https://eliber12.github.io/jepeta-core/
+Canonical site: https://jepeta.dev/
 
 Public API: https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-scan
 
@@ -126,8 +126,8 @@ Do not rely on undocumented fields.
 
 The authoritative schema is:
 
-- [OpenAPI 4.0.0](https://eliber12.github.io/jepeta-core/openapi.json)
-- [Agent manifest](https://eliber12.github.io/jepeta-core/agent.json)
+- [OpenAPI 4.0.0](https://jepeta.dev/openapi.json)
+- [Agent manifest](https://jepeta.dev/agent.json)
 
 ---
 
@@ -427,7 +427,7 @@ Treat the scan as unavailable. Do not manufacture a local PASS result.
 Canonical human scan link:
 
 ```text
-https://eliber12.github.io/jepeta-core/?token=0x...#scanner
+https://jepeta.dev/?token=0x...#scanner
 ```
 
 Opening a valid `?token=` link runs a fresh scan.
@@ -457,7 +457,7 @@ Because they are live contracts and upstream data changes, their future decision
 
 Human scanner:
 
-- [Run the Jepeta scanner](https://eliber12.github.io/jepeta-core/#scanner)
+- [Run the Jepeta scanner](https://jepeta.dev/#scanner)
 
 ---
 
@@ -573,9 +573,9 @@ Market degradation is represented explicitly instead of being silently treated a
 
 ## Public machine references
 
-- [Jepeta human scanner](https://eliber12.github.io/jepeta-core/): interactive Base token scanner.
-- [OpenAPI schema](https://eliber12.github.io/jepeta-core/openapi.json): authoritative public API contract and error responses.
-- [Agent manifest](https://eliber12.github.io/jepeta-core/agent.json): identity, ACP commerce metadata, capabilities, safety properties and schema semantics.
+- [Jepeta human scanner](https://jepeta.dev/): interactive Base token scanner.
+- [OpenAPI schema](https://jepeta.dev/openapi.json): authoritative public API contract and error responses.
+- [Agent manifest](https://jepeta.dev/agent.json): identity, ACP commerce metadata, capabilities, safety properties and schema semantics.
 - [GitHub repository](https://github.com/eliber12/jepeta-automation): public source, tests and deployment configuration.
 - [Telegram channel](https://t.me/jepeta_tools): Jepeta risk-intelligence channel.
 

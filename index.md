@@ -4,7 +4,7 @@ Scan any Base ERC-20 token for honeypot, mintability, taxes, liquidity and holde
 
 ## Free preview
 
-Use the [interactive scanner](https://eliber12.github.io/jepeta-core/#scanner) or call:
+Use the [interactive scanner](https://jepeta.dev/#scanner) or call:
 
 `GET https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-scan?tokenAddress=0x...`
 
@@ -22,7 +22,7 @@ Live registry offering: `token_risk_scan` (`01a0bb7b-be32-73e8-abe6-1385a115ac16
 
 ## Base token risk guide
 
-- [Base honeypot checker and token-risk guide](https://eliber12.github.io/jepeta-core/base-honeypot-checker.html)
+- [Base honeypot checker and token-risk guide](https://jepeta.dev/base-honeypot-checker.html)
 
 ## Machine documentation
 

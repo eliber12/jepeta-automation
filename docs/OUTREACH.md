@@ -6,10 +6,10 @@ Target-specific status, UTM links and submission packets: [DISTRIBUTION.md](DIST
 
 ## Canonical production endpoints
 
-- Website: https://eliber12.github.io/jepeta-core/
-- Agent manifest: https://eliber12.github.io/jepeta-core/agent.json
-- LLM guide: https://eliber12.github.io/jepeta-core/llms.txt
-- OpenAPI: https://eliber12.github.io/jepeta-core/openapi.json
+- Website: https://jepeta.dev/
+- Agent manifest: https://jepeta.dev/agent.json
+- LLM guide: https://jepeta.dev/llms.txt
+- OpenAPI: https://jepeta.dev/openapi.json
 - Free API: https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-scan?tokenAddress=0x...
 - Direct ACP profile: https://app.virtuals.io/acp/agent/01a0b446-374c-7eb8-8fe8-cd1a9945ea70
 
@@ -31,7 +31,7 @@ Free API:
 GET https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-scan?tokenAddress=0x...
 
 Canonical guide:
-https://eliber12.github.io/jepeta-core/llms.txt
+https://jepeta.dev/llms.txt
 
 Direct ACP profile:
 https://app.virtuals.io/acp/agent/01a0b446-374c-7eb8-8fe8-cd1a9945ea70
