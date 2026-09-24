@@ -94,7 +94,9 @@
     "sampleFullReport": "https://jepeta.dev/sample-full-report.json",
     "paidAcp": "https://app.virtuals.io/acp/agent/01a0b446-374c-7eb8-8fe8-cd1a9945ea70",
     "riskEvidence": "https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-evidence",
-    "riskEvidenceCatalog": "https://jepeta.dev/risk/base/"
+    "riskEvidenceCatalog": "https://jepeta.dev/risk/base/",
+    "questionGuides": "https://jepeta.dev/guides/",
+    "questionGuideCatalog": "https://jepeta.dev/guides/index.json"
   },
   "exampleRequest": "GET https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-scan?tokenAddress=0x532f27101965dd16442e59d40670faf5ebb142e4",
   "exampleResponse": {
@@ -150,5 +152,24 @@
     ],
     "allScansIndexed": false,
     "paidEvidenceIncluded": false
+  },
+  "answerPagePolicy": {
+    "schemaVersion": "1.0.0",
+    "count": 20,
+    "language": "en",
+    "directAnswerFirst": true,
+    "evidenceGrounded": true,
+    "freshScanForCurrentExecution": true,
+    "thinContentGuard": "Unique authored answer and sections per question; no keyword-substitution pages.",
+    "comparisonGuard": "Describe documented scope and limitations without declaring a winner.",
+    "structuredData": [
+      "WebPage",
+      "Article",
+      "BreadcrumbList"
+    ],
+    "excludedStructuredData": [
+      "FAQPage",
+      "QAPage"
+    ]
   }
 }

@@ -724,3 +724,43 @@ HTTP success?
 ```
 
 Never skip directly from `PASS` to “safe to trade”.
+
+
+---
+
+## High-intent question guides
+
+Jepeta publishes a fixed v1 library of 20 direct-answer English pages at:
+
+- https://jepeta.dev/guides/
+- https://jepeta.dev/guides/index.json
+
+Topics include Base token safety screening, honeypots, mintability, taxes, holder concentration, liquidity, LP-lock interpretation, PASS/WARN/BLOCK semantics, data quality, AI-agent APIs, pre-trade bot gates, read-only screening, tool-scope comparisons, permanent evidence usage and risk-signal monitoring.
+
+Every page has:
+
+1. a concise direct answer above the fold;
+2. unique explanatory sections;
+3. a practical checklist;
+4. a real public Jepeta evidence example when the build has eligible evidence;
+5. explicit limitations;
+6. sources and methodology;
+7. a fresh-scan CTA;
+8. related-question links;
+9. canonical static HTML and companion JSON.
+
+Machine representation:
+
+```text
+https://jepeta.dev/guides/<slug>/index.json
+```
+
+Catalog representation:
+
+```text
+https://jepeta.dev/guides/index.json
+```
+
+Structured-data policy: WebPage + Article + BreadcrumbList. FAQPage and QAPage are intentionally not used because these are authored answer resources, not user-generated Q&A or a repeated FAQ block.
+
+Comparison pages are descriptive and source-grounded. Jepeta does not label itself the winner.
