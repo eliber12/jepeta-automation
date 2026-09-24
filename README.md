@@ -1,5 +1,7 @@
 # Jepeta Risk Guard — public contracts
 
+Last updated: 2026-09-24
+
 Jepeta Risk Guard is a Base token risk scanner and machine-readable risk API.
 
 Public documentation and machine-readable contracts for Jepeta Risk Guard.
@@ -9,6 +11,8 @@ Public documentation and machine-readable contracts for Jepeta Risk Guard.
 - Public risk feed: https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-feed
 - Live Base risk monitor: https://jepeta.dev/base-token-risk-monitor.html
 - Developer examples: [examples/](examples/)
+- Machine methodology: https://jepeta.dev/methodology.json
+- Machine changelog: https://jepeta.dev/changelog.json
 - Paid report: Virtuals ACP / Token Risk Scan / 0.03 USDC
 - Telegram: https://t.me/jepeta_tools
 

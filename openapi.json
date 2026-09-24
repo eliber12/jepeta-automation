@@ -2,8 +2,21 @@
   "openapi": "3.1.0",
   "info": {
     "title": "Jepeta Risk Guard API",
-    "version": "4.1.0",
-    "description": "Base token risk scanner and machine-readable risk API. GET-only Base ERC-20 risk intelligence for people and autonomous agents: exact-token screening plus a recent public signal feed. PASS/WARN/BLOCK is screening, not a safety guarantee. Full evidence is sold through Virtuals ACP."
+    "version": "4.2.0",
+    "description": "Base token risk scanner and machine-readable risk API. GET-only Base ERC-20 risk intelligence for people and autonomous agents: exact-token screening plus a recent public signal feed. PASS/WARN/BLOCK is screening, not a safety guarantee. Full evidence is sold through Virtuals ACP.",
+    "x-canonical-url": "https://jepeta.dev/",
+    "x-last-updated": "2026-09-24",
+    "x-supported-chain": {
+      "name": "Base",
+      "chainId": 8453
+    },
+    "x-free-vs-paid": {
+      "free": "Public GET exact-token preview plus public discovery risk feed.",
+      "paid": "Full evidence report through Virtuals ACP v2 / token_risk_scan.",
+      "priceUSDC": "0.03"
+    },
+    "x-methodology": "https://jepeta.dev/methodology.json",
+    "x-changelog": "https://jepeta.dev/changelog.json"
   },
   "servers": [
     {
@@ -489,14 +502,15 @@
           "count",
           "signals",
           "paidReport",
-          "semantics"
+          "semantics",
+          "service"
         ],
         "properties": {
           "object": {
             "const": "jepeta_risk_feed"
           },
           "schemaVersion": {
-            "const": "1.0.0"
+            "const": "1.1.0"
           },
           "chainId": {
             "const": 8453
@@ -565,6 +579,133 @@
                 "const": false
               }
             }
+          },
+          "service": {
+            "$ref": "#/components/schemas/JepetaServiceMetadataV1"
+          }
+        }
+      },
+      "JepetaServiceMetadataV1": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "name",
+          "description",
+          "canonicalUrl",
+          "lastUpdated",
+          "supportedChain",
+          "checks",
+          "freeVsPaid",
+          "endpoints",
+          "exampleRequest",
+          "limitations"
+        ],
+        "properties": {
+          "name": {
+            "const": "Jepeta Risk Guard"
+          },
+          "description": {
+            "const": "Base token risk scanner and machine-readable risk API"
+          },
+          "canonicalUrl": {
+            "const": "https://jepeta.dev/"
+          },
+          "lastUpdated": {
+            "type": "string",
+            "format": "date"
+          },
+          "supportedChain": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "name",
+              "chainId"
+            ],
+            "properties": {
+              "name": {
+                "const": "Base"
+              },
+              "chainId": {
+                "const": 8453
+              }
+            }
+          },
+          "checks": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "string"
+            }
+          },
+          "freeVsPaid": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "free",
+              "paid",
+              "priceUSDC"
+            ],
+            "properties": {
+              "free": {
+                "type": "string"
+              },
+              "paid": {
+                "type": "string"
+              },
+              "priceUSDC": {
+                "const": "0.03"
+              }
+            }
+          },
+          "endpoints": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "canonical",
+              "previewApi",
+              "riskFeed",
+              "openapi",
+              "agentManifest",
+              "methodology",
+              "changelog",
+              "apiDocs"
+            ],
+            "properties": {
+              "canonical": {
+                "const": "https://jepeta.dev/"
+              },
+              "previewApi": {
+                "const": "https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-scan"
+              },
+              "riskFeed": {
+                "const": "https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-feed"
+              },
+              "openapi": {
+                "const": "https://jepeta.dev/openapi.json"
+              },
+              "agentManifest": {
+                "const": "https://jepeta.dev/agent.json"
+              },
+              "methodology": {
+                "const": "https://jepeta.dev/methodology.json"
+              },
+              "changelog": {
+                "const": "https://jepeta.dev/changelog.json"
+              },
+              "apiDocs": {
+                "const": "https://jepeta.dev/docs.html"
+              }
+            }
+          },
+          "exampleRequest": {
+            "type": "string"
+          },
+          "limitations": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "string"
+            }
           }
         }
       }
@@ -579,11 +720,24 @@
       "token": "20 requests / 60 seconds per token"
     },
     "riskFeed": {
-      "schemaVersion": "1.0.0",
+      "schemaVersion": "1.1.0",
       "maxItems": 50,
       "maxWindowHours": 168,
       "clientRateLimit": "60 requests / 60 seconds per hashed client address",
       "evidenceBoundary": "Public discovery signals only; paid full evidence is excluded."
     }
+  },
+  "externalDocs": {
+    "description": "Jepeta Risk Guard machine-readable methodology",
+    "url": "https://jepeta.dev/methodology.json"
+  },
+  "x-jepeta-machine-surface": {
+    "name": "Jepeta Risk Guard",
+    "description": "Base token risk scanner and machine-readable risk API",
+    "canonicalUrl": "https://jepeta.dev/",
+    "lastUpdated": "2026-09-24",
+    "methodology": "https://jepeta.dev/methodology.json",
+    "changelog": "https://jepeta.dev/changelog.json",
+    "priceUSDC": "0.03"
   }
 }
