@@ -13,6 +13,8 @@ Public documentation and machine-readable contracts for Jepeta Risk Guard.
 - Public evidence catalog: https://jepeta.dev/risk/base/
 - High-intent guide catalog: https://jepeta.dev/guides/
 - Machine guide catalog: https://jepeta.dev/guides/index.json
+- Public risk intelligence API: https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-intelligence
+- Original research catalog: https://jepeta.dev/research/
 - Live Base risk monitor: https://jepeta.dev/base-token-risk-monitor.html
 - Developer examples: [examples/](examples/)
 - Machine methodology: https://jepeta.dev/methodology.json
