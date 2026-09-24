@@ -42,7 +42,9 @@
     "riskEvidence": "https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-evidence",
     "riskEvidenceCatalog": "https://jepeta.dev/risk/base/",
     "questionGuides": "https://jepeta.dev/guides/",
-    "questionGuideCatalog": "https://jepeta.dev/guides/index.json"
+    "questionGuideCatalog": "https://jepeta.dev/guides/index.json",
+    "riskIntelligence": "https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-intelligence",
+    "research": "https://jepeta.dev/research/"
   },
   "exampleRequest": "GET https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-scan?tokenAddress=0x532f27101965dd16442e59d40670faf5ebb142e4",
   "exampleResponse": {
@@ -88,6 +90,19 @@
     "The public risk feed contains published discovery signals only and is not a census of Base or all Jepeta scans."
   ],
   "changes": [
+    {
+      "date": "2026-09-24",
+      "version": "GEO-T039-T043",
+      "summary": "Operationalized external authority, original research, distribution health, GEO measurement and AI-to-revenue attribution.",
+      "changes": [
+        "Added a private 20-citation external-authority goal tracker without counting planned placements as verified.",
+        "Added reproducible monthly Base risk intelligence from one latest HIGH/MEDIUM-quality observation per unique token.",
+        "Added public aggregate risk-intelligence API plus indexable research pages generated every six hours.",
+        "Added seven-day multi-surface distribution coverage health.",
+        "Added weekly GEO run creation and a private pending-slot queue; inaccessible engines remain unmeasured rather than synthetic non-mentions.",
+        "Added seven- and 30-day AI/referral-to-Telegram-purchase attribution views; ACP outbound clicks remain separate from verified ACP settlement revenue."
+      ]
+    },
     {
       "date": "2026-09-24",
       "version": "GEO-T038",
