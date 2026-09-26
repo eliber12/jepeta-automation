@@ -3,9 +3,9 @@
   "info": {
     "title": "Jepeta Risk Guard API",
     "version": "4.3.0",
-    "description": "Base token risk scanner and machine-readable risk API. GET-only Base ERC-20 risk intelligence for exact-token screening, recent public signals, and permanent evidence-rich public snapshots. PASS/WARN/BLOCK is screening, not a safety guarantee. Paid-only evidence remains separate through Virtuals ACP.",
+    "description": "Fail-closed pre-trade risk guard for Base agents. GET-only Base ERC-20 risk intelligence for exact-token screening, recent public signals, and permanent evidence-rich public snapshots. PASS/WARN/BLOCK is screening, not a safety guarantee. Paid-only evidence remains separate through Virtuals ACP.",
     "x-canonical-url": "https://jepeta.dev/",
-    "x-last-updated": "2026-09-24",
+    "x-last-updated": "2026-09-26",
     "x-supported-chain": {
       "name": "Base",
       "chainId": 8453
@@ -794,7 +794,7 @@
             "const": "Jepeta Risk Guard"
           },
           "description": {
-            "const": "Base token risk scanner and machine-readable risk API"
+            "const": "Fail-closed pre-trade risk guard for Base agents"
           },
           "canonicalUrl": {
             "const": "https://jepeta.dev/"
@@ -1395,9 +1395,9 @@
   },
   "x-jepeta-machine-surface": {
     "name": "Jepeta Risk Guard",
-    "description": "Base token risk scanner and machine-readable risk API",
+    "description": "Fail-closed pre-trade risk guard for Base agents",
     "canonicalUrl": "https://jepeta.dev/",
-    "lastUpdated": "2026-09-24",
+    "lastUpdated": "2026-09-26",
     "methodology": "https://jepeta.dev/methodology.json",
     "changelog": "https://jepeta.dev/changelog.json",
     "priceUSDC": "0.03",
