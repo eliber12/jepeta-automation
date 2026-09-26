@@ -20,7 +20,7 @@
     "directUrl": "https://app.virtuals.io/acp/agent/01a0b446-374c-7eb8-8fe8-cd1a9945ea70",
     "displayName": "Token Risk Scan"
   },
-  "purpose": "Base token risk scanner and machine-readable risk API",
+  "purpose": "Fail-closed pre-trade risk guard for Base agents",
   "input": {
     "type": "object",
     "required": [
@@ -661,9 +661,9 @@
       "representativeOfAllBaseTokens": false
     }
   },
-  "description": "Base token risk scanner and machine-readable risk API",
+  "description": "Fail-closed pre-trade risk guard for Base agents",
   "canonicalUrl": "https://jepeta.dev/",
-  "lastUpdated": "2026-09-24",
+  "lastUpdated": "2026-09-26",
   "checks": [
     "honeypot status",
     "mintability",
