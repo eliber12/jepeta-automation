@@ -1,8 +1,8 @@
 # Jepeta Risk Guard — public contracts
 
-Last updated: 2026-09-24
+Last updated: 2026-09-26
 
-Jepeta Risk Guard is a Base token risk scanner and machine-readable risk API.
+Jepeta Risk Guard is a fail-closed pre-trade risk guard for Base agents. The exact-token scanner remains the human preview and underlying screening component.
 
 Public documentation and machine-readable contracts for Jepeta Risk Guard.
 
