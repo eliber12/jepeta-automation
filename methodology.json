@@ -2,10 +2,10 @@
   "object": "jepeta_methodology",
   "schemaVersion": "1.0.0",
   "name": "Jepeta Risk Guard",
-  "description": "Base token risk scanner and machine-readable risk API",
+  "description": "Fail-closed pre-trade risk guard for Base agents",
   "canonicalUrl": "https://jepeta.dev/methodology.json",
   "serviceCanonicalUrl": "https://jepeta.dev/",
-  "lastUpdated": "2026-09-24",
+  "lastUpdated": "2026-09-26",
   "supportedChain": {
     "name": "Base",
     "chainId": 8453,
@@ -127,7 +127,7 @@
       "warnings": [
         "Illustrative response shape only."
       ],
-      "observed_at": "2026-09-24T00:00:00Z",
+      "observed_at": "2026-09-26T00:00:00Z",
       "paid_report": {
         "protocol": "Virtuals ACP v2",
         "offering": "Token Risk Scan",
