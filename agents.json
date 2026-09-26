@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0",
   "name": "Jepeta Risk Guard",
-  "description": "Base token risk scanner and machine-readable risk API",
+  "description": "Fail-closed pre-trade risk guard for Base agents",
   "canonicalAgentManifest": "https://jepeta.dev/agent.json",
   "llms": "https://jepeta.dev/llms.txt",
   "fullGuide": "https://jepeta.dev/llms-full.txt",
@@ -25,7 +25,7 @@
   },
   "riskFeed": "https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-feed",
   "canonicalUrl": "https://jepeta.dev/",
-  "lastUpdated": "2026-09-24",
+  "lastUpdated": "2026-09-26",
   "supportedChain": {
     "name": "Base",
     "chainId": 8453
