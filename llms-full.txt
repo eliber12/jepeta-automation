@@ -1,10 +1,10 @@
 # Jepeta Risk Guard
 
-> Base token risk scanner and machine-readable risk API for Base ERC-20 tokens on chain 8453. Read-only screening for humans and autonomous agents with explicit uncertainty.
+> Fail-closed pre-trade risk guard for Base agents on chain 8453. Read-only PASS / WARN / BLOCK screening with evidence, data quality, timestamps and explicit uncertainty; the human scanner remains a preview and acquisition surface.
 
 Canonical site: https://jepeta.dev/
 
-Last updated: 2026-09-24
+Last updated: 2026-09-26
 
 Methodology: https://jepeta.dev/methodology.json
 
@@ -28,7 +28,7 @@ Paid report: Virtuals ACP v2 / token_risk_scan / 0.03 USDC
 
 ## What Jepeta is
 
-Jepeta Risk Guard is a narrow pre-trade screening service.
+Jepeta Risk Guard is a fail-closed pre-trade risk guard for Base agents. The exact-token scanner is the human-facing preview of that guard.
 
 It accepts one exact Base ERC-20 contract address and combines:
 
@@ -653,7 +653,7 @@ Market degradation is represented explicitly instead of being silently treated a
 
 ## Public machine references
 
-- [Jepeta human scanner](https://jepeta.dev/): interactive Base token scanner.
+- [Jepeta human scanner](https://jepeta.dev/): interactive preview and acquisition surface for the same pre-trade guard.
 - [OpenAPI schema](https://jepeta.dev/openapi.json): authoritative public API contract and error responses.
 - [Agent manifest](https://jepeta.dev/agent.json): identity, ACP commerce metadata, capabilities, safety properties and schema semantics.
 - [GitHub repository](https://github.com/eliber12/jepeta-automation): public source, tests and deployment configuration.
