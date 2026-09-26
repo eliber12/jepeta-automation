@@ -25,7 +25,7 @@ Target-specific status, UTM links and submission packets: [DISTRIBUTION.md](DIST
 
 ## Outreach boilerplate
 
-Jepeta Risk Guard is a machine-readable Base ERC-20 pre-trade risk gate for autonomous agents.
+Jepeta Risk Guard is a fail-closed, machine-readable pre-trade risk guard for Base agents. Before a swap or buy, it returns PASS / WARN / BLOCK with evidence, data quality, risk signals and timestamp.
 
 Free API:
 GET https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-scan?tokenAddress=0x...
