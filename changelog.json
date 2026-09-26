@@ -2,10 +2,10 @@
   "object": "jepeta_changelog",
   "schemaVersion": "1.0.0",
   "name": "Jepeta Risk Guard",
-  "description": "Base token risk scanner and machine-readable risk API",
+  "description": "Fail-closed pre-trade risk guard for Base agents",
   "canonicalUrl": "https://jepeta.dev/changelog.json",
   "serviceCanonicalUrl": "https://jepeta.dev/",
-  "lastUpdated": "2026-09-24",
+  "lastUpdated": "2026-09-26",
   "supportedChain": {
     "name": "Base",
     "chainId": 8453
@@ -73,7 +73,7 @@
       "warnings": [
         "Illustrative response shape only."
       ],
-      "observed_at": "2026-09-24T00:00:00Z",
+      "observed_at": "2026-09-26T00:00:00Z",
       "paid_report": {
         "protocol": "Virtuals ACP v2",
         "offering": "Token Risk Scan",
@@ -91,7 +91,7 @@
   ],
   "changes": [
     {
-      "date": "2026-09-24",
+      "date": "2026-09-26",
       "version": "GEO-T039-T043",
       "summary": "Operationalized external authority, original research, distribution health, GEO measurement and AI-to-revenue attribution.",
       "changes": [
@@ -104,7 +104,7 @@
       ]
     },
     {
-      "date": "2026-09-24",
+      "date": "2026-09-26",
       "version": "GEO-T038",
       "summary": "Added 20 high-intent AI/search question guides.",
       "changes": [
@@ -116,7 +116,7 @@
       ]
     },
     {
-      "date": "2026-09-24",
+      "date": "2026-09-26",
       "version": "GEO-T037",
       "summary": "Added permanent evidence-rich public Base token pages.",
       "changes": [
@@ -128,7 +128,7 @@
       ]
     },
     {
-      "date": "2026-09-24",
+      "date": "2026-09-26",
       "version": "GEO-T025",
       "summary": "Unified machine-readable AI/agent surface.",
       "changes": [
@@ -139,7 +139,7 @@
       ]
     },
     {
-      "date": "2026-09-24",
+      "date": "2026-09-26",
       "version": "GEO-T024",
       "summary": "Established the canonical Jepeta Risk Guard entity.",
       "changes": [
