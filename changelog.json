@@ -92,6 +92,17 @@
   "changes": [
     {
       "date": "2026-09-26",
+      "version": "POSITIONING-2026-09-26",
+      "summary": "Repositioned Jepeta as a fail-closed pre-trade risk guard for Base agents without changing API or decision contracts.",
+      "changes": [
+        "Made the pre-trade agent risk guard the canonical product identity across website, SEO, machine discovery, documentation and distribution copy.",
+        "Kept exact-token scanning as the human preview and underlying screening component.",
+        "Kept PASS/WARN/BLOCK semantics, endpoints, schemas, pricing rails and existing integration identifiers backward compatible.",
+        "Aligned Telegram, Farcaster and Virtuals-facing repository copy without claiming safety, adoption or revenue."
+      ]
+    },
+    {
+      "date": "2026-09-26",
       "version": "GEO-T039-T043",
       "summary": "Operationalized external authority, original research, distribution health, GEO measurement and AI-to-revenue attribution.",
       "changes": [
