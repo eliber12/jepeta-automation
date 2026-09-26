@@ -1,9 +1,9 @@
 # Jepeta Risk Guard
 
-> Base token risk scanner and machine-readable risk API for Base ERC-20 tokens on chain 8453. Free strict JSON preview; deeper evidence report through Virtuals ACP.
+> Fail-closed pre-trade risk guard for Base agents on chain 8453. Before a swap or buy, Jepeta returns a strict machine-readable PASS / WARN / BLOCK decision with risk signals, data quality and timestamp; the human scanner remains the free preview and acquisition surface.
 
 Canonical site: https://jepeta.dev/
-Last updated: 2026-09-24
+Last updated: 2026-09-26
 Methodology: https://jepeta.dev/methodology.json
 Changelog: https://jepeta.dev/changelog.json
 
