@@ -8,7 +8,7 @@ Public scanner API: https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta
 Human scanner: https://jepeta.dev/
 Virtuals ACP: https://app.virtuals.io/acp/agent/01a0b446-374c-7eb8-8fe8-cd1a9945ea70
 
-Purpose: exact Base ERC-20 pre-trade risk screening.
+Purpose: fail-closed pre-trade risk guard for Base agents; exact-token scanning is the underlying screening component.
 Chain: Base / 8453.
 Decision contract: PASS | WARN | BLOCK.
 Paid offering: token_risk_scan (Token Risk Scan) / 0.03 USDC.
