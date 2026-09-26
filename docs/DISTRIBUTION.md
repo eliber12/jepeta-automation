@@ -2,7 +2,7 @@
 
 Operational distribution source. A target is not counted as submitted until an external confirmation or public listing exists.
 
-Checked: 2026-09-24
+Checked: 2026-09-26
 
 ## Canonical assets
 
@@ -24,10 +24,10 @@ Name:
 Jepeta Risk Guard
 
 Tagline:
-Base token risk screening for people and AI agents
+Fail-closed pre-trade risk guard for Base agents
 
 Short description:
-Read-only Base / 8453 token risk screening with PASS, WARN or BLOCK, explicit data quality, a GET-only JSON API, live public risk feed, and deeper evidence through Telegram or Virtuals ACP.
+Fail-closed Base / 8453 pre-trade risk guard for autonomous agents, with machine-readable PASS, WARN or BLOCK, explicit data quality, timestamps, a GET-only JSON API, live public risk feed, and deeper evidence through Telegram or Virtuals ACP. The scanner remains the human preview.
 
 Evidence:
 Jepeta accepts one exact Base ERC-20 contract address and combines GoPlus security signals with matching Base market context. The public machine contract exposes honeypot, mintability, taxes, liquidity, concentration, source status and data quality. Required unknown security evidence fails closed.
@@ -81,7 +81,7 @@ Thumbnail:
 https://jepeta.dev/og-jepeta.png
 
 Listing copy:
-Jepeta Risk Guard is a read-only Base token risk scanner for people and autonomous agents. Paste one exact ERC-20 address to get PASS, WARN or BLOCK plus honeypot, mintability, tax, liquidity, holder-concentration and data-quality signals. No wallet connection is required. Developers can use the GET-only JSON API, and deeper evidence is available through Telegram Stars or Virtuals ACP.
+Jepeta Risk Guard is a fail-closed pre-trade risk guard for Base agents. Before a swap or buy, submit one exact ERC-20 address to get PASS, WARN or BLOCK plus honeypot, mintability, tax, liquidity, holder-concentration, data-quality and timestamp signals. The scanner is the human preview; developers can use the GET-only JSON API, and deeper evidence is available through Telegram Stars or Virtuals ACP.
 
 External form requirements can include a contact email and media fields. Do not invent them.
 
@@ -130,7 +130,7 @@ Suggested section:
 Rug Checker Tools
 
 Proposed entry:
-Jepeta Risk Guard - read-only Base token pre-trade risk screening with honeypot, mintability, taxes, liquidity, holder concentration and machine-readable PASS/WARN/BLOCK output.
+Jepeta Risk Guard - fail-closed pre-trade risk guard for Base agents, with exact-token honeypot, mintability, taxes, liquidity, holder concentration, data quality and machine-readable PASS/WARN/BLOCK output.
 
 Landing URL:
 https://jepeta.dev/?utm_source=quillhash&utm_medium=github_directory&utm_campaign=security_tools#scanner
