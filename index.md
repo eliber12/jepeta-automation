@@ -1,6 +1,6 @@
 # Jepeta Risk Guard — Pre-Trade Risk Guard for Base Agents
 
-Last updated: 2026-09-27
+Last updated: 2026-09-26
 
 Fail-closed pre-trade risk guard for Base agents. Before a swap or buy, Jepeta evaluates an exact Base ERC-20 contract and returns PASS / WARN / BLOCK with risk signals, data quality and timestamp. The interactive scanner is the human preview.
 
