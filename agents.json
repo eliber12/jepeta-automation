@@ -25,7 +25,7 @@
   },
   "riskFeed": "https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-feed",
   "canonicalUrl": "https://jepeta.dev/",
-  "lastUpdated": "2026-09-27",
+  "lastUpdated": "2026-09-26",
   "supportedChain": {
     "name": "Base",
     "chainId": 8453
