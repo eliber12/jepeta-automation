@@ -672,7 +672,7 @@
   },
   "description": "Fail-closed pre-trade risk guard for Base agents",
   "canonicalUrl": "https://jepeta.dev/",
-  "lastUpdated": "2026-09-27",
+  "lastUpdated": "2026-09-26",
   "checks": [
     "honeypot status",
     "mintability",
