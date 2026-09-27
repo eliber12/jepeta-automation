@@ -471,7 +471,7 @@ Do not interpret this as PASS.
 Typical code:
 
 ```text
-GOPLUS_RATE_LIMITED
+RATE_LIMITED
 ```
 
 Jepeta also returns:
@@ -486,21 +486,23 @@ Back off before retrying.
 
 Do not spin aggressive retries.
 
-### 503 — required provider unavailable
+### 503 — required provider unavailable or partial/retryable
 
-Typical code:
+Typical codes can include:
 
 ```text
 GOPLUS_UNAVAILABLE
+GOPLUS_TIMEOUT
+PARTIAL_RETRYABLE
 ```
 
 Meaning:
 
-Required security data is temporarily unavailable.
+Required security data is unavailable, timed out, or incomplete/retryable. No verdict is issued. `PARTIAL_RETRYABLE` includes a bounded `Retry-After` hint.
 
 Action:
 
-Treat the scan as unavailable. Do not manufacture a local PASS result.
+Treat the scan as unavailable. Honor `Retry-After` when present. Do not manufacture a local PASS result and do not spin unbounded retries.
 
 ---
 

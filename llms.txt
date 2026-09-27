@@ -76,7 +76,7 @@ Never convert null metrics into reassuring zeroes.
 - 405: method not allowed; use GET.
 - 422: required security evidence unavailable; no usable verdict.
 - 429: Jepeta or GoPlus rate limit; back off and honor Retry-After.
-- 503: required provider unavailable; do not synthesize PASS.
+- 503: required provider unavailable or partial/retryable; honor Retry-After when present and do not synthesize PASS.
 
 ## Live risk feed
 
