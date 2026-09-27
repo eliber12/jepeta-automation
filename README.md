@@ -1,62 +1,64 @@
-# Jepeta Risk Guard - public contracts
+# Jepeta Risk Guard — Pre-Trade Risk Guard for Base Agents
 
-Last updated: 2026-09-27
+Last updated: 2026-09-26
 
-Jepeta Risk Guard is a fail-closed pre-trade risk guard for Base agents. This repository contains intentionally public API/discovery contracts, samples, integration examples, and boundary QA.
+Fail-closed pre-trade risk guard for Base agents. Before a swap or buy, Jepeta evaluates an exact Base ERC-20 contract and returns PASS / WARN / BLOCK with risk signals, data quality and timestamp. The interactive scanner is the human preview.
 
-- Production website: https://jepeta.dev/
-- Free Base ERC-20 preview API: https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-scan
-- Public risk feed: https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-feed
-- Public evidence API: https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-evidence
-- Public evidence catalog: https://jepeta.dev/risk/base/
-- Public risk intelligence API: https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-intelligence
-- Original research: https://jepeta.dev/research/
-- Guides: https://jepeta.dev/guides/
-- Live Base risk monitor: https://jepeta.dev/base-token-risk-monitor.html
-- Developer examples: [examples/](examples/)
-- OpenAPI: https://jepeta.dev/openapi.json
-- Methodology: https://jepeta.dev/methodology.json
-- Machine changelog: https://jepeta.dev/changelog.json
-- Paid report: Virtuals ACP / Token Risk Scan / 0.03 USDC
-- Telegram: https://t.me/jepeta_tools
-- Farcaster: https://farcaster.xyz/jepeta
-- Agents.NET verified profile: https://agents.net/directory/331
-- AI Agents Directory: https://aiagentsdirectory.com/agent/jepeta-risk-guard
+## Free preview
 
-## Quick start
+Use the [interactive scanner](https://jepeta.dev/#scanner) or call:
 
-```bash
-curl --get \
-  'https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-scan' \
-  --data-urlencode 'tokenAddress=0x532f27101965dd16442e59d40670faf5ebb142e4'
-```
+`GET https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-scan?tokenAddress=0x...`
 
-Decision handling:
+The free response returns a strict PASS / WARN / BLOCK decision plus core raw signals and source-quality status.
 
-- `BLOCK`: stop automated execution.
-- `WARN`: require additional policy checks or human review.
-- `PASS`: continue only if your own execution policy permits it.
+## Live Base risk intelligence
 
-Always inspect `data_quality`, `source_status`, `warnings`, and `observed_at`. PASS is not a safety guarantee.
+- [Live Base token risk monitor](https://jepeta.dev/base-token-risk-monitor.html)
+- [Public machine risk feed](https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-feed)
+- [Permanent public risk evidence](https://jepeta.dev/risk/base/)
+- [Original Base risk research](https://jepeta.dev/research/)
+- [High-intent Base token risk guides](https://jepeta.dev/guides/)
+- [Machine guide catalog](https://jepeta.dev/guides/index.json)
+- [Token Risk API guide](https://jepeta.dev/token-risk-api.html)
 
-## Public boundary
+The feed and monitor expose discovery signals only. Evidence-rich tokens that already passed the public publication gate may also receive a permanent HTML + JSON snapshot under `/risk/base/0xTOKEN/`. Ordinary scans are not auto-indexed. Paid-only evidence remains excluded, and PASS is not a safety guarantee.
 
-This repository is a one-way public release surface.
+## Focused Base risk guides
 
-Production implementation, risk-engine internals, privileged configuration, settlement logic, runtime credentials, operational growth data, outreach state, and private infrastructure are intentionally excluded.
+- [Base honeypot checker and token-risk guide](https://jepeta.dev/base-honeypot-checker.html)
+- [Base token permissions checker](https://jepeta.dev/base-token-permissions-checker.html)
+- [Base token liquidity-risk checker](https://jepeta.dev/base-token-liquidity-risk-checker.html)
+- [Jepeta vs Honeypot.is](https://jepeta.dev/jepeta-vs-honeypot-is.html)
 
-Release direction is strictly:
+## Full evidence report
 
-`private production source -> reviewed/sanitized public artifacts -> this repository`
+The paid **Token Risk Scan** report adds dangerous permissions, liquidity-risk assessment, holder concentration, 24h trading activity, full warnings and a structured summary.
 
-This repository must never be used as an upstream source for production or private state.
+Price: **0.03 USDC** through Virtuals ACP.
 
-The production website is not deployed from this repository.
+Live registry offering: `token_risk_scan` (`01a0bb7b-be32-73e8-abe6-1385a115ac16`).
 
-## Discovery surface
+[Buy full report on Jepeta's ACP profile](https://app.virtuals.io/acp/agent/01a0b446-374c-7eb8-8fe8-cd1a9945ea70)
 
-Machine consumers can use `agent.json`, `agents.json`, `llms.txt`, `openapi.json`, the guide catalog, public evidence, and aggregate research surfaces.
+## External discovery
 
-Core topics: Base token risk, pre-trade risk guard, token security API, honeypot screening, mintability, liquidity risk, holder concentration, AI-agent risk screening, and machine-readable crypto risk evidence.
+- [Agents.NET verified profile](https://agents.net/directory/331)
+- [AI Agents Directory profile](https://aiagentsdirectory.com/agent/jepeta-risk-guard)
+- [Farcaster](https://farcaster.xyz/jepeta)
+- [Telegram](https://t.me/jepeta_tools)
+- [Public GitHub contracts](https://github.com/eliber12/jepeta-automation)
 
-Jepeta is read-only screening, not a smart-contract audit, safety guarantee, price prediction, or investment recommendation.
+## Machine documentation
+
+- [Developer documentation](https://jepeta.dev/docs.html)
+- [llms.txt](llms.txt)
+- [Full agent guide](llms-full.txt)
+- [OpenAPI](openapi.json)
+- [Agent manifest](agent.json)
+- [agents.json](agents.json)
+- [Illustrative paid v3 report](sample-full-report.json) (deterministic synthetic inputs; not a live scan)
+- [Methodology](methodology.json)
+- [Changelog](changelog.json)
+
+Jepeta is read-only screening, not a smart-contract audit, safety guarantee or investment recommendation.

@@ -411,7 +411,7 @@
   "failureSemantics": {
     "unsupportedOrInsufficientData": "No reassuring verdict is issued. The provider does not quote unsupported tokens.",
     "sourceOutage": "The provider retries a bounded number of times and does not fabricate missing values.",
-    "incompleteData": "Unknown fields are surfaced explicitly and cannot produce a reassuring LOW classification."
+    "incompleteData": "Unknown optional metrics remain null or UNKNOWN. Risk level is a score band; inspect decision, data quality, source status and warnings. Missing exact matching liquidity yields WARN in the free preview."
   },
   "engine": {
     "version": "2.0.0",
@@ -484,7 +484,7 @@
     },
     {
       "name": "sample_full_report",
-      "description": "Real paid-deliverable shape captured from a live Jepeta scan; values are a dated sample and can change.",
+      "description": "Illustrative paid v3 contract sample generated from deterministic synthetic source inputs; not a live token scan.",
       "method": "GET",
       "url": "https://jepeta.dev/sample-full-report.json"
     },
@@ -560,7 +560,7 @@
     ],
     "semantics": {
       "PASS": "No configured BLOCK or WARN condition was observed in the available data. PASS is not a safety guarantee.",
-      "WARN": "One or more material risk or source-quality conditions require review before execution.",
+      "WARN": "One or more material risk or source-quality conditions require review before execution; missing exact matching liquidity yields WARN even when the numeric risk score remains low.",
       "BLOCK": "A configured hard blocker such as a GoPlus honeypot signal was observed."
     },
     "rawMetrics": {
@@ -583,7 +583,7 @@
     ],
     "rateLimit": {
       "serverSide": true,
-      "clientWindow": "30 requests / 60 seconds per hashed client address",
+      "clientWindow": "30 requests / 60 seconds per client",
       "tokenWindow": "20 requests / 60 seconds per token",
       "retryHeader": "Retry-After"
     },
@@ -605,21 +605,6 @@
       "status": "LIVE",
       "price": "0.03 USDC",
       "delivery": "Virtuals ACP v2 / token_risk_scan"
-    },
-    {
-      "name": "Batch / API",
-      "status": "PLANNED",
-      "activationGate": "Enable only after repeated multi-token paid demand and measured unit economics."
-    },
-    {
-      "name": "Monitoring / Watchlist",
-      "status": "PLANNED",
-      "activationGate": "Enable after recurring risk-monitoring demand is observed."
-    },
-    {
-      "name": "Agent Subscription",
-      "status": "PLANNED",
-      "activationGate": "Enable after repeat buyers justify a recurring access package."
     }
   ],
   "machineDiscovery": {
@@ -629,7 +614,7 @@
       "endpoint": "https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-feed",
       "purpose": "Discover recent publicly published Base risk signals before deciding which exact token to scan.",
       "evidenceBoundary": "Feed entries contain discovery scores only. Full evidence remains paid through Virtuals ACP.",
-      "rateLimit": "60 requests / 60 seconds per hashed client address"
+      "rateLimit": "60 requests / 60 seconds per client"
     },
     "riskEvidence": {
       "status": "LIVE",

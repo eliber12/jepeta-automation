@@ -57,7 +57,7 @@ Live registry offering: `token_risk_scan` (`01a0bb7b-be32-73e8-abe6-1385a115ac16
 - [OpenAPI](openapi.json)
 - [Agent manifest](agent.json)
 - [agents.json](agents.json)
-- [Sample full report](sample-full-report.json)
+- [Illustrative paid v3 report](sample-full-report.json) (deterministic synthetic inputs; not a live scan)
 - [Methodology](methodology.json)
 - [Changelog](changelog.json)
 

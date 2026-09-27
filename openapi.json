@@ -459,7 +459,7 @@
               "WARN",
               "BLOCK"
             ],
-            "description": "Machine policy hint. PASS means no configured BLOCK/WARN condition was observed; it is not a safety guarantee."
+            "description": "Machine policy hint. PASS means no configured BLOCK/WARN condition was observed; it is not a safety guarantee. Missing exact matching liquidity yields WARN even when risk_level is LOW."
           },
           "risk_score": {
             "type": "number",
@@ -1371,14 +1371,14 @@
     "cacheTtlSeconds": 30,
     "cacheRangePolicy": "15-60 seconds",
     "serverRateLimits": {
-      "client": "30 requests / 60 seconds per hashed client address",
+      "client": "30 requests / 60 seconds per client",
       "token": "20 requests / 60 seconds per token"
     },
     "riskFeed": {
       "schemaVersion": "1.1.0",
       "maxItems": 50,
       "maxWindowHours": 168,
-      "clientRateLimit": "60 requests / 60 seconds per hashed client address",
+      "clientRateLimit": "60 requests / 60 seconds per client",
       "evidenceBoundary": "Public discovery signals only; paid full evidence is excluded."
     },
     "riskEvidence": {

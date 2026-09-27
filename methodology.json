@@ -70,7 +70,7 @@
   ],
   "decisions": {
     "PASS": "No configured BLOCK or WARN condition was observed in the available data. PASS is not a safety guarantee.",
-    "WARN": "One or more material risk or source-quality conditions require review.",
+    "WARN": "One or more material risk or source-quality conditions require review; missing exact matching liquidity yields WARN even when the numeric risk score remains low.",
     "BLOCK": "A configured hard blocker was observed."
   },
   "freeVsPaid": {
@@ -102,7 +102,7 @@
   },
   "exampleRequest": "GET https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-scan?tokenAddress=0x532f27101965dd16442e59d40670faf5ebb142e4",
   "exampleResponse": {
-    "note": "Illustrative response shape only; values are not live token data.",
+    "note": "Illustrative response generated from synthetic source inputs using the public v4 preview logic; values and timestamp are not a live scan of the example token.",
     "body": {
       "schema_version": "4.0.0",
       "chain_id": 8453,
@@ -112,21 +112,19 @@
       "risk_level": "LOW",
       "is_honeypot": false,
       "is_mintable": false,
-      "buy_tax_percent": null,
-      "sell_tax_percent": null,
-      "top10_holder_concentration_percent": null,
-      "top10_holder_count": 0,
-      "lp_locked_percent_observed": null,
-      "lp_holder_sample_count": 0,
-      "liquidity_usd": null,
-      "data_quality": "LOW",
+      "buy_tax_percent": 0,
+      "sell_tax_percent": 0,
+      "top10_holder_concentration_percent": 5,
+      "top10_holder_count": 1,
+      "lp_locked_percent_observed": 80,
+      "lp_holder_sample_count": 1,
+      "liquidity_usd": 500000,
+      "data_quality": "HIGH",
       "source_status": {
         "goplus": "OK",
-        "dexscreener": "UNAVAILABLE"
+        "dexscreener": "OK"
       },
-      "warnings": [
-        "Illustrative response shape only."
-      ],
+      "warnings": [],
       "observed_at": "2026-09-26T00:00:00Z",
       "paid_report": {
         "protocol": "Virtuals ACP v2",

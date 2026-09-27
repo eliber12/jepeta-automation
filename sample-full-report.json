@@ -1,16 +1,121 @@
 {
-  "riskScore": 35,
+  "decisionVersion": "3.0.0-alpha.2",
+  "chainId": 8453,
+  "tokenAddress": "0x1111111111111111111111111111111111111111",
+  "policyVerdict": "REVIEW",
+  "hardBlockers": [],
+  "reviewReasons": [
+    "MINTABLE",
+    "HOLDER_CONCENTRATION_CRITICAL"
+  ],
+  "reasonCodes": [
+    "MINTABLE",
+    "HOLDER_CONCENTRATION_CRITICAL"
+  ],
+  "trustSignals": [],
+  "dataQuality": "HIGH",
+  "sourceStatus": {
+    "goPlus": {
+      "status": "OK",
+      "required": true
+    },
+    "dexScreener": {
+      "status": "OK",
+      "required": false
+    }
+  },
+  "securityContext": {
+    "openSource": true,
+    "proxy": false,
+    "inDex": true,
+    "ownerState": "UNKNOWN",
+    "buyTax": 0,
+    "sellTax": 0
+  },
+  "marketContext": {
+    "matchingPairCount": 1,
+    "pairAddresses": [
+      "0x3333333333333333333333333333333333333333"
+    ],
+    "bestPairAddress": "0x3333333333333333333333333333333333333333",
+    "tokenSideInBestPair": "BASE",
+    "liquidityUSD": 500000,
+    "liquidityRisk": "LOW",
+    "volume24hUSD": 1000,
+    "buys24h": 10,
+    "sells24h": 8,
+    "activeTradingObserved": true
+  },
+  "holderContext": {
+    "band": "CRITICAL",
+    "reportedPercent": 65,
+    "maxHolderPercent": 65,
+    "holderCount": 1,
+    "topHolderTag": null,
+    "topHolderIsContract": false,
+    "taggedOrContractDominated": false
+  },
+  "evidence": [
+    {
+      "source": "GoPlus",
+      "code": "MINTABLE",
+      "signal": "is_mintable",
+      "value": true,
+      "severity": "HIGH"
+    },
+    {
+      "source": "GoPlus",
+      "code": "HOLDER_CONCENTRATION_CRITICAL",
+      "signal": "holderConcentration",
+      "value": {
+        "band": "CRITICAL",
+        "reportedPercent": 65,
+        "maxHolderPercent": 65,
+        "holderCount": 1,
+        "topHolderTag": null,
+        "topHolderIsContract": false,
+        "taggedOrContractDominated": false
+      },
+      "severity": "HIGH"
+    }
+  ],
+  "observedAt": "2026-09-19T20:00:00.000Z",
+  "decisionSummary": "REVIEW: MINTABLE, HOLDER_CONCENTRATION_CRITICAL",
+  "riskScore": 45,
   "riskLevel": "MEDIUM",
   "honeypot": false,
-  "dangerousPermissions": [],
-  "liquidityRisk": "LOW",
-  "holderConcentration": "Observed top-10 holders: 66.13% across 10 records",
-  "tradingActivity": "Matching pool / 24h: volume USD 4191851.28, buys 1391, sells 3642",
-  "warnings": [
-    "GoPlus reports that token supply can be minted.",
-    "Buy tax is unavailable from GoPlus.",
-    "Sell tax is unavailable from GoPlus.",
-    "Observed top-10 holder concentration is 66.13%."
+  "dangerousPermissions": [
+    "is_mintable"
   ],
-  "summary": "WARN: MINTABLE, TOP10_CONCENTRATION_HIGH"
+  "liquidityRisk": "LOW",
+  "holderConcentration": "CRITICAL: 65.00% across 1 reported non-burn/non-pool holders",
+  "tradingActivity": "Matching pool / 24h: volume USD 1000.00, buys 10, sells 8",
+  "warnings": [
+    "GoPlus flag: is_mintable",
+    "Liquidity is for the largest matching Base pool ($500000.00), not total token liquidity or a lock guarantee.",
+    "Reported holder sample only; contracts, exchanges and custody wallets are not necessarily one beneficial owner.",
+    "Heuristic screening, not an audit or a guarantee that a token is safe. No investment recommendation."
+  ],
+  "summary": "MEDIUM screening flags (45/100; not a probability). Token 0x1111111111111111111111111111111111111111 on Base/8453. GoPlus honeypot=false. Sources: GoPlus; DEX Screener when available. Retrieved 2026-09-19T20:00:00.000Z. Engine 2.0.0.",
+  "baseEngineVersion": "2.0.0",
+  "historyContext": {
+    "observationNumber": 1,
+    "firstObservation": true,
+    "previousObservedAt": null,
+    "changedSincePrevious": false,
+    "eventHash": "c7005e2cdb00d75469c7b01f1362900ca970bb47e96ac10416698a774e352c23",
+    "previousEventHash": null,
+    "materialChanges": [],
+    "riskScoreDelta": null,
+    "liquidityUSDDelta": null,
+    "maxHolderPercentDelta": null,
+    "addedHardBlockers": [],
+    "removedHardBlockers": [],
+    "addedReviewReasons": [],
+    "removedReviewReasons": [],
+    "addedDangerousPermissions": [],
+    "removedDangerousPermissions": [],
+    "addedTrustSignals": [],
+    "removedTrustSignals": []
+  }
 }

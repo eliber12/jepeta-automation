@@ -25,6 +25,7 @@ Changelog: https://jepeta.dev/changelog.json
 - GoPlus Security is the required security source.
 - DEX Screener supplies exact matching Base market context.
 - Unknown required honeypot or mintability values fail closed with HTTP 422.
+- Missing exact matching Base liquidity yields WARN. A LOW risk level is a score band and does not override WARN or low data quality.
 - Public endpoint is GET-only.
 - Server-side rate limiting and a short per-token cache protect upstream quotas.
 
@@ -83,7 +84,7 @@ GET https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-feed?limit
 
 Use this feed to discover recently published Base risk signals before choosing an exact token to scan.
 
-- Schema: 1.0.0.
+- Feed envelope schema: 1.1.0.
 - Maximum: 50 signals.
 - Window: 1-168 hours.
 - Discovery only: token, decision, risk score, trend score, source platform and timestamp.
@@ -127,7 +128,7 @@ The live full report uses Jepeta decision contract v3. It adds policyVerdict, bl
 - [Agent manifest](https://jepeta.dev/agent.json): identity, commerce metadata and safety semantics.
 - [agents.json](https://jepeta.dev/agents.json): discovery alias.
 - [Full agent guide](https://jepeta.dev/llms-full.txt): detailed field semantics, examples and policy guidance.
-- [Sample paid report](https://jepeta.dev/sample-full-report.json): real paid-deliverable shape captured from a live scan.
+- [Sample paid report](https://jepeta.dev/sample-full-report.json): deterministic synthetic example of the paid v3 contract, not a live scan.
 - [Human scanner](https://jepeta.dev/): interactive product.
 - [Base honeypot and token-risk guide](https://jepeta.dev/base-honeypot-checker.html): crawlable explanation of honeypot checks, related risk signals and limitations.
 - [GitHub](https://github.com/eliber12/jepeta-automation): public documentation and machine-contract mirror.

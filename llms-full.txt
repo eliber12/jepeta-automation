@@ -206,7 +206,7 @@ Do not rely on undocumented fields.
 
 The authoritative schema is:
 
-- [OpenAPI 4.0.0](https://jepeta.dev/openapi.json)
+- [OpenAPI 4.3.0](https://jepeta.dev/openapi.json)
 - [Agent manifest](https://jepeta.dev/agent.json)
 
 ---
@@ -388,6 +388,8 @@ Values:
 - `LOW`: multiple public evidence gaps exist.
 
 Data quality is separate from risk.
+
+Missing exact matching Base liquidity yields `WARN`. The numeric risk score can still map to `LOW`; never treat that band as an override of the decision or source status.
 
 A token can have:
 
@@ -656,30 +658,14 @@ Market degradation is represented explicitly instead of being silently treated a
 - [Jepeta human scanner](https://jepeta.dev/): interactive preview and acquisition surface for the same pre-trade guard.
 - [OpenAPI schema](https://jepeta.dev/openapi.json): authoritative public API contract and error responses.
 - [Agent manifest](https://jepeta.dev/agent.json): identity, ACP commerce metadata, capabilities, safety properties and schema semantics.
-- [GitHub repository](https://github.com/eliber12/jepeta-automation): public source, tests and deployment configuration.
+- [GitHub repository](https://github.com/eliber12/jepeta-automation): sanitized public documentation and machine-contract mirror.
 - [Telegram channel](https://t.me/jepeta_tools): Jepeta risk-intelligence channel.
 
 ---
 
-## Source code locations
+## Paid contract example
 
-Public frontend:
-
-```text
-index.html
-site.css
-site.js
-```
-
-Public machine documents:
-
-```text
-llms.txt
-agent.json
-openapi.json
-```
-
-Production implementation and runtime secrets are intentionally outside the public release.
+The [sample paid v3 report](https://jepeta.dev/sample-full-report.json) is generated from deterministic synthetic inputs and is not a live token scan. Its `historyContext` represents the first observation in that fixture.
 
 ---
 
