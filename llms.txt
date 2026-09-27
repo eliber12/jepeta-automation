@@ -3,7 +3,7 @@
 > Fail-closed pre-trade risk guard for Base agents on chain 8453. Before a swap or buy, Jepeta returns a strict machine-readable PASS / WARN / BLOCK decision with risk signals, data quality and timestamp; the human scanner remains the free preview and acquisition surface.
 
 Canonical site: https://jepeta.dev/
-Last updated: 2026-09-26
+Last updated: 2026-09-27
 Methodology: https://jepeta.dev/methodology.json
 Changelog: https://jepeta.dev/changelog.json
 
@@ -131,6 +131,9 @@ The live full report uses Jepeta decision contract v3. It adds policyVerdict, bl
 - [Human scanner](https://jepeta.dev/): interactive product.
 - [Base honeypot and token-risk guide](https://jepeta.dev/base-honeypot-checker.html): crawlable explanation of honeypot checks, related risk signals and limitations.
 - [GitHub](https://github.com/eliber12/jepeta-automation): public documentation and machine-contract mirror.
+- [Agents.NET](https://agents.net/directory/331): verified external agent profile.
+- [AI Agents Directory](https://aiagentsdirectory.com/agent/jepeta-risk-guard): external Web3 agent listing.
+- [Farcaster](https://farcaster.xyz/jepeta): public Jepeta social identity.
 - [Telegram](https://t.me/jepeta_tools): risk-intelligence channel.
 
 ## Safety
