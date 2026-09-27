@@ -2,22 +2,20 @@
 
 Last updated: 2026-09-27
 
-Jepeta Risk Guard is a fail-closed pre-trade risk guard for Base agents. The exact-token scanner remains the human preview and underlying screening component.
-
-Public documentation and machine-readable contracts for Jepeta Risk Guard.
+Jepeta Risk Guard is a fail-closed pre-trade risk guard for Base agents. This repository contains intentionally public API/discovery contracts, samples, integration examples, and boundary QA.
 
 - Production website: https://jepeta.dev/
 - Free Base ERC-20 preview API: https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-scan
 - Public risk feed: https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-feed
 - Public evidence API: https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-evidence
 - Public evidence catalog: https://jepeta.dev/risk/base/
-- High-intent guide catalog: https://jepeta.dev/guides/
-- Machine guide catalog: https://jepeta.dev/guides/index.json
 - Public risk intelligence API: https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-intelligence
-- Original research catalog: https://jepeta.dev/research/
+- Original research: https://jepeta.dev/research/
+- Guides: https://jepeta.dev/guides/
 - Live Base risk monitor: https://jepeta.dev/base-token-risk-monitor.html
 - Developer examples: [examples/](examples/)
-- Machine methodology: https://jepeta.dev/methodology.json
+- OpenAPI: https://jepeta.dev/openapi.json
+- Methodology: https://jepeta.dev/methodology.json
 - Machine changelog: https://jepeta.dev/changelog.json
 - Paid report: Virtuals ACP / Token Risk Scan / 0.03 USDC
 - Telegram: https://t.me/jepeta_tools
@@ -25,14 +23,40 @@ Public documentation and machine-readable contracts for Jepeta Risk Guard.
 - Agents.NET verified profile: https://agents.net/directory/331
 - AI Agents Directory: https://aiagentsdirectory.com/agent/jepeta-risk-guard
 
+## Quick start
+
+```bash
+curl --get \
+  'https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-scan' \
+  --data-urlencode 'tokenAddress=0x532f27101965dd16442e59d40670faf5ebb142e4'
+```
+
+Decision handling:
+
+- `BLOCK`: stop automated execution.
+- `WARN`: require additional policy checks or human review.
+- `PASS`: continue only if your own execution policy permits it.
+
+Always inspect `data_quality`, `source_status`, `warnings`, and `observed_at`. PASS is not a safety guarantee.
+
+## Public boundary
+
+This repository is a one-way public release surface.
+
+Production implementation, risk-engine internals, privileged configuration, settlement logic, runtime credentials, operational growth data, outreach state, and private infrastructure are intentionally excluded.
+
+Release direction is strictly:
+
+`private production source -> reviewed/sanitized public artifacts -> this repository`
+
+This repository must never be used as an upstream source for production or private state.
+
+The production website is not deployed from this repository.
+
 ## Discovery surface
 
-Jepeta Risk Guard publishes crawlable HTML for Base token risk guides, public evidence snapshots, original risk research, and a live Base risk monitor. Machine consumers can use `agent.json`, `agents.json`, `llms.txt`, `openapi.json`, the guide catalog, and the evidence/research JSON surfaces.
+Machine consumers can use `agent.json`, `agents.json`, `llms.txt`, `openapi.json`, the guide catalog, public evidence, and aggregate research surfaces.
 
-Core discovery topics: Base token risk, pre-trade risk guard, token security API, honeypot screening, mintability, liquidity risk, holder concentration, AI agent risk screening, and machine-readable crypto risk evidence.
+Core topics: Base token risk, pre-trade risk guard, token security API, honeypot screening, mintability, liquidity risk, holder concentration, AI-agent risk screening, and machine-readable crypto risk evidence.
 
-This public repository intentionally contains only API/discovery contracts, samples, documentation, and boundary QA. The production website, risk engine, ACP worker, settlement logic, Supabase implementation, infrastructure, and operational scripts are kept in the private `eliber12/jepeta-core` repository.
-
-This repository does not deploy the production website.
-
-Jepeta is read-only screening, not an audit, safety guarantee, or investment recommendation.
+Jepeta is read-only screening, not a smart-contract audit, safety guarantee, price prediction, or investment recommendation.
