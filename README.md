@@ -1,6 +1,6 @@
 # Jepeta Risk Guard — public contracts
 
-Last updated: 2026-09-26
+Last updated: 2026-09-27
 
 Jepeta Risk Guard is a fail-closed pre-trade risk guard for Base agents. The exact-token scanner remains the human preview and underlying screening component.
 
@@ -21,6 +21,15 @@ Public documentation and machine-readable contracts for Jepeta Risk Guard.
 - Machine changelog: https://jepeta.dev/changelog.json
 - Paid report: Virtuals ACP / Token Risk Scan / 0.03 USDC
 - Telegram: https://t.me/jepeta_tools
+- Farcaster: https://farcaster.xyz/jepeta
+- Agents.NET verified profile: https://agents.net/directory/331
+- AI Agents Directory: https://aiagentsdirectory.com/agent/jepeta-risk-guard
+
+## Discovery surface
+
+Jepeta Risk Guard publishes crawlable HTML for Base token risk guides, public evidence snapshots, original risk research, and a live Base risk monitor. Machine consumers can use `agent.json`, `agents.json`, `llms.txt`, `openapi.json`, the guide catalog, and the evidence/research JSON surfaces.
+
+Core discovery topics: Base token risk, pre-trade risk guard, token security API, honeypot screening, mintability, liquidity risk, holder concentration, AI agent risk screening, and machine-readable crypto risk evidence.
 
 This public repository intentionally contains only API/discovery contracts, samples, documentation, and boundary QA. The production website, risk engine, ACP worker, settlement logic, Supabase implementation, infrastructure, and operational scripts are kept in the private `eliber12/jepeta-core` repository.
 

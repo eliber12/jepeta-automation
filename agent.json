@@ -432,7 +432,11 @@
     "guides": "https://jepeta.dev/guides/",
     "guideCatalog": "https://jepeta.dev/guides/index.json",
     "riskIntelligence": "https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-intelligence",
-    "research": "https://jepeta.dev/research/"
+    "research": "https://jepeta.dev/research/",
+    "github": "https://github.com/eliber12/jepeta-automation",
+    "farcaster": "https://farcaster.xyz/jepeta",
+    "agentsNet": "https://agents.net/directory/331",
+    "aiAgentsDirectory": "https://aiagentsdirectory.com/agent/jepeta-risk-guard"
   },
   "resources": [
     {
@@ -649,7 +653,12 @@
         "Article",
         "BreadcrumbList"
       ],
-      "comparisonPolicy": "Descriptive scope comparison; no winner claim."
+      "comparisonPolicy": "Descriptive scope comparison; no winner claim.",
+      "catalogStructuredData": [
+        "CollectionPage",
+        "ItemList",
+        "BreadcrumbList"
+      ]
     },
     "riskIntelligence": {
       "status": "LIVE",

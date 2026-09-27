@@ -131,6 +131,9 @@ The live full report uses Jepeta decision contract v3. It adds policyVerdict, bl
 - [Human scanner](https://jepeta.dev/): interactive product.
 - [Base honeypot and token-risk guide](https://jepeta.dev/base-honeypot-checker.html): crawlable explanation of honeypot checks, related risk signals and limitations.
 - [GitHub](https://github.com/eliber12/jepeta-automation): public documentation and machine-contract mirror.
+- [Agents.NET](https://agents.net/directory/331): verified external agent profile.
+- [AI Agents Directory](https://aiagentsdirectory.com/agent/jepeta-risk-guard): external Web3 agent listing.
+- [Farcaster](https://farcaster.xyz/jepeta): public Jepeta social identity.
 - [Telegram](https://t.me/jepeta_tools): risk-intelligence channel.
 
 ## Safety

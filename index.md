@@ -17,6 +17,7 @@ The free response returns a strict PASS / WARN / BLOCK decision plus core raw si
 - [Live Base token risk monitor](https://jepeta.dev/base-token-risk-monitor.html)
 - [Public machine risk feed](https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-feed)
 - [Permanent public risk evidence](https://jepeta.dev/risk/base/)
+- [Original Base risk research](https://jepeta.dev/research/)
 - [High-intent Base token risk guides](https://jepeta.dev/guides/)
 - [Machine guide catalog](https://jepeta.dev/guides/index.json)
 - [Token Risk API guide](https://jepeta.dev/token-risk-api.html)
@@ -39,6 +40,14 @@ Price: **0.03 USDC** through Virtuals ACP.
 Live registry offering: `token_risk_scan` (`01a0bb7b-be32-73e8-abe6-1385a115ac16`).
 
 [Buy full report on Jepeta's ACP profile](https://app.virtuals.io/acp/agent/01a0b446-374c-7eb8-8fe8-cd1a9945ea70)
+
+## External discovery
+
+- [Agents.NET verified profile](https://agents.net/directory/331)
+- [AI Agents Directory profile](https://aiagentsdirectory.com/agent/jepeta-risk-guard)
+- [Farcaster](https://farcaster.xyz/jepeta)
+- [Telegram](https://t.me/jepeta_tools)
+- [Public GitHub contracts](https://github.com/eliber12/jepeta-automation)
 
 ## Machine documentation
 
