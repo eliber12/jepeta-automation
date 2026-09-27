@@ -121,12 +121,20 @@
             }
           },
           "503": {
-            "description": "Required security provider unavailable",
+            "description": "Required GoPlus security data unavailable, timed out, or partial/retryable. No verdict is issued.",
             "content": {
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/Error"
                 }
+              }
+            },
+            "headers": {
+              "Retry-After": {
+                "schema": {
+                  "type": "integer"
+                },
+                "description": "Present when the upstream condition is retryable; bounded suggested delay in seconds."
               }
             }
           }
