@@ -436,7 +436,9 @@
     "github": "https://github.com/eliber12/jepeta-automation",
     "farcaster": "https://farcaster.xyz/jepeta",
     "agentsNet": "https://agents.net/directory/331",
-    "aiAgentsDirectory": "https://aiagentsdirectory.com/agent/jepeta-risk-guard"
+    "aiAgentsDirectory": "https://aiagentsdirectory.com/agent/jepeta-risk-guard",
+    "sources": "https://jepeta.dev/sources.json",
+    "trustCenter": "https://jepeta.dev/sources/"
   },
   "resources": [
     {
@@ -618,12 +620,16 @@
     },
     "riskEvidence": {
       "status": "LIVE",
-      "schemaVersion": "1.0.0",
+      "schemaVersion": "2.0.0",
       "endpoint": "https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-evidence",
       "canonicalPattern": "https://jepeta.dev/risk/base/0xTOKEN/",
       "eligibility": "Published risk signal with HIGH/MEDIUM data quality and evidence-rich public fields.",
       "allScansIndexed": false,
-      "paidEvidenceIncluded": false
+      "paidEvidenceIncluded": false,
+      "methodologyVersion": "2.0.0",
+      "conflictsExplicit": true,
+      "unavailableSourcesExplicit": true,
+      "rawProviderPayloadIncluded": false
     },
     "questionGuides": {
       "status": "LIVE",
@@ -657,7 +663,7 @@
   },
   "description": "Fail-closed pre-trade risk guard for Base agents",
   "canonicalUrl": "https://jepeta.dev/",
-  "lastUpdated": "2026-09-26",
+  "lastUpdated": "2026-09-28",
   "checks": [
     "honeypot status",
     "mintability",
@@ -689,6 +695,32 @@
     "changelog": "https://jepeta.dev/changelog.json",
     "llms": "https://jepeta.dev/llms.txt",
     "llmsFull": "https://jepeta.dev/llms-full.txt",
-    "apiDocs": "https://jepeta.dev/docs.html"
+    "apiDocs": "https://jepeta.dev/docs.html",
+    "sources": "https://jepeta.dev/sources.json",
+    "trustCenter": "https://jepeta.dev/sources/"
+  },
+  "methodologyVersion": "2.0.0",
+  "apiStatus": {
+    "v4": {
+      "active": true,
+      "supported": true,
+      "canonical": true
+    },
+    "v5": {
+      "releaseStatus": "internal",
+      "canonical": false,
+      "publicRollout": false
+    }
+  },
+  "sourceGovernance": {
+    "registry": "config/providers.json",
+    "trustCenter": "https://jepeta.dev/sources/",
+    "machine": "https://jepeta.dev/sources.json",
+    "providersAreSameAs": false
+  },
+  "branding": {
+    "decisionOwner": "Independent risk assessment by Jepeta",
+    "partnershipClaimsRequireDocumentedPermission": true,
+    "providerLogosUsedByDefault": false
   }
 }
