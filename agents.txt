@@ -13,3 +13,9 @@ Chain: Base / 8453.
 Decision contract: PASS | WARN | BLOCK.
 Paid offering: token_risk_scan (Token Risk Scan) / 0.03 USDC.
 Offering ID: 01a0bb7b-be32-73e8-abe6-1385a115ac16.
+
+Methodology version: 2.0.0
+Public Evidence schema: 2.0.0
+Sources / Trust Center: https://jepeta.dev/sources/
+Sources JSON: https://jepeta.dev/sources.json
+API V4 remains canonical; API V5 remains internal and non-canonical.
