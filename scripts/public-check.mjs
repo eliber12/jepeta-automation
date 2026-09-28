@@ -4,7 +4,7 @@ import { readFile } from 'node:fs/promises';
 
 const publicContracts = [
   'index.md', 'agent.json', 'agents.json', 'agents.txt', 'openapi.json',
-  'llms.txt', 'llms-full.txt', 'methodology.json', 'changelog.json',
+  'llms.txt', 'llms-full.txt', 'methodology.json', 'sources.json', 'changelog.json',
   'sample-full-report.json',
 ];
 const allowedFiles = new Set([
@@ -37,13 +37,24 @@ for (const file of tracked.filter(file => file !== 'scripts/public-check.mjs')) 
 }
 
 const json = async file => JSON.parse(await readFile(file, 'utf8'));
-const [agent, agents, openapi, methodology, changelog, sample] = await Promise.all([
+const [agent, agents, openapi, methodology, sources, changelog, sample] = await Promise.all([
   json('agent.json'), json('agents.json'), json('openapi.json'),
-  json('methodology.json'), json('changelog.json'), json('sample-full-report.json'),
+  json('methodology.json'), json('sources.json'), json('changelog.json'), json('sample-full-report.json'),
 ]);
 assert.equal(agent.network.chainId, 8453);
 assert.equal(agents.chainId, 8453);
 assert.equal(openapi.info.version, '4.3.0');
+assert.equal(methodology.methodologyVersion,'2.0.0');
+assert.equal(agent.methodologyVersion,'2.0.0');
+assert.equal(agents.methodologyVersion,'2.0.0');
+assert.equal(agent.machineDiscovery.riskEvidence.schemaVersion,'2.0.0');
+assert.equal(agents.riskEvidenceSchemaVersion,'2.0.0');
+assert.equal(openapi.info['x-methodology-version'],'2.0.0');
+assert.equal(agent.apiStatus.v4.canonical,true);
+assert.equal(agent.apiStatus.v5.canonical,false);
+assert.equal(sources.object,'jepeta_sources');
+assert.equal(sources.providers.length,6);
+assert.equal(sources.policy.providersAreJepetaSameAs,false);
 assert.equal(agent.commerce.offeringId, agents.paid.offeringId);
 assert.equal(agent.commerce.price.amount, '0.03');
 assert.equal(sample.decisionVersion, '3.0.0-alpha.2');
@@ -53,6 +64,11 @@ assert.ok(agent.productLadder.every(product => product.status === 'LIVE'));
 assert.deepEqual(methodology.exampleResponse, changelog.exampleResponse);
 assert.equal(methodology.exampleResponse.body.data_quality, 'HIGH');
 assert.equal(methodology.exampleResponse.body.source_status.dexscreener, 'OK');
+assert.equal(methodology.publicEvidencePolicy.paidEvidenceIncluded,false);
+assert.equal(methodology.publicEvidencePolicy.rawProviderPayloadIncluded,false);
+for(const text of [JSON.stringify(agent),JSON.stringify(agents),JSON.stringify(openapi)]){
+  for(const phrase of ['Official Partner','Technology Partner','Powered by','Official Integration'])assert.ok(!text.includes(phrase));
+}
 
 console.log(JSON.stringify({
   publicContractsVerified:true,
