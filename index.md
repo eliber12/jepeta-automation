@@ -1,6 +1,6 @@
 # Jepeta Risk Guard — Pre-Trade Risk Guard for Base Agents
 
-Last updated: 2026-09-26
+Last updated: 2026-09-28
 
 Fail-closed pre-trade risk guard for Base agents. Before a swap or buy, Jepeta evaluates an exact Base ERC-20 contract and returns PASS / WARN / BLOCK with risk signals, data quality and timestamp. The interactive scanner is the human preview.
 
@@ -10,13 +10,14 @@ Use the [interactive scanner](https://jepeta.dev/#scanner) or call:
 
 `GET https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-scan?tokenAddress=0x...`
 
-The free response returns a strict PASS / WARN / BLOCK decision plus core raw signals and source-quality status.
+The free V4 response returns a strict PASS / WARN / BLOCK decision plus normalized public signals and source-quality status.
 
 ## Live Base risk intelligence
 
 - [Live Base token risk monitor](https://jepeta.dev/base-token-risk-monitor.html)
 - [Public machine risk feed](https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-feed)
-- [Permanent public risk evidence](https://jepeta.dev/risk/base/)
+- [Permanent public risk evidence](https://jepeta.dev/risk/base/) (Evidence schema 2.0.0)
+- [Sources / Trust Center](https://jepeta.dev/sources/) and [sources.json](https://jepeta.dev/sources.json)
 - [Original Base risk research](https://jepeta.dev/research/)
 - [High-intent Base token risk guides](https://jepeta.dev/guides/)
 - [Machine guide catalog](https://jepeta.dev/guides/index.json)
@@ -58,7 +59,17 @@ Live registry offering: `token_risk_scan` (`01a0bb7b-be32-73e8-abe6-1385a115ac16
 - [Agent manifest](agent.json)
 - [agents.json](agents.json)
 - [Illustrative paid v3 report](sample-full-report.json) (deterministic synthetic inputs; not a live scan)
-- [Methodology](methodology.json)
+- [Methodology v2](methodology.json)
+- [Source governance](sources.json)
 - [Changelog](changelog.json)
+
+## API status and trust semantics
+
+- API V4 remains active, supported and canonical.
+- API V5 exists as an internal, feature-gated, non-canonical contract. Stage 8 does not perform a public rollout or client migration.
+- Methodology version: 2.0.0.
+- Public Evidence schema: 2.0.0.
+- Raw provider payloads and paid/private evidence are not part of the public Evidence surface.
+- Independent risk assessment by Jepeta. Source attribution does not imply partnership or endorsement.
 
 Jepeta is read-only screening, not a smart-contract audit, safety guarantee or investment recommendation.

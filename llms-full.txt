@@ -4,9 +4,13 @@
 
 Canonical site: https://jepeta.dev/
 
-Last updated: 2026-09-26
+Last updated: 2026-09-28
 
-Methodology: https://jepeta.dev/methodology.json
+Methodology: https://jepeta.dev/methodology.json (version 2.0.0)
+
+Sources / Trust Center: https://jepeta.dev/sources/
+
+Sources JSON: https://jepeta.dev/sources.json
 
 Changelog: https://jepeta.dev/changelog.json
 
@@ -16,13 +20,33 @@ Risk feed: https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-fee
 
 Network: Base / chain ID 8453
 
-Public preview schema: 4.0.0
+Public preview schema: 4.0.0 (V4 remains active, supported and canonical)
+
+Internal API V5: 5.0.0-internal.1 (feature-gated, non-canonical, no Stage 8 public rollout)
+
+Public Evidence schema: 2.0.0
 
 Risk feed schema: 1.1.0
 
 OpenAPI document version: 4.3.0
 
 Paid report: Virtuals ACP v2 / token_risk_scan / 0.03 USDC
+
+---
+
+## Stage 8 trust contract
+
+The documented processing chain is:
+
+```text
+Raw Observation -> Normalized Evidence -> Conflict Detection -> Jepeta Rule -> Verdict
+```
+
+Provider observation, provider health, normalized evidence, evidence quality, risk decision and final verdict are separate concepts. A provider response is never presented as a Jepeta verdict. PASS means no configured blocker/warning observed; it is not a safety guarantee. Required UNKNOWN, UNAVAILABLE, PARTIAL, RATE_LIMITED, ERROR, missing or stale evidence fails closed. Configured risk-signal disagreements remain explicit and yield no verdict rather than selecting an undocumented provider winner.
+
+Public Evidence 2.0.0 exposes per-item reason, signal, value, source, observed time, freshness, methodology version and status when permitted, plus public-safe conflicts. Raw provider payloads, secrets, internal metadata and paid/private evidence remain excluded. No arbitrary confidence percentage is produced.
+
+Independent risk assessment by Jepeta. Provider attribution is descriptive and does not claim partnership, endorsement or official status.
 
 ---
 
@@ -629,6 +653,8 @@ It is not:
 ---
 
 ## Data sources
+
+The authoritative provider-governance surface is https://jepeta.dev/sources/ and https://jepeta.dev/sources.json. It is generated from Jepeta's private provider registry.
 
 ### GoPlus Security
 

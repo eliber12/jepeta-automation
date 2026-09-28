@@ -3,8 +3,10 @@
 > Fail-closed pre-trade risk guard for Base agents on chain 8453. Before a swap or buy, Jepeta returns a strict machine-readable PASS / WARN / BLOCK decision with risk signals, data quality and timestamp; the human scanner remains the free preview and acquisition surface.
 
 Canonical site: https://jepeta.dev/
-Last updated: 2026-09-26
-Methodology: https://jepeta.dev/methodology.json
+Last updated: 2026-09-28
+Methodology: https://jepeta.dev/methodology.json (version 2.0.0)
+Sources / Trust Center: https://jepeta.dev/sources/
+Sources JSON: https://jepeta.dev/sources.json
 Changelog: https://jepeta.dev/changelog.json
 
 ## Core facts
@@ -13,7 +15,7 @@ Changelog: https://jepeta.dev/changelog.json
 - Public API: https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-scan
 - Public risk feed: https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-feed
 - Public risk evidence API: https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-evidence
-- Indexable evidence catalog: https://jepeta.dev/risk/base/
+- Indexable evidence catalog: https://jepeta.dev/risk/base/ (Evidence schema 2.0.0)
 - High-intent guide catalog: https://jepeta.dev/guides/
 - Machine guide catalog: https://jepeta.dev/guides/index.json
 - Public risk intelligence API: https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-intelligence
@@ -22,12 +24,22 @@ Changelog: https://jepeta.dev/changelog.json
 - Public schema: 4.0.0.
 - Decision: PASS | WARN | BLOCK.
 - PASS is not a safety guarantee or permission to trade.
-- GoPlus Security is the required security source.
+- GoPlus Security is the required security source. Provider output is evidence; the Jepeta verdict is independent.
 - DEX Screener supplies exact matching Base market context.
 - Unknown required honeypot or mintability values fail closed with HTTP 422.
 - Missing exact matching Base liquidity yields WARN. A LOW risk level is a score band and does not override WARN or low data quality.
 - Public endpoint is GET-only.
 - Server-side rate limiting and a short per-token cache protect upstream quotas.
+
+## API and methodology status
+
+- API V4: active, supported, canonical.
+- API V5: internal, feature-gated, non-canonical; no Stage 8 public rollout.
+- Methodology: 2.0.0.
+- Public Evidence: 2.0.0.
+- UNKNOWN / UNAVAILABLE / PARTIAL required evidence cannot become PASS.
+- Public Evidence exposes normalized provenance and public-safe conflicts; it never exposes raw provider payloads or paid/private fields.
+- No arbitrary confidence percentage is generated.
 
 ## Free vs paid
 
@@ -123,7 +135,8 @@ The live full report uses Jepeta decision contract v3. It adds policyVerdict, bl
 - [Public evidence catalog](https://jepeta.dev/risk/base/): permanent evidence-rich token snapshots with HTML + JSON canonical URLs.
 - [Live human risk monitor](https://jepeta.dev/base-token-risk-monitor.html): crawlable seven-day view of the latest published signal per token; it is not a census of Base or all Jepeta scans.
 - [OpenAPI](https://jepeta.dev/openapi.json): public API contract and errors.
-- [Methodology](https://jepeta.dev/methodology.json): checks, sources, decisions, examples and limitations.
+- [Methodology v2](https://jepeta.dev/methodology.json): normalized evidence pipeline, deterministic rules, failure/conflict/freshness semantics and limitations.
+- [Sources / Trust Center](https://jepeta.dev/sources/): provider roles, signals, freshness, failure behavior, attribution and branding restrictions.
 - [Changelog](https://jepeta.dev/changelog.json): dated machine-readable contract changes.
 - [Agent manifest](https://jepeta.dev/agent.json): identity, commerce metadata and safety semantics.
 - [agents.json](https://jepeta.dev/agents.json): discovery alias.

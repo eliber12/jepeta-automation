@@ -25,7 +25,7 @@
   },
   "riskFeed": "https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-feed",
   "canonicalUrl": "https://jepeta.dev/",
-  "lastUpdated": "2026-09-26",
+  "lastUpdated": "2026-09-28",
   "supportedChain": {
     "name": "Base",
     "chainId": 8453
@@ -60,7 +60,7 @@
   "riskFeedSchemaVersion": "1.1.0",
   "riskEvidence": "https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-evidence",
   "riskEvidenceCatalog": "https://jepeta.dev/risk/base/",
-  "riskEvidenceSchemaVersion": "1.0.0",
+  "riskEvidenceSchemaVersion": "2.0.0",
   "questionGuides": "https://jepeta.dev/guides/",
   "questionGuideCatalog": "https://jepeta.dev/guides/index.json",
   "questionGuideCount": 20,
@@ -74,5 +74,25 @@
     "telegram": "https://t.me/jepeta_tools",
     "agentsNet": "https://agents.net/directory/331",
     "aiAgentsDirectory": "https://aiagentsdirectory.com/agent/jepeta-risk-guard"
+  },
+  "methodologyVersion": "2.0.0",
+  "sources": "https://jepeta.dev/sources.json",
+  "trustCenter": "https://jepeta.dev/sources/",
+  "apiStatus": {
+    "v4": {
+      "active": true,
+      "supported": true,
+      "canonical": true
+    },
+    "v5": {
+      "releaseStatus": "internal",
+      "canonical": false,
+      "publicRollout": false
+    }
+  },
+  "branding": {
+    "decisionOwner": "Independent risk assessment by Jepeta",
+    "providersAreSameAs": false,
+    "partnershipClaimsRequireDocumentedPermission": true
   }
 }

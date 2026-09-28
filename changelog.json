@@ -5,7 +5,7 @@
   "description": "Fail-closed pre-trade risk guard for Base agents",
   "canonicalUrl": "https://jepeta.dev/changelog.json",
   "serviceCanonicalUrl": "https://jepeta.dev/",
-  "lastUpdated": "2026-09-26",
+  "lastUpdated": "2026-09-28",
   "supportedChain": {
     "name": "Base",
     "chainId": 8453
@@ -44,7 +44,9 @@
     "questionGuides": "https://jepeta.dev/guides/",
     "questionGuideCatalog": "https://jepeta.dev/guides/index.json",
     "riskIntelligence": "https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-intelligence",
-    "research": "https://jepeta.dev/research/"
+    "research": "https://jepeta.dev/research/",
+    "sources": "https://jepeta.dev/sources.json",
+    "trustCenter": "https://jepeta.dev/sources/"
   },
   "exampleRequest": "GET https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-scan?tokenAddress=0x532f27101965dd16442e59d40670faf5ebb142e4",
   "exampleResponse": {
@@ -88,6 +90,18 @@
     "The public risk feed contains published discovery signals only and is not a census of Base or all Jepeta scans."
   ],
   "changes": [
+    {
+      "date": "2026-09-28",
+      "version": "STAGE8-P19-P20-P21-P22-P26",
+      "summary": "Published provider governance, Methodology v2, public Evidence v2 and branding safeguards without changing V4 verdict semantics, pricing or paid/non-public exposure.",
+      "changes": [
+        "Added /sources/ and sources.json generated from the authoritative provider registry.",
+        "Documented Raw Observation -> Normalized Evidence -> Conflict Detection -> Jepeta Rule -> Verdict and the Risk Engine v3 rule trace.",
+        "Upgraded public evidence to schema 2.0.0 with explicit per-item provenance/freshness/status and public-safe conflicts; raw provider payloads and paid/non-public fields remain excluded.",
+        "Kept API V4 active/supported/canonical and API V5 internal/non-canonical.",
+        "Added CI guards for machine-surface divergence and unsupported partnership/endorsement branding claims."
+      ]
+    },
     {
       "date": "2026-09-26",
       "version": "POSITIONING-2026-09-26",
@@ -163,5 +177,7 @@
         "Kept paid evidence excluded from the public feed."
       ]
     }
-  ]
+  ],
+  "methodologyVersion": "2.0.0",
+  "sources": "https://jepeta.dev/sources.json"
 }

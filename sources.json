@@ -1,0 +1,349 @@
+{
+  "object": "jepeta_sources",
+  "schemaVersion": "1.0.0",
+  "name": "Jepeta Risk Guard Sources / Trust Center",
+  "canonicalUrl": "https://jepeta.dev/sources/",
+  "machineUrl": "https://jepeta.dev/sources.json",
+  "generatedFrom": "config/providers.json",
+  "lastReviewed": "2026-09-28",
+  "policy": {
+    "noPartnershipClaims": true,
+    "requiredSecurityFailClosed": true,
+    "publicSuccessContract": "V4",
+    "providersAreJepetaSameAs": false,
+    "providerLogosUsed": false
+  },
+  "providers": [
+    {
+      "id": "goplus",
+      "name": "GoPlus Security",
+      "role": [
+        "required_security",
+        "token_security"
+      ],
+      "signalsSupplied": [
+        "security.honeypot",
+        "supply.mintable",
+        "permissions.cannot_sell_all",
+        "permissions.cannot_buy",
+        "ownership.hidden_owner",
+        "permissions.owner_change_balance",
+        "permissions.selfdestruct",
+        "permissions.external_call",
+        "permissions.slippage_modifiable",
+        "permissions.personal_slippage_modifiable",
+        "permissions.transfer_pausable",
+        "permissions.trading_cooldown",
+        "permissions.is_blacklisted",
+        "ownership.can_take_back_ownership",
+        "verification.open_source",
+        "contract.is_proxy",
+        "market.buy_tax_percent",
+        "market.sell_tax_percent",
+        "holders.top10_concentration_percent",
+        "holders.top10_count",
+        "holders.reported_sample",
+        "liquidity.lp_locked_percent_observed",
+        "liquidity.lp_holder_sample_count"
+      ],
+      "required": true,
+      "optional": false,
+      "critical": true,
+      "criticalPaths": [
+        "public_v4_scan",
+        "internal_full_scan"
+      ],
+      "freshness": {
+        "type": "adapter_ttl",
+        "max_age_seconds": 120,
+        "semantics": "Normalized GoPlus observations expire 120 seconds after retrieval. Required expired evidence is unusable and cannot produce a verdict."
+      },
+      "failureSemantics": {
+        "2": "PARTIAL_RETRYABLE -> HTTP 503 -> no verdict; bounded retry guidance only",
+        "2021": "TOKEN_NOT_COVERED -> HTTP 422 -> no verdict",
+        "4029": "RATE_LIMITED -> HTTP 429 -> no verdict; Retry-After when applicable",
+        "transport_429": "RATE_LIMITED -> HTTP 429 -> no verdict",
+        "timeout_or_unavailable": "HTTP 503 -> no verdict",
+        "required_unknown": "HTTP 422 -> no verdict"
+      },
+      "publicDocumentation": [
+        {
+          "type": "docs",
+          "url": "https://docs.gopluslabs.io/reference/api-overview"
+        },
+        {
+          "type": "rate_limits",
+          "url": "https://docs.gopluslabs.io/reference/support"
+        },
+        {
+          "type": "service",
+          "url": "https://www.gopluslabs.io/en/security-api"
+        }
+      ],
+      "limitations": [
+        "Coverage is provider-dependent; TOKEN_NOT_COVERED is an explicit no-verdict condition.",
+        "Jepeta uses normalized signals and does not expose or redistribute raw GoPlus payloads."
+      ],
+      "attributionRequirements": [
+        "Identify GoPlus as the source when GoPlus-derived security signals are materially presented."
+      ],
+      "brandingRestrictions": [
+        "No partnership, endorsement, certification, co-branding, or logo-use claim without separate documented authorization."
+      ],
+      "status": "active_required",
+      "lastReview": "2026-09-28"
+    },
+    {
+      "id": "dexscreener",
+      "name": "DEX Screener",
+      "role": [
+        "market_context",
+        "liquidity_context"
+      ],
+      "signalsSupplied": [
+        "liquidity.usd",
+        "liquidity.matching_pair_addresses",
+        "market.volume_24h_usd",
+        "market.buys_24h",
+        "market.sells_24h"
+      ],
+      "required": false,
+      "optional": true,
+      "critical": false,
+      "criticalPaths": [],
+      "freshness": {
+        "type": "adapter_ttl",
+        "max_age_seconds": 30,
+        "semantics": "Normalized DEX Screener observations expire 30 seconds after retrieval. Missing or expired optional market context remains explicit."
+      },
+      "failureSemantics": {
+        "partial": "source_status=PARTIAL; missing values remain null; cannot produce a clean PASS solely by normalizing missing market data",
+        "rate_limited": "source_status=RATE_LIMITED; missing values remain null",
+        "unavailable": "source_status=UNAVAILABLE; missing values remain null"
+      },
+      "publicDocumentation": [
+        {
+          "type": "terms",
+          "url": "https://docs.dexscreener.com/api/api-terms-and-conditions"
+        },
+        {
+          "type": "docs",
+          "url": "https://docs.dexscreener.com/api/reference"
+        }
+      ],
+      "limitations": [
+        "Context is limited to exact matching Base token pairs returned by the source and is not a complete market census.",
+        "DEX Screener is optional context; provider failure does not become a clean source status and does not supply a Jepeta verdict."
+      ],
+      "attributionRequirements": [
+        "Identify DEX Screener as the source where its market context is materially presented."
+      ],
+      "brandingRestrictions": [
+        "No partnership, endorsement, certification, or unauthorized brand/logo use."
+      ],
+      "status": "active_optional",
+      "lastReview": "2026-09-28"
+    },
+    {
+      "id": "sourcify",
+      "name": "Sourcify",
+      "role": [
+        "contract_verification",
+        "source_metadata"
+      ],
+      "signalsSupplied": [
+        "verification.sourcify_status"
+      ],
+      "required": false,
+      "optional": true,
+      "critical": false,
+      "criticalPaths": [],
+      "freshness": {
+        "type": "adapter_ttl",
+        "max_age_seconds": 300,
+        "semantics": "Sourcify shadow verification observations expire 300 seconds after retrieval."
+      },
+      "failureSemantics": {
+        "shadow_only": "EXACT_MATCH/MATCH/NOT_FOUND/UNAVAILABLE/RATE_LIMITED/ERROR are evidence-only and never affect V4 verdicts.",
+        "not_found": "NOT_FOUND means only that Sourcify returned no record for the lookup; it is not proof that a contract is unverified.",
+        "failure": "UNAVAILABLE/RATE_LIMITED/ERROR remain explicit evidence states and never become PASS."
+      },
+      "publicDocumentation": [
+        {
+          "type": "docs",
+          "url": "https://docs.sourcify.dev/docs/api/"
+        },
+        {
+          "type": "api",
+          "url": "https://sourcify.dev/server/api-docs/"
+        }
+      ],
+      "limitations": [
+        "Stage 8 use remains optional shadow evidence only and does not independently set the public V4 verdict.",
+        "NOT_FOUND means only that the lookup returned no Sourcify record; it is not proof that a contract is unverified."
+      ],
+      "attributionRequirements": [
+        "Preserve Sourcify provenance on observations derived from Sourcify."
+      ],
+      "brandingRestrictions": [
+        "No partnership, endorsement, certification, or unauthorized brand/logo use."
+      ],
+      "status": "active_shadow_v2_readonly",
+      "lastReview": "2026-09-28"
+    },
+    {
+      "id": "base_rpc",
+      "name": "Base RPC / direct on-chain",
+      "role": [
+        "direct_onchain",
+        "settlement_verification"
+      ],
+      "signalsSupplied": [
+        "contract.chain_id",
+        "contract.chain_id_matches_base",
+        "contract.exists",
+        "contract.bytecode_sha256",
+        "supply.total_supply_raw",
+        "contract.decimals",
+        "contract.symbol",
+        "contract.name",
+        "contract.eip1967_implementation_present",
+        "contract.eip1967_implementation_address"
+      ],
+      "required": false,
+      "optional": true,
+      "critical": true,
+      "criticalPaths": [
+        "acp_settlement_only"
+      ],
+      "freshness": {
+        "type": "adapter_ttl",
+        "max_age_seconds": 30,
+        "semantics": "Direct on-chain shadow observations expire 30 seconds after retrieval."
+      },
+      "failureSemantics": {
+        "public_v4_scan": "Shadow-only; RPC failure never changes or blocks the V4 response.",
+        "shadow_failure": "Unavailable/rate-limited/error checks remain explicit evidence states and never become PASS.",
+        "existing_settlement_failure": "Fail the affected settlement verification path; never infer successful settlement."
+      },
+      "publicDocumentation": [
+        {
+          "type": "network_notice",
+          "url": "https://blog.base.org/base-mainnet-is-open-for-builders"
+        }
+      ],
+      "limitations": [
+        "Direct on-chain evidence remains optional shadow evidence for risk intelligence; it does not independently set the public V4 verdict.",
+        "Production shadow collection requires a fixed operator-configured production-suitable Base RPC; the public Base RPC is not used for production-scale evidence."
+      ],
+      "attributionRequirements": [
+        "Record chain id 8453 and direct-on-chain provenance for derived observations."
+      ],
+      "brandingRestrictions": [
+        "No partnership, endorsement, or Base-affiliation claim."
+      ],
+      "status": "active_shadow_configured_rpc_and_settlement",
+      "lastReview": "2026-09-28"
+    },
+    {
+      "id": "blockscout",
+      "name": "Blockscout",
+      "role": [
+        "token_discovery",
+        "explorer_index"
+      ],
+      "signalsSupplied": [
+        "bounded token discovery candidates",
+        "explorer index context"
+      ],
+      "required": false,
+      "optional": true,
+      "critical": false,
+      "criticalPaths": [],
+      "freshness": {
+        "type": "workflow_bounded",
+        "max_age_seconds": null,
+        "semantics": "Used only inside bounded discovery/research workflows; it is not a V4/V5 verdict freshness source."
+      },
+      "failureSemantics": {
+        "discovery_failure": "Skip/defer discovery work and record the provider failure; manual/core scans remain available.",
+        "public_v4_scan": "Not a V4 verdict dependency and cannot create PASS/WARN/BLOCK."
+      },
+      "publicDocumentation": [
+        {
+          "type": "docs",
+          "url": "https://docs.blockscout.com/devs/apis"
+        },
+        {
+          "type": "limits",
+          "url": "https://docs.blockscout.com/devs/apis/requests-and-limits"
+        },
+        {
+          "type": "terms",
+          "url": "https://eaas.blockscout.com/terms-and-conditions"
+        }
+      ],
+      "limitations": [
+        "The current Blockscout path is isolated discovery only and is not a verdict authority.",
+        "Dependency expansion is blocked pending a fresh terms/API review."
+      ],
+      "attributionRequirements": [
+        "Preserve Blockscout provenance for discovery observations."
+      ],
+      "brandingRestrictions": [
+        "No partnership, endorsement, certification, or unauthorized brand/logo use."
+      ],
+      "status": "active_discovery_isolated_legacy_path_pending_terms_review",
+      "lastReview": "2026-09-28"
+    },
+    {
+      "id": "geckoterminal",
+      "name": "GeckoTerminal",
+      "role": [
+        "market_context_candidate"
+      ],
+      "signalsSupplied": [
+        "none while disabled"
+      ],
+      "required": false,
+      "optional": true,
+      "critical": false,
+      "criticalPaths": [],
+      "freshness": {
+        "type": "disabled",
+        "max_age_seconds": null,
+        "semantics": "No production observations are collected while the provider remains disabled pending review."
+      },
+      "failureSemantics": {
+        "stage3": "Provider is disabled and performs no network calls; core/manual scan availability is unaffected.",
+        "future_optional_failure": "Represent as partial/unavailable discovery context only; never create PASS/WARN/BLOCK."
+      },
+      "publicDocumentation": [
+        {
+          "type": "docs",
+          "url": "https://api.geckoterminal.com/docs/index.html"
+        },
+        {
+          "type": "guide",
+          "url": "https://apiguide.geckoterminal.com/"
+        },
+        {
+          "type": "terms",
+          "url": "https://www.geckoterminal.com/terms-conditions"
+        }
+      ],
+      "limitations": [
+        "No production discovery or trust use is active in Stage 8.",
+        "Any future activation requires a separate terms review, adapter approval, provenance, and then-current attribution compliance."
+      ],
+      "attributionRequirements": [
+        "Public API guide asks for link attribution; if enabled later, preserve source provenance and satisfy then-current attribution requirements."
+      ],
+      "brandingRestrictions": [
+        "No partnership, endorsement, certification, or unauthorized brand/logo use."
+      ],
+      "status": "planned_disabled_pending_terms_review",
+      "lastReview": "2026-09-28"
+    }
+  ]
+}
