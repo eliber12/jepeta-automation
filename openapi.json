@@ -1270,6 +1270,31 @@
                 "items": {
                   "type": "string"
                 }
+              },
+              "availability": {
+                "type": "object",
+                "description": "Availability of ACP checkout on the Jepeta website; does not assert that the external marketplace listing is disabled.",
+                "properties": {
+                  "status": {
+                    "type": "string"
+                  },
+                  "siteCheckoutAvailable": {
+                    "type": "boolean"
+                  },
+                  "fulfillmentVerified": {
+                    "type": "boolean"
+                  },
+                  "priceStatus": {
+                    "type": "string"
+                  },
+                  "message": {
+                    "type": "string"
+                  },
+                  "detailsUrl": {
+                    "type": "string"
+                  }
+                },
+                "additionalProperties": false
               }
             }
           },
@@ -1740,6 +1765,31 @@
                 "items": {
                   "type": "string"
                 }
+              },
+              "availability": {
+                "type": "object",
+                "description": "Availability of ACP checkout on the Jepeta website; does not assert that the external marketplace listing is disabled.",
+                "properties": {
+                  "status": {
+                    "type": "string"
+                  },
+                  "siteCheckoutAvailable": {
+                    "type": "boolean"
+                  },
+                  "fulfillmentVerified": {
+                    "type": "boolean"
+                  },
+                  "priceStatus": {
+                    "type": "string"
+                  },
+                  "message": {
+                    "type": "string"
+                  },
+                  "detailsUrl": {
+                    "type": "string"
+                  }
+                },
+                "additionalProperties": false
               }
             }
           },
@@ -2093,5 +2143,13 @@
     "decisionOwner": "Independent risk assessment by Jepeta",
     "providersAreSameAs": false,
     "partnershipClaimsRequireDocumentedPermission": true
+  },
+  "x-jepeta-acp-availability": {
+    "status": "SITE_CHECKOUT_UNAVAILABLE",
+    "siteCheckoutAvailable": false,
+    "fulfillmentVerified": false,
+    "priceStatus": "listed",
+    "message": "ACP fulfillment is not currently verified; checkout is temporarily unavailable on this site.",
+    "detailsUrl": "https://jepeta.dev/docs.html#commerce"
   }
 }

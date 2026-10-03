@@ -7,12 +7,14 @@ LLM discovery: https://jepeta.dev/llms.txt
 Full integration guide: https://jepeta.dev/llms-full.txt
 Public scanner API: https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-scan
 Human scanner: https://jepeta.dev/
-Virtuals ACP: https://app.virtuals.io/acp/agent/01a0b446-374c-7eb8-8fe8-cd1a9945ea70
+Virtuals ACP identity profile: https://app.virtuals.io/acp/agent/01a0b446-374c-7eb8-8fe8-cd1a9945ea70
 
 Purpose: fail-closed pre-trade risk guard for Base agents; exact-token scanning is the underlying screening component.
 Chain: Base / 8453.
 Decision contract: PASS | WARN | BLOCK.
-Paid offering: token_risk_scan (Token Risk Scan) / 0.03 USDC.
+Documented ACP offering: token_risk_scan (Token Risk Scan) / listed price 0.03 USDC.
+Availability: ACP fulfillment is not currently verified; checkout is temporarily unavailable on this site.
+Availability details: https://jepeta.dev/docs.html#commerce
 Offering ID: 01a0bb7b-be32-73e8-abe6-1385a115ac16.
 
 V5 methodology version: 2.1.1

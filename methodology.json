@@ -76,8 +76,16 @@
   },
   "freeVsPaid": {
     "free": "Public V5 POST exact-token scan, V4 GET compatibility preview, plus public discovery risk feed.",
-    "paid": "Full evidence report through Virtuals ACP v2 / token_risk_scan.",
-    "priceUSDC": "0.03"
+    "paid": "Human-readable report through Telegram Stars. ACP report contract and listed price are documented; fulfillment is unverified and site checkout is unavailable.",
+    "priceUSDC": "0.03",
+    "acpAvailability": {
+      "status": "SITE_CHECKOUT_UNAVAILABLE",
+      "siteCheckoutAvailable": false,
+      "fulfillmentVerified": false,
+      "priceStatus": "listed",
+      "message": "ACP fulfillment is not currently verified; checkout is temporarily unavailable on this site.",
+      "detailsUrl": "https://jepeta.dev/docs.html#commerce"
+    }
   },
   "endpoints": {
     "canonical": "https://jepeta.dev/",
