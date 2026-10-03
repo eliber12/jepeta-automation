@@ -1,0 +1,1213 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Jepeta Risk Guard API V5 - Canonical",
+    "version": "5.0.0-internal.1",
+    "description": "Canonical public V5 risk scan through POST /jepeta-risk-scan, with the equivalent explicit POST /jepeta-risk-scan-v5 route. V4 GET remains active and supported through the default GET and explicit V4 endpoint. Pricing and paid/private exposure are unchanged.",
+    "x-jepeta-internal-only": false,
+    "x-jepeta-canonical": true,
+    "x-risk-engine": "3.0.0-shadow.3",
+    "x-methodology-version": "2.1.1",
+    "x-jepeta-public-optional": false
+  },
+  "servers": [
+    {
+      "url": "https://aitgmgfumsdqecmanrab.supabase.co/functions/v1"
+    }
+  ],
+  "paths": {
+    "/jepeta-risk-scan": {
+      "post": {
+        "operationId": "scanBaseTokenV5Default",
+        "summary": "Run the canonical public V5 Base token risk scan",
+        "description": "Default POST route for V5 while the service-role canonical switch is enabled. A disabled switch restores V4 default GET with POST rejected; explicit V4 GET remains supported throughout.",
+        "security": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "tokenAddress"
+                ],
+                "properties": {
+                  "tokenAddress": {
+                    "type": "string",
+                    "pattern": "^0x[a-fA-F0-9]{40}$"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "V5 verdict. A valid GoPlus cannot_sell_all omission remains UNKNOWN in logical_signals, degrades evidence_quality, and may coexist with a verdict. Unconfirmed exact-token liquidity yields WARN with zero score delta. No false sellability or liquidity value is invented. Malformed, stale, unavailable or conflicting required security evidence yields NO_VERDICT.",
+            "headers": {
+              "X-Jepeta-API-Version": {
+                "schema": {
+                  "const": "v5"
+                }
+              },
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              },
+              "X-Jepeta-V5-Rollout": {
+                "schema": {
+                  "const": "public"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RiskScanV5"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request or token address",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "headers": {
+              "X-Jepeta-API-Version": {
+                "schema": {
+                  "const": "v5"
+                }
+              },
+              "X-Jepeta-V5-Rollout": {
+                "schema": {
+                  "const": "public"
+                }
+              },
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "V5 feature flag is disabled",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "headers": {
+              "X-Jepeta-API-Version": {
+                "schema": {
+                  "const": "v5"
+                }
+              },
+              "X-Jepeta-V5-Rollout": {
+                "schema": {
+                  "const": "public"
+                }
+              },
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "POST required",
+            "headers": {
+              "Allow": {
+                "schema": {
+                  "const": "POST"
+                }
+              },
+              "X-Jepeta-API-Version": {
+                "schema": {
+                  "const": "v5"
+                }
+              },
+              "X-Jepeta-V5-Rollout": {
+                "schema": {
+                  "const": "public"
+                }
+              },
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Body too large",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "headers": {
+              "X-Jepeta-API-Version": {
+                "schema": {
+                  "const": "v5"
+                }
+              },
+              "X-Jepeta-V5-Rollout": {
+                "schema": {
+                  "const": "public"
+                }
+              },
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "JSON required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "headers": {
+              "X-Jepeta-API-Version": {
+                "schema": {
+                  "const": "v5"
+                }
+              },
+              "X-Jepeta-V5-Rollout": {
+                "schema": {
+                  "const": "public"
+                }
+              },
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Required security evidence is malformed, unavailable, stale, conflicting or uncovered; no verdict is issued. A valid GoPlus cannot_sell_all omission alone is not a 422 condition under methodology 2.1.1.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RiskScanV5"
+                }
+              }
+            },
+            "headers": {
+              "X-Jepeta-API-Version": {
+                "schema": {
+                  "const": "v5"
+                }
+              },
+              "X-Jepeta-V5-Rollout": {
+                "schema": {
+                  "const": "public"
+                }
+              },
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Public ingress or required security provider rate limit; no false verdict is issued.",
+            "headers": {
+              "Retry-After": {
+                "schema": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 300
+                }
+              },
+              "X-Jepeta-API-Version": {
+                "schema": {
+                  "const": "v5"
+                }
+              },
+              "X-Jepeta-V5-Rollout": {
+                "schema": {
+                  "const": "public"
+                }
+              },
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/RiskScanV5"
+                    },
+                    {
+                      "$ref": "#/components/schemas/Error"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Malformed or unexpected internal state; no verdict is issued",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "headers": {
+              "X-Jepeta-API-Version": {
+                "schema": {
+                  "const": "v5"
+                }
+              },
+              "X-Jepeta-V5-Rollout": {
+                "schema": {
+                  "const": "public"
+                }
+              },
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Required security unavailable/partial/stale/conflicting, or public ingress unavailable; no false verdict is issued.",
+            "headers": {
+              "Retry-After": {
+                "schema": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 300
+                }
+              },
+              "X-Jepeta-API-Version": {
+                "schema": {
+                  "const": "v5"
+                }
+              },
+              "X-Jepeta-V5-Rollout": {
+                "schema": {
+                  "const": "public"
+                }
+              },
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/RiskScanV5"
+                    },
+                    {
+                      "$ref": "#/components/schemas/Error"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/jepeta-risk-scan-v5": {
+      "post": {
+        "operationId": "scanBaseTokenV5Explicit",
+        "summary": "Run explicit public V5 Base token risk evaluation",
+        "description": "Explicit V5 endpoint. The default POST route uses this contract while the canonical switch is enabled. V4 GET remains available and supported. The route is controlled by Jepeta rollout state and a master kill switch.",
+        "security": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "tokenAddress"
+                ],
+                "properties": {
+                  "tokenAddress": {
+                    "type": "string",
+                    "pattern": "^0x[a-fA-F0-9]{40}$"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "V5 verdict. A valid GoPlus cannot_sell_all omission remains UNKNOWN in logical_signals, degrades evidence_quality, and may coexist with a verdict. Unconfirmed exact-token liquidity yields WARN with zero score delta. No false sellability or liquidity value is invented. Malformed, stale, unavailable or conflicting required security evidence yields NO_VERDICT.",
+            "headers": {
+              "X-Jepeta-API-Version": {
+                "schema": {
+                  "const": "v5"
+                }
+              },
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              },
+              "X-Jepeta-V5-Rollout": {
+                "schema": {
+                  "const": "public"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RiskScanV5"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request or token address",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "headers": {
+              "X-Jepeta-API-Version": {
+                "schema": {
+                  "const": "v5"
+                }
+              },
+              "X-Jepeta-V5-Rollout": {
+                "schema": {
+                  "const": "public"
+                }
+              },
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "V5 feature flag is disabled",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "headers": {
+              "X-Jepeta-API-Version": {
+                "schema": {
+                  "const": "v5"
+                }
+              },
+              "X-Jepeta-V5-Rollout": {
+                "schema": {
+                  "const": "public"
+                }
+              },
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "POST required",
+            "headers": {
+              "Allow": {
+                "schema": {
+                  "const": "POST"
+                }
+              },
+              "X-Jepeta-API-Version": {
+                "schema": {
+                  "const": "v5"
+                }
+              },
+              "X-Jepeta-V5-Rollout": {
+                "schema": {
+                  "const": "public"
+                }
+              },
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Body too large",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "headers": {
+              "X-Jepeta-API-Version": {
+                "schema": {
+                  "const": "v5"
+                }
+              },
+              "X-Jepeta-V5-Rollout": {
+                "schema": {
+                  "const": "public"
+                }
+              },
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "JSON required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "headers": {
+              "X-Jepeta-API-Version": {
+                "schema": {
+                  "const": "v5"
+                }
+              },
+              "X-Jepeta-V5-Rollout": {
+                "schema": {
+                  "const": "public"
+                }
+              },
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Required security evidence is malformed, unavailable, stale, conflicting or uncovered; no verdict is issued. A valid GoPlus cannot_sell_all omission alone is not a 422 condition under methodology 2.1.1.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RiskScanV5"
+                }
+              }
+            },
+            "headers": {
+              "X-Jepeta-API-Version": {
+                "schema": {
+                  "const": "v5"
+                }
+              },
+              "X-Jepeta-V5-Rollout": {
+                "schema": {
+                  "const": "public"
+                }
+              },
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Public ingress or required security provider rate limit; no false verdict is issued.",
+            "headers": {
+              "Retry-After": {
+                "schema": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 300
+                }
+              },
+              "X-Jepeta-API-Version": {
+                "schema": {
+                  "const": "v5"
+                }
+              },
+              "X-Jepeta-V5-Rollout": {
+                "schema": {
+                  "const": "public"
+                }
+              },
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/RiskScanV5"
+                    },
+                    {
+                      "$ref": "#/components/schemas/Error"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Malformed or unexpected internal state; no verdict is issued",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "headers": {
+              "X-Jepeta-API-Version": {
+                "schema": {
+                  "const": "v5"
+                }
+              },
+              "X-Jepeta-V5-Rollout": {
+                "schema": {
+                  "const": "public"
+                }
+              },
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Required security unavailable/partial/stale/conflicting, or public ingress unavailable; no false verdict is issued.",
+            "headers": {
+              "Retry-After": {
+                "schema": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 300
+                }
+              },
+              "X-Jepeta-API-Version": {
+                "schema": {
+                  "const": "v5"
+                }
+              },
+              "X-Jepeta-V5-Rollout": {
+                "schema": {
+                  "const": "public"
+                }
+              },
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/RiskScanV5"
+                    },
+                    {
+                      "$ref": "#/components/schemas/Error"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Error": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "error",
+          "code"
+        ],
+        "properties": {
+          "error": {
+            "type": "string"
+          },
+          "code": {
+            "type": "string"
+          }
+        }
+      },
+      "Risk": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "score",
+          "level",
+          "reason_codes",
+          "explanation"
+        ],
+        "properties": {
+          "score": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "minimum": 0,
+            "maximum": 100
+          },
+          "level": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "enum": [
+              "LOW",
+              "MEDIUM",
+              "HIGH",
+              "CRITICAL",
+              null
+            ]
+          },
+          "reason_codes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "explanation": {
+            "type": "string"
+          }
+        }
+      },
+      "EvidenceQualityIssue": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "code",
+          "severity",
+          "signal"
+        ],
+        "properties": {
+          "code": {
+            "type": "string"
+          },
+          "severity": {
+            "type": "string",
+            "enum": [
+              "REQUIRED",
+              "OPTIONAL"
+            ]
+          },
+          "signal": {
+            "type": "string"
+          }
+        }
+      },
+      "EvidenceQuality": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "level",
+          "issues"
+        ],
+        "properties": {
+          "level": {
+            "type": "string",
+            "enum": [
+              "HIGH",
+              "MEDIUM",
+              "LOW"
+            ]
+          },
+          "issues": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EvidenceQualityIssue"
+            }
+          }
+        }
+      },
+      "EvidenceSource": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "kind"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "kind": {
+            "type": "string"
+          }
+        }
+      },
+      "EvidenceItem": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "signal",
+          "value",
+          "unit",
+          "status",
+          "source",
+          "observed_at"
+        ],
+        "properties": {
+          "signal": {
+            "type": "string"
+          },
+          "value": {
+            "type": [
+              "string",
+              "number",
+              "boolean",
+              "null"
+            ]
+          },
+          "unit": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "OBSERVED",
+              "UNKNOWN",
+              "UNAVAILABLE",
+              "PARTIAL",
+              "RATE_LIMITED",
+              "ERROR",
+              "STALE"
+            ]
+          },
+          "source": {
+            "$ref": "#/components/schemas/EvidenceSource"
+          },
+          "observed_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "SourceStatus": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "source_id",
+          "role",
+          "required",
+          "status",
+          "error_code",
+          "retryable",
+          "observed_at"
+        ],
+        "properties": {
+          "source_id": {
+            "type": "string"
+          },
+          "role": {
+            "type": "string",
+            "enum": [
+              "required_security",
+              "optional"
+            ]
+          },
+          "required": {
+            "type": "boolean"
+          },
+          "status": {
+            "type": "string"
+          },
+          "error_code": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "retryable": {
+            "type": "boolean"
+          },
+          "observed_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          }
+        }
+      },
+      "Conflict": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "signal",
+          "status",
+          "reason",
+          "sources"
+        ],
+        "properties": {
+          "signal": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "DISAGREE",
+              "INSUFFICIENT",
+              "NOT_COMPARABLE",
+              "STALE"
+            ]
+          },
+          "reason": {
+            "type": "string"
+          },
+          "sources": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "Freshness": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "state",
+          "observed_at",
+          "oldest_observed_at",
+          "newest_observed_at"
+        ],
+        "properties": {
+          "state": {
+            "type": "string",
+            "enum": [
+              "FRESH",
+              "MIXED",
+              "STALE",
+              "UNKNOWN"
+            ]
+          },
+          "observed_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "oldest_observed_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "newest_observed_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          }
+        }
+      },
+      "Failure": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "code",
+          "reasons"
+        ],
+        "properties": {
+          "code": {
+            "type": "string"
+          },
+          "reasons": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "RiskScanV5": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "schema_version",
+          "api_version",
+          "release_status",
+          "canonical",
+          "chain_id",
+          "token_address",
+          "status",
+          "verdict",
+          "risk_engine_version",
+          "methodology_version",
+          "risk",
+          "evidence_quality",
+          "verification",
+          "onchain_evidence",
+          "security_evidence",
+          "market_context",
+          "source_status",
+          "conflicts",
+          "freshness",
+          "failure"
+        ],
+        "properties": {
+          "schema_version": {
+            "const": "5.0.0-internal.1"
+          },
+          "api_version": {
+            "const": "v5"
+          },
+          "release_status": {
+            "type": "string",
+            "enum": [
+              "internal",
+              "public"
+            ],
+            "description": "internal when V5 is explicit optional; public when V5 is canonical."
+          },
+          "canonical": {
+            "type": "boolean",
+            "description": "False with internal release status; true with public release status."
+          },
+          "chain_id": {
+            "const": 8453
+          },
+          "token_address": {
+            "type": "string",
+            "pattern": "^0x[a-f0-9]{40}$"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "VERDICT",
+              "NO_VERDICT"
+            ]
+          },
+          "verdict": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "enum": [
+              "PASS",
+              "WARN",
+              "BLOCK",
+              null
+            ]
+          },
+          "risk_engine_version": {
+            "type": "string"
+          },
+          "methodology_version": {
+            "type": "string"
+          },
+          "risk": {
+            "$ref": "#/components/schemas/Risk"
+          },
+          "evidence_quality": {
+            "$ref": "#/components/schemas/EvidenceQuality"
+          },
+          "verification": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EvidenceItem"
+            }
+          },
+          "onchain_evidence": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EvidenceItem"
+            }
+          },
+          "security_evidence": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EvidenceItem"
+            }
+          },
+          "market_context": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EvidenceItem"
+            }
+          },
+          "source_status": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SourceStatus"
+            }
+          },
+          "conflicts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Conflict"
+            }
+          },
+          "freshness": {
+            "$ref": "#/components/schemas/Freshness"
+          },
+          "failure": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/Failure"
+              }
+            ]
+          },
+          "logical_signals": {
+            "type": "array",
+            "description": "Additive public-safe status of the resolved required permission signal. Values and raw provider payloads remain private.",
+            "items": {
+              "$ref": "#/components/schemas/LogicalSignalResolution"
+            }
+          }
+        },
+        "oneOf": [
+          {
+            "properties": {
+              "release_status": {
+                "const": "internal"
+              },
+              "canonical": {
+                "const": false
+              }
+            }
+          },
+          {
+            "properties": {
+              "release_status": {
+                "const": "public"
+              },
+              "canonical": {
+                "const": true
+              }
+            }
+          }
+        ]
+      },
+      "LogicalSignalResolution": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "signal",
+          "status",
+          "reason",
+          "sources"
+        ],
+        "properties": {
+          "signal": {
+            "const": "security.permission"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "OBSERVED",
+              "UNKNOWN",
+              "CONFLICT"
+            ]
+          },
+          "reason": {
+            "type": "string"
+          },
+          "sources": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    }
+  },
+  "x-jepeta-compatibility": {
+    "v4Canonical": false,
+    "v4SchemaVersion": "4.0.0",
+    "v4Endpoint": "/jepeta-risk-scan",
+    "v5Canonical": true,
+    "automaticRedirect": false,
+    "silentAlias": false,
+    "mandatoryMigration": false,
+    "paidPrivateBoundaryChanged": false,
+    "v5PublicOptional": false,
+    "defaultApiVersion": "v5",
+    "publicEndpoint": "https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-scan-v5",
+    "canonicalEndpoint": "https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-scan",
+    "explicitV4Endpoint": "https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-scan-v4",
+    "publicContract": "https://jepeta.dev/openapi-v5.json"
+  }
+}

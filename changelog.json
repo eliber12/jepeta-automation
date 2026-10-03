@@ -5,7 +5,7 @@
   "description": "Fail-closed pre-trade risk guard for Base agents",
   "canonicalUrl": "https://jepeta.dev/changelog.json",
   "serviceCanonicalUrl": "https://jepeta.dev/",
-  "lastUpdated": "2026-09-28",
+  "lastUpdated": "2026-09-29",
   "supportedChain": {
     "name": "Base",
     "chainId": 8453
@@ -20,7 +20,7 @@
     "source status and data quality"
   ],
   "freeVsPaid": {
-    "free": "Public GET exact-token preview plus public discovery risk feed.",
+    "free": "Public V5 POST exact-token scan, V4 GET compatibility preview, plus public discovery risk feed.",
     "paid": "Full evidence report through Virtuals ACP v2 / token_risk_scan.",
     "priceUSDC": "0.03"
   },
@@ -28,7 +28,8 @@
     "canonical": "https://jepeta.dev/",
     "previewApi": "https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-scan",
     "riskFeed": "https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-feed",
-    "openapi": "https://jepeta.dev/openapi.json",
+    "openapi": "https://jepeta.dev/openapi-v5.json",
+    "openapiV4": "https://jepeta.dev/openapi.json",
     "agentManifest": "https://jepeta.dev/agent.json",
     "llms": "https://jepeta.dev/llms.txt",
     "llmsFull": "https://jepeta.dev/llms-full.txt",
@@ -46,9 +47,14 @@
     "riskIntelligence": "https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-intelligence",
     "research": "https://jepeta.dev/research/",
     "sources": "https://jepeta.dev/sources.json",
-    "trustCenter": "https://jepeta.dev/sources/"
+    "trustCenter": "https://jepeta.dev/sources/",
+    "v5Optional": "https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-scan-v5",
+    "v5Explicit": "https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-scan-v5",
+    "v4Explicit": "https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-scan-v4",
+    "openapiV5": "https://jepeta.dev/openapi-v5.json"
   },
-  "exampleRequest": "GET https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-scan?tokenAddress=0x532f27101965dd16442e59d40670faf5ebb142e4",
+  "exampleRequest": "GET https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-scan-v4?tokenAddress=0x532f27101965dd16442e59d40670faf5ebb142e4",
+  "canonicalExampleRequest": "POST https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-scan with JSON tokenAddress=0x532f27101965dd16442e59d40670faf5ebb142e4",
   "exampleResponse": {
     "note": "Illustrative response generated from synthetic source inputs using the public v4 preview logic; values and timestamp are not a live scan of the example token.",
     "body": {
@@ -90,6 +96,28 @@
     "The public risk feed contains published discovery signals only and is not a census of Base or all Jepeta scans."
   ],
   "changes": [
+    {
+      "date": "2026-09-29",
+      "version": "STAGE12R-2.1.1",
+      "summary": "Migrated the default public POST scanner to V5 after a 24-token live coverage gate, while retaining explicit and default GET V4 compatibility and a service-role rollback switch.",
+      "changes": [
+        "A valid GoPlus response omitting cannot_sell_all preserves UNKNOWN and degrades quality; it never fabricates false or a full-sellability claim.",
+        "Unconfirmed exact-token Base liquidity yields WARN with zero score delta, preserving V4 decision parity without changing observed-liquidity thresholds.",
+        "Explicit true continues to BLOCK; malformed, stale, unavailable and conflicting required security evidence remains NO_VERDICT.",
+        "V4 remains active and supported; pricing, paid exposure and public Evidence v2 history are unchanged."
+      ]
+    },
+    {
+      "date": "2026-09-28",
+      "version": "STAGE10-P28",
+      "summary": "Rolled API V5 from internal through canary to a public optional explicit endpoint while keeping V4 canonical/default and preserving rollback.",
+      "changes": [
+        "Published the separate /jepeta-risk-scan-v5 endpoint as optional and non-canonical; V4 remains active, supported, canonical and default.",
+        "Kept the frozen 5.0.0-internal.1 P14/P15 response contract, Risk Engine v3 semantics, pricing and paid/non-public boundary unchanged.",
+        "Added reversible internal/canary/public rollout state plus the existing Jepeta rate limiter; the API V5 master flag remains an immediate kill switch.",
+        "No V4 redirect, alias, deprecation, sunset or mandatory migration was introduced."
+      ]
+    },
     {
       "date": "2026-09-28",
       "version": "STAGE8-P19-P20-P21-P22-P26",
@@ -178,6 +206,6 @@
       ]
     }
   ],
-  "methodologyVersion": "2.0.0",
+  "methodologyVersion": "2.1.1",
   "sources": "https://jepeta.dev/sources.json"
 }

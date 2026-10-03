@@ -3,8 +3,8 @@
 > Fail-closed pre-trade risk guard for Base agents on chain 8453. Before a swap or buy, Jepeta returns a strict machine-readable PASS / WARN / BLOCK decision with risk signals, data quality and timestamp; the human scanner remains the free preview and acquisition surface.
 
 Canonical site: https://jepeta.dev/
-Last updated: 2026-09-28
-Methodology: https://jepeta.dev/methodology.json (version 2.0.0)
+Last updated: 2026-10-03
+Methodology: https://jepeta.dev/methodology.json (version 2.1.1)
 Sources / Trust Center: https://jepeta.dev/sources/
 Sources JSON: https://jepeta.dev/sources.json
 Changelog: https://jepeta.dev/changelog.json
@@ -20,57 +20,54 @@ Changelog: https://jepeta.dev/changelog.json
 - Machine guide catalog: https://jepeta.dev/guides/index.json
 - Public risk intelligence API: https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-intelligence
 - Original research catalog: https://jepeta.dev/research/
+- September 2026 observed Base risk snapshot: https://jepeta.dev/research/base-risk-2026-09/
+- Frozen public evidence coverage audit (14 selected pages): https://jepeta.dev/research/public-evidence-coverage-2026-09-27/
 - Input: one exact ERC-20 contract address in tokenAddress.
-- Public schema: 4.0.0.
+- Canonical public schema: 5.0.0-internal.1; supported V4 GET schema: 4.0.0.
 - Decision: PASS | WARN | BLOCK.
 - PASS is not a safety guarantee or permission to trade.
-- GoPlus Security is the required security source. Provider output is evidence; the Jepeta verdict is independent.
+- GoPlus Security supplies required security evidence. Provider output is evidence; the Jepeta verdict is independent. A Base RPC sellability probe remains shadow-only pending semantic equivalence proof.
 - DEX Screener supplies exact matching Base market context.
-- Unknown required honeypot or mintability values fail closed with HTTP 422.
+- Unknown required honeypot or mintability values fail closed with no verdict. A valid GoPlus omission of cannot_sell_all remains UNKNOWN with degraded evidence quality; explicit true BLOCKs.
 - Missing exact matching Base liquidity yields WARN. A LOW risk level is a score band and does not override WARN or low data quality.
-- Public endpoint is GET-only.
+- Canonical public endpoint is POST JSON. Default GET and explicit V4 GET remain supported.
 - Server-side rate limiting and a short per-token cache protect upstream quotas.
 
 ## API and methodology status
 
-- API V4: active, supported, canonical.
-- API V5: internal, feature-gated, non-canonical; no Stage 8 public rollout.
-- Methodology: 2.0.0.
+- API V5: canonical default POST, also explicit POST /jepeta-risk-scan-v5; contract: https://jepeta.dev/openapi-v5.json.
+- API V4: active, supported GET compatibility; contract: https://jepeta.dev/openapi.json.
+- Methodology: 2.1.1 for V5; V4 retains 2.0.0 semantics.
 - Public Evidence: 2.0.0.
-- UNKNOWN / UNAVAILABLE / PARTIAL required evidence cannot become PASS.
+- Required security source failure, conflict, malformed or stale evidence yields NO_VERDICT. The documented valid cannot_sell_all omission exception never becomes false and degrades quality.
 - Public Evidence exposes normalized provenance and public-safe conflicts; it never exposes raw provider payloads or paid/private fields.
 - No arbitrary confidence percentage is generated.
 
 ## Free vs paid
 
-- Free: public GET exact-token preview plus public discovery risk feed.
-- Paid: full evidence report through Virtuals ACP v2 / token_risk_scan.
-- Price: 0.03 USDC.
+- Free: canonical public POST V5 exact-token preview, supported V4 GET, plus public discovery risk feed.
+- Human report: 25 Telegram Stars for one Base token through https://t.me/Jepeta_bot. Human-readable delivery covers permissions, taxes, liquidity, holders, activity, source status and risk rationale. The bot confirms price and terms before payment.
+- Agent report: 0.03 USDC through Virtuals ACP / token_risk_scan, with the structured v3 decision and history contract.
+- Telegram and ACP delivery contracts differ; the synthetic ACP sample does not preview Telegram delivery.
 
 ## Example request
 
-`GET https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-scan?tokenAddress=0x532f27101965dd16442e59d40670faf5ebb142e4`
+`POST https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-scan` with JSON body `{"tokenAddress":"0x532f27101965dd16442e59d40670faf5ebb142e4"}`.
 
-The authoritative response schema is OpenAPI; a compact illustrative response shape is also published in methodology.json.
+The canonical V5 response schema is https://jepeta.dev/openapi-v5.json. The compact illustrative response in methodology.json describes V4 compatibility.
 
 ## Successful response
 
-Required fields include:
+Canonical V5 fields include:
 - schema_version
 - chain_id
 - token_address
-- decision
-- risk_score / risk_level
-- is_honeypot / is_mintable
-- buy_tax_percent / sell_tax_percent
-- top10_holder_concentration_percent
-- lp_locked_percent_observed
-- liquidity_usd
-- data_quality
+- status / verdict
+- risk.score / risk.level
+- evidence_quality / logical_signals / conflicts
+- security_evidence / market_context
 - source_status
-- warnings
-- observed_at
-- paid_report
+- freshness / failure
 
 Use the OpenAPI document as the authoritative schema.
 
@@ -85,7 +82,7 @@ Never convert null metrics into reassuring zeroes.
 ## Errors
 
 - 400: invalid request/address; fix input.
-- 405: method not allowed; use GET.
+- 405: method not allowed; use POST for V5 or GET for V4.
 - 422: required security evidence unavailable; no usable verdict.
 - 429: Jepeta or GoPlus rate limit; back off and honor Retry-After.
 - 503: required provider unavailable or partial/retryable; honor Retry-After when present and do not synthesize PASS.
@@ -115,7 +112,7 @@ Permanent public evidence is available only for evidence-rich tokens that alread
 
 Ordinary scans are not automatically indexed. Public evidence contains only public-preview signals and explicitly excludes paid-only dangerous-permission flags, liquidity-risk synthesis, and trading-activity evidence.
 
-## Paid report
+## Paid ACP report
 
 - Protocol: Virtuals ACP v2.
 - Agent: Jepeta Risk Guard.
@@ -133,15 +130,17 @@ The live full report uses Jepeta decision contract v3. It adds policyVerdict, bl
 
 - [Live risk feed](https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-feed): recent publicly published Base risk signals for machine discovery.
 - [Public evidence catalog](https://jepeta.dev/risk/base/): permanent evidence-rich token snapshots with HTML + JSON canonical URLs.
+- [September 2026 Base risk snapshot](https://jepeta.dev/research/base-risk-2026-09/): a rolling monthly aggregate of observed Jepeta scans; private source rows and sampling limits are disclosed.
+- [Public evidence coverage audit](https://jepeta.dev/research/public-evidence-coverage-2026-09-27/): 14 frozen public preview records with a downloadable cohort and reproduction script.
 - [Live human risk monitor](https://jepeta.dev/base-token-risk-monitor.html): crawlable seven-day view of the latest published signal per token; it is not a census of Base or all Jepeta scans.
-- [OpenAPI](https://jepeta.dev/openapi.json): public API contract and errors.
+- [Canonical V5 OpenAPI](https://jepeta.dev/openapi-v5.json): default POST response and errors. [V4 compatibility OpenAPI](https://jepeta.dev/openapi.json): supported GET contract.
 - [Methodology v2](https://jepeta.dev/methodology.json): normalized evidence pipeline, deterministic rules, failure/conflict/freshness semantics and limitations.
 - [Sources / Trust Center](https://jepeta.dev/sources/): provider roles, signals, freshness, failure behavior, attribution and branding restrictions.
 - [Changelog](https://jepeta.dev/changelog.json): dated machine-readable contract changes.
 - [Agent manifest](https://jepeta.dev/agent.json): identity, commerce metadata and safety semantics.
 - [agents.json](https://jepeta.dev/agents.json): discovery alias.
 - [Full agent guide](https://jepeta.dev/llms-full.txt): detailed field semantics, examples and policy guidance.
-- [Sample paid report](https://jepeta.dev/sample-full-report.json): deterministic synthetic example of the paid v3 contract, not a live scan.
+- [Sample paid report](https://jepeta.dev/sample-full-report.json): deterministic synthetic example of the ACP paid v3 contract, not a live scan or a Telegram delivery example.
 - [Human scanner](https://jepeta.dev/): interactive product.
 - [Base honeypot and token-risk guide](https://jepeta.dev/base-honeypot-checker.html): crawlable explanation of honeypot checks, related risk signals and limitations.
 - [GitHub](https://github.com/eliber12/jepeta-automation): public documentation and machine-contract mirror.

@@ -4,9 +4,9 @@
 
 Canonical site: https://jepeta.dev/
 
-Last updated: 2026-09-28
+Last updated: 2026-10-03
 
-Methodology: https://jepeta.dev/methodology.json (version 2.0.0)
+Methodology: https://jepeta.dev/methodology.json (version 2.1.1)
 
 Sources / Trust Center: https://jepeta.dev/sources/
 
@@ -20,17 +20,21 @@ Risk feed: https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-fee
 
 Network: Base / chain ID 8453
 
-Public preview schema: 4.0.0 (V4 remains active, supported and canonical)
+Canonical public schema: 5.0.0-internal.1 (V5 default POST)
 
-Internal API V5: 5.0.0-internal.1 (feature-gated, non-canonical, no Stage 8 public rollout)
+Supported V4 GET compatibility schema: 4.0.0 (default GET and explicit /jepeta-risk-scan-v4; contract: https://jepeta.dev/openapi.json)
+
+Canonical V5 contract: https://jepeta.dev/openapi-v5.json (default POST and explicit /jepeta-risk-scan-v5)
 
 Public Evidence schema: 2.0.0
 
 Risk feed schema: 1.1.0
 
-OpenAPI document version: 4.3.0
+V5 OpenAPI schema version: 5.0.0-internal.1; V4 OpenAPI document version: 4.3.0
 
-Paid report: Virtuals ACP v2 / token_risk_scan / 0.03 USDC
+Agent report: Virtuals ACP / token_risk_scan / 0.03 USDC
+
+Human report: Telegram / @Jepeta_bot / 25 Stars per token. Telegram delivery and the ACP JSON contract differ.
 
 ---
 
@@ -42,7 +46,7 @@ The documented processing chain is:
 Raw Observation -> Normalized Evidence -> Conflict Detection -> Jepeta Rule -> Verdict
 ```
 
-Provider observation, provider health, normalized evidence, evidence quality, risk decision and final verdict are separate concepts. A provider response is never presented as a Jepeta verdict. PASS means no configured blocker/warning observed; it is not a safety guarantee. Required UNKNOWN, UNAVAILABLE, PARTIAL, RATE_LIMITED, ERROR, missing or stale evidence fails closed. Configured risk-signal disagreements remain explicit and yield no verdict rather than selecting an undocumented provider winner.
+Provider observation, provider health, normalized evidence, evidence quality, risk decision and final verdict are separate concepts. A provider response is never presented as a Jepeta verdict. PASS means no configured blocker/warning observed; it is not a safety guarantee. Required source failure, malformed or stale evidence and configured risk-signal disagreement yield NO_VERDICT. A valid GoPlus code=1 omission of cannot_sell_all remains UNKNOWN and degrades quality; other required signals may still support a verdict. An explicit true BLOCKs. No provider proxy is treated as equivalent sellability evidence.
 
 Public Evidence 2.0.0 exposes per-item reason, signal, value, source, observed time, freshness, methodology version and status when permitted, plus public-safe conflicts. Raw provider payloads, secrets, internal metadata and paid/private evidence remain excluded. No arbitrary confidence percentage is produced.
 
@@ -74,7 +78,18 @@ A Jepeta result is a screening signal, not a smart-contract audit, investment re
 
 ---
 
-## Quick start for an AI agent
+## Canonical V5 quick start for an AI agent
+
+```http
+POST https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-scan
+Content-Type: application/json
+
+{"tokenAddress":"0x532f27101965dd16442e59d40670faf5ebb142e4"}
+```
+
+Require HTTP 200, `status: VERDICT`, the exact requested `token_address`, and a known `verdict` before applying your own policy. Inspect `evidence_quality`, `logical_signals`, `source_status` and `conflicts`. NO_VERDICT stops automation. The valid GoPlus omission case retains UNKNOWN and degraded quality even if a verdict is possible. See `openapi-v5.json` for the complete closed schema.
+
+## V4 GET compatibility quick start for an AI agent
 
 Request:
 
@@ -189,7 +204,7 @@ Guardrails:
 
 ---
 
-## Strict public response contract
+## Supported V4 GET response contract
 
 A successful public response is a closed JSON object using:
 
@@ -569,6 +584,12 @@ Human scanner:
 
 ---
 
+## Paid Telegram report
+
+A human-readable report for one Base ERC-20 token costs 25 Telegram Stars in https://t.me/Jepeta_bot. It covers permissions, taxes, liquidity, holders, activity, source status and risk rationale. The bot confirms the current price, terms and invoice before payment, and delivers after confirmed payment.
+
+Telegram delivery is separate from the ACP v3 JSON and history contract. The synthetic JSON sample below illustrates ACP only.
+
 ## Paid Virtuals ACP report
 
 Jepeta also sells a deeper evidence report through Virtuals ACP v2.
@@ -598,7 +619,7 @@ Paid deliverable fields include:
 - `warnings`
 - `summary`
 
-The public v4 preview and the paid ACP deliverable are intentionally separate contracts.
+The public V5 scan, supported V4 preview, Telegram human report and paid ACP deliverable have separate contracts.
 
 The website does not process ACP payment.
 
@@ -615,7 +636,7 @@ A practical integration should:
 5. Stop on `BLOCK`.
 6. Apply review/escalation logic on `WARN`.
 7. On `PASS`, still enforce your own execution policy.
-8. Check `data_quality` and `source_status`.
+8. Check V5 `evidence_quality`, `freshness`, `logical_signals`, `conflicts` and `source_status`; V4 uses `data_quality`.
 9. Never convert `null` raw metrics into reassuring zeros.
 10. Never cache a verdict indefinitely; token and market conditions can change.
 
@@ -684,7 +705,7 @@ Market degradation is represented explicitly instead of being silently treated a
 ## Public machine references
 
 - [Jepeta human scanner](https://jepeta.dev/): interactive preview and acquisition surface for the same pre-trade guard.
-- [OpenAPI schema](https://jepeta.dev/openapi.json): authoritative public API contract and error responses.
+- [Canonical V5 OpenAPI](https://jepeta.dev/openapi-v5.json): authoritative POST response and errors. [V4 compatibility OpenAPI](https://jepeta.dev/openapi.json): supported GET response and errors.
 - [Agent manifest](https://jepeta.dev/agent.json): identity, ACP commerce metadata, capabilities, safety properties and schema semantics.
 - [GitHub repository](https://github.com/eliber12/jepeta-automation): sanitized public documentation and machine-contract mirror.
 - [Telegram channel](https://t.me/jepeta_tools): Jepeta risk-intelligence channel.
@@ -693,7 +714,7 @@ Market degradation is represented explicitly instead of being silently treated a
 
 ## Paid contract example
 
-The [sample paid v3 report](https://jepeta.dev/sample-full-report.json) is generated from deterministic synthetic inputs and is not a live token scan. Its `historyContext` represents the first observation in that fixture.
+The [sample paid v3 report](https://jepeta.dev/sample-full-report.json) is generated offline from deterministic synthetic inputs for a placeholder token and is not a live token scan or a Telegram delivery example. Its `historyContext` represents the first observation in that fixture.
 
 ---
 
@@ -792,6 +813,8 @@ GET https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-intelligen
 Human/indexable research catalog:
 
 - https://jepeta.dev/research/
+- https://jepeta.dev/research/base-risk-2026-09/
+- https://jepeta.dev/research/public-evidence-coverage-2026-09-27/
 
 Methodology:
 
@@ -800,6 +823,8 @@ Methodology:
 - repeated scans do not overweight one token;
 - the sample is observational and is not a census of all Base tokens;
 - published percentages must not be generalized to the whole Base ecosystem.
+- monthly raw observation rows remain private; public JSON supports percentage checks but not independent reconstruction of private source counts or an earlier rolling-month state;
+- the frozen 14-page public evidence cohort can be reproduced with its `cohort.json` and `reproduce.mjs` links on the study page.
 
 Each report has canonical HTML plus companion JSON under:
 

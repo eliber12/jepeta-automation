@@ -5,7 +5,7 @@
   "description": "Fail-closed pre-trade risk guard for Base agents",
   "canonicalUrl": "https://jepeta.dev/methodology.json",
   "serviceCanonicalUrl": "https://jepeta.dev/",
-  "lastUpdated": "2026-09-28",
+  "lastUpdated": "2026-09-29",
   "supportedChain": {
     "name": "Base",
     "chainId": 8453,
@@ -72,18 +72,22 @@
     "PASS": "no configured blocker/warning observed. PASS is not a safety guarantee.",
     "WARN": "One or more configured Jepeta warning rules matched usable evidence.",
     "BLOCK": "One or more configured Jepeta blocking rules matched usable evidence.",
-    "NO_VERDICT": "Required evidence was unusable, stale or unavailable, or a configured risk-signal conflict was unresolved. UNKNOWN/UNAVAILABLE/PARTIAL never become PASS."
+    "NO_VERDICT": "A required provider or signal is unusable, stale, invalid, unavailable or conflicting. A valid GoPlus response omitting only cannot_sell_all may still yield a verdict with UNKNOWN sellability and degraded evidence quality under V5 methodology 2.1.1."
   },
   "freeVsPaid": {
-    "free": "Public GET exact-token preview plus public discovery risk feed.",
+    "free": "Public V5 POST exact-token scan, V4 GET compatibility preview, plus public discovery risk feed.",
     "paid": "Full evidence report through Virtuals ACP v2 / token_risk_scan.",
     "priceUSDC": "0.03"
   },
   "endpoints": {
     "canonical": "https://jepeta.dev/",
     "previewApi": "https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-scan",
+    "canonicalMethod": "POST",
+    "explicitV4Api": "https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-scan-v4",
+    "explicitV5Api": "https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-scan-v5",
     "riskFeed": "https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-feed",
-    "openapi": "https://jepeta.dev/openapi.json",
+    "openapi": "https://jepeta.dev/openapi-v5.json",
+    "openapiV4": "https://jepeta.dev/openapi.json",
     "agentManifest": "https://jepeta.dev/agent.json",
     "llms": "https://jepeta.dev/llms.txt",
     "llmsFull": "https://jepeta.dev/llms-full.txt",
@@ -104,6 +108,7 @@
     "trustCenter": "https://jepeta.dev/sources/"
   },
   "exampleRequest": "GET https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-scan?tokenAddress=0x532f27101965dd16442e59d40670faf5ebb142e4",
+  "canonicalExampleRequest": "POST https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-scan with JSON {tokenAddress: 0x532f27101965dd16442e59d40670faf5ebb142e4}",
   "exampleResponse": {
     "note": "Illustrative response generated from synthetic source inputs using the public v4 preview logic; values and timestamp are not a live scan of the example token.",
     "body": {
@@ -140,7 +145,7 @@
   "limitations": [
     "Screening only; not a smart-contract audit, safety guarantee, price prediction, or investment recommendation.",
     "Only Base ERC-20 contracts on chain 8453 are supported.",
-    "GoPlus is required for the configured critical security evidence; unusable required evidence fails closed.",
+    "GoPlus remains required for the V4 and V5 critical security observations. V5 treats a valid GoPlus omission of cannot_sell_all as an unresolved evidence gap with degraded quality; provider failure or malformed security evidence still fails closed.",
     "DEX Screener, Sourcify and direct Base on-chain evidence are optional in Stage 8; optional failure remains explicit.",
     "Blockscout is isolated discovery context and GeckoTerminal remains disabled pending review.",
     "The public risk feed contains published discovery signals only and is not a census of Base or all Jepeta scans."
@@ -202,7 +207,7 @@
     "representativeCensus": false,
     "limitation": "Published percentages describe Jepeta's observed usable sample and must not be generalized to the entire Base ecosystem."
   },
-  "methodologyVersion": "2.0.0",
+  "methodologyVersion": "2.1.1",
   "pipeline": [
     {
       "order": 1,
@@ -244,10 +249,10 @@
     "finalVerdict": "Jepeta-owned PASS/WARN/BLOCK decision, or NO_VERDICT when fail-closed gates prevent a decision."
   },
   "versions": {
-    "methodology": "2.0.0",
-    "riskEngine": "3.0.0-shadow.1",
-    "riskPolicy": "p10.1",
-    "ruleSet": "2026-09-28.1",
+    "methodology": "2.1.1",
+    "riskEngine": "3.0.0-shadow.3",
+    "riskPolicy": "p12r.3",
+    "ruleSet": "2026-09-29.3",
     "normalization": "1.0.0",
     "conflictDetection": "1.0.0",
     "evidenceModel": "1.0.0",
@@ -272,13 +277,13 @@
       "failure_semantics": "Required missing, UNKNOWN, UNAVAILABLE, PARTIAL, RATE_LIMITED, ERROR or expired evidence cannot produce PASS and yields NO_VERDICT.",
       "conflict_semantics": "A DISAGREE comparison on a configured risk signal is explicit and yields NO_VERDICT; no provider winner is invented.",
       "freshness_semantics": "Expired normalized evidence is not usable as a fresh observation.",
-      "methodology_version": "2.0.0"
+      "methodology_version": "2.1.1"
     },
     {
       "rule_id": "R3-BLOCK-CANNOT-SELL-ALL",
       "signal": "permissions.cannot_sell_all",
       "sources": [
-        "goplus"
+        "logical_evidence"
       ],
       "normalization_semantics": "Normalized boolean; rule matches only when value is true.",
       "risk_effect": {
@@ -286,11 +291,11 @@
         "score_delta": 45,
         "reason_code": "CANNOT_SELL_ALL"
       },
-      "evidence_quality_effect": "Required security evidence.",
-      "failure_semantics": "Required missing, UNKNOWN, UNAVAILABLE, PARTIAL, RATE_LIMITED, ERROR or expired evidence cannot produce PASS and yields NO_VERDICT.",
+      "evidence_quality_effect": "An omitted source field remains UNKNOWN and degrades evidence quality.",
+      "failure_semantics": "Explicit true blocks and explicit false is observed. A field omitted from an otherwise valid GoPlus response remains UNKNOWN and may yield a verdict with degraded evidence quality. Malformed, stale, conflicting or unavailable evidence yields NO_VERDICT.",
       "conflict_semantics": "A DISAGREE comparison on a configured risk signal is explicit and yields NO_VERDICT; no provider winner is invented.",
       "freshness_semantics": "Expired normalized evidence is not usable as a fresh observation.",
-      "methodology_version": "2.0.0"
+      "methodology_version": "2.1.1"
     },
     {
       "rule_id": "R3-BLOCK-CANNOT-BUY",
@@ -308,7 +313,7 @@
       "failure_semantics": "Required missing, UNKNOWN, UNAVAILABLE, PARTIAL, RATE_LIMITED, ERROR or expired evidence cannot produce PASS and yields NO_VERDICT.",
       "conflict_semantics": "A DISAGREE comparison on a configured risk signal is explicit and yields NO_VERDICT; no provider winner is invented.",
       "freshness_semantics": "Expired normalized evidence is not usable as a fresh observation.",
-      "methodology_version": "2.0.0"
+      "methodology_version": "2.1.1"
     },
     {
       "rule_id": "R3-WARN-MINTABLE",
@@ -326,7 +331,7 @@
       "failure_semantics": "Required missing, UNKNOWN, UNAVAILABLE, PARTIAL, RATE_LIMITED, ERROR or expired evidence cannot produce PASS and yields NO_VERDICT.",
       "conflict_semantics": "A DISAGREE comparison on a configured risk signal is explicit and yields NO_VERDICT; no provider winner is invented.",
       "freshness_semantics": "Expired normalized evidence is not usable as a fresh observation.",
-      "methodology_version": "2.0.0"
+      "methodology_version": "2.1.1"
     },
     {
       "rule_id": "R3-WARN-HIDDEN-OWNER",
@@ -344,7 +349,7 @@
       "failure_semantics": "Missing or unusable optional evidence degrades evidence quality; it is never converted to a reassuring observation.",
       "conflict_semantics": "A DISAGREE comparison on a configured risk signal is explicit and yields NO_VERDICT; no provider winner is invented.",
       "freshness_semantics": "Expired normalized evidence is not usable as a fresh observation.",
-      "methodology_version": "2.0.0"
+      "methodology_version": "2.1.1"
     },
     {
       "rule_id": "R3-WARN-OWNER-CHANGE-BALANCE",
@@ -362,7 +367,7 @@
       "failure_semantics": "Missing or unusable optional evidence degrades evidence quality; it is never converted to a reassuring observation.",
       "conflict_semantics": "A DISAGREE comparison on a configured risk signal is explicit and yields NO_VERDICT; no provider winner is invented.",
       "freshness_semantics": "Expired normalized evidence is not usable as a fresh observation.",
-      "methodology_version": "2.0.0"
+      "methodology_version": "2.1.1"
     },
     {
       "rule_id": "R3-WARN-SELFDESTRUCT",
@@ -380,7 +385,7 @@
       "failure_semantics": "Missing or unusable optional evidence degrades evidence quality; it is never converted to a reassuring observation.",
       "conflict_semantics": "A DISAGREE comparison on a configured risk signal is explicit and yields NO_VERDICT; no provider winner is invented.",
       "freshness_semantics": "Expired normalized evidence is not usable as a fresh observation.",
-      "methodology_version": "2.0.0"
+      "methodology_version": "2.1.1"
     },
     {
       "rule_id": "R3-WARN-EXTERNAL-CALL",
@@ -398,7 +403,7 @@
       "failure_semantics": "Missing or unusable optional evidence degrades evidence quality; it is never converted to a reassuring observation.",
       "conflict_semantics": "A DISAGREE comparison on a configured risk signal is explicit and yields NO_VERDICT; no provider winner is invented.",
       "freshness_semantics": "Expired normalized evidence is not usable as a fresh observation.",
-      "methodology_version": "2.0.0"
+      "methodology_version": "2.1.1"
     },
     {
       "rule_id": "R3-WARN-SLIPPAGE-MODIFIABLE",
@@ -416,7 +421,7 @@
       "failure_semantics": "Missing or unusable optional evidence degrades evidence quality; it is never converted to a reassuring observation.",
       "conflict_semantics": "A DISAGREE comparison on a configured risk signal is explicit and yields NO_VERDICT; no provider winner is invented.",
       "freshness_semantics": "Expired normalized evidence is not usable as a fresh observation.",
-      "methodology_version": "2.0.0"
+      "methodology_version": "2.1.1"
     },
     {
       "rule_id": "R3-WARN-PERSONAL-SLIPPAGE-MODIFIABLE",
@@ -434,7 +439,7 @@
       "failure_semantics": "Missing or unusable optional evidence degrades evidence quality; it is never converted to a reassuring observation.",
       "conflict_semantics": "A DISAGREE comparison on a configured risk signal is explicit and yields NO_VERDICT; no provider winner is invented.",
       "freshness_semantics": "Expired normalized evidence is not usable as a fresh observation.",
-      "methodology_version": "2.0.0"
+      "methodology_version": "2.1.1"
     },
     {
       "rule_id": "R3-WARN-TRANSFER-PAUSABLE",
@@ -452,7 +457,7 @@
       "failure_semantics": "Missing or unusable optional evidence degrades evidence quality; it is never converted to a reassuring observation.",
       "conflict_semantics": "A DISAGREE comparison on a configured risk signal is explicit and yields NO_VERDICT; no provider winner is invented.",
       "freshness_semantics": "Expired normalized evidence is not usable as a fresh observation.",
-      "methodology_version": "2.0.0"
+      "methodology_version": "2.1.1"
     },
     {
       "rule_id": "R3-WARN-TRADING-COOLDOWN",
@@ -470,7 +475,7 @@
       "failure_semantics": "Missing or unusable optional evidence degrades evidence quality; it is never converted to a reassuring observation.",
       "conflict_semantics": "A DISAGREE comparison on a configured risk signal is explicit and yields NO_VERDICT; no provider winner is invented.",
       "freshness_semantics": "Expired normalized evidence is not usable as a fresh observation.",
-      "methodology_version": "2.0.0"
+      "methodology_version": "2.1.1"
     },
     {
       "rule_id": "R3-WARN-BLACKLISTED",
@@ -488,7 +493,7 @@
       "failure_semantics": "Missing or unusable optional evidence degrades evidence quality; it is never converted to a reassuring observation.",
       "conflict_semantics": "A DISAGREE comparison on a configured risk signal is explicit and yields NO_VERDICT; no provider winner is invented.",
       "freshness_semantics": "Expired normalized evidence is not usable as a fresh observation.",
-      "methodology_version": "2.0.0"
+      "methodology_version": "2.1.1"
     },
     {
       "rule_id": "R3-WARN-TAKE-BACK-OWNERSHIP",
@@ -506,7 +511,7 @@
       "failure_semantics": "Missing or unusable optional evidence degrades evidence quality; it is never converted to a reassuring observation.",
       "conflict_semantics": "A DISAGREE comparison on a configured risk signal is explicit and yields NO_VERDICT; no provider winner is invented.",
       "freshness_semantics": "Expired normalized evidence is not usable as a fresh observation.",
-      "methodology_version": "2.0.0"
+      "methodology_version": "2.1.1"
     },
     {
       "rule_id": "R3-WARN-CLOSED-SOURCE",
@@ -524,7 +529,7 @@
       "failure_semantics": "Missing or unusable optional evidence degrades evidence quality; it is never converted to a reassuring observation.",
       "conflict_semantics": "A DISAGREE comparison on a configured risk signal is explicit and yields NO_VERDICT; no provider winner is invented.",
       "freshness_semantics": "Expired normalized evidence is not usable as a fresh observation.",
-      "methodology_version": "2.0.0"
+      "methodology_version": "2.1.1"
     },
     {
       "rule_id": "R3-WARN-UPGRADEABLE-PROXY",
@@ -542,7 +547,7 @@
       "failure_semantics": "Missing or unusable optional evidence degrades evidence quality; it is never converted to a reassuring observation.",
       "conflict_semantics": "A DISAGREE comparison on a configured risk signal is explicit and yields NO_VERDICT; no provider winner is invented.",
       "freshness_semantics": "Expired normalized evidence is not usable as a fresh observation.",
-      "methodology_version": "2.0.0"
+      "methodology_version": "2.1.1"
     },
     {
       "rule_id": "R3-WARN-BUY-TAX",
@@ -560,7 +565,7 @@
       "failure_semantics": "Missing or unusable optional evidence degrades evidence quality; it is never converted to a reassuring observation.",
       "conflict_semantics": "A DISAGREE comparison on a configured risk signal is explicit and yields NO_VERDICT; no provider winner is invented.",
       "freshness_semantics": "Expired normalized evidence is not usable as a fresh observation.",
-      "methodology_version": "2.0.0"
+      "methodology_version": "2.1.1"
     },
     {
       "rule_id": "R3-WARN-SELL-TAX",
@@ -578,7 +583,7 @@
       "failure_semantics": "Missing or unusable optional evidence degrades evidence quality; it is never converted to a reassuring observation.",
       "conflict_semantics": "A DISAGREE comparison on a configured risk signal is explicit and yields NO_VERDICT; no provider winner is invented.",
       "freshness_semantics": "Expired normalized evidence is not usable as a fresh observation.",
-      "methodology_version": "2.0.0"
+      "methodology_version": "2.1.1"
     },
     {
       "rule_id": "R3-WARN-LIQUIDITY",
@@ -586,17 +591,17 @@
       "sources": [
         "dexscreener"
       ],
-      "normalization_semantics": "Normalized non-negative USD value; <200000 matches. Delta: 10 for 50000-<200000, 25 for 10000-<50000, 35 for <10000.",
+      "normalization_semantics": "Normalized non-negative USD value; <200000 matches. Delta: 10 for 50000-<200000, 25 for 10000-<50000, 35 for <10000. Unconfirmed liquidity gives WARN with zero score delta.",
       "risk_effect": {
         "decision": "WARN",
-        "score_delta": "10_25_or_35",
-        "reason_code": "LIQUIDITY_MEDIUM_HIGH_OR_CRITICAL"
+        "score_delta": "0_or_10_25_or_35",
+        "reason_code": "LIQUIDITY_UNCONFIRMED_OR_MEDIUM_HIGH_OR_CRITICAL"
       },
-      "evidence_quality_effect": "Optional market evidence; absence degrades evidence quality only.",
-      "failure_semantics": "Missing or unusable optional evidence degrades evidence quality; it is never converted to a reassuring observation.",
+      "evidence_quality_effect": "Unconfirmed market liquidity degrades evidence quality and cannot yield PASS.",
+      "failure_semantics": "Missing, partial, unavailable or stale exact-token liquidity yields WARN without treating it as zero or a token restriction.",
       "conflict_semantics": "A DISAGREE comparison on a configured risk signal is explicit and yields NO_VERDICT; no provider winner is invented.",
       "freshness_semantics": "Expired normalized evidence is not usable as a fresh observation.",
-      "methodology_version": "2.0.0"
+      "methodology_version": "2.1.1"
     },
     {
       "rule_id": "R3-WARN-TOP10-CONCENTRATION",
@@ -614,7 +619,7 @@
       "failure_semantics": "Missing or unusable optional evidence degrades evidence quality; it is never converted to a reassuring observation.",
       "conflict_semantics": "A DISAGREE comparison on a configured risk signal is explicit and yields NO_VERDICT; no provider winner is invented.",
       "freshness_semantics": "Expired normalized evidence is not usable as a fresh observation.",
-      "methodology_version": "2.0.0"
+      "methodology_version": "2.1.1"
     },
     {
       "rule_id": "R3-FAIL-CLOSED",
@@ -630,15 +635,15 @@
         "reason_code": "FAIL_CLOSED"
       },
       "evidence_quality_effect": "Required evidence-quality failure.",
-      "failure_semantics": "Required missing, UNKNOWN, UNAVAILABLE, PARTIAL, RATE_LIMITED, ERROR or expired evidence cannot produce PASS and yields NO_VERDICT.",
+      "failure_semantics": "Required provider failures, unusable required signals, malformed sellability, stale evidence and unresolved risk conflicts yield NO_VERDICT. A valid-provider sellability omission is an evidence gap, not a provider failure.",
       "conflict_semantics": "A DISAGREE comparison on a configured risk signal is explicit and yields NO_VERDICT; no provider winner is invented.",
       "freshness_semantics": "Expired normalized evidence is not usable as a fresh observation.",
-      "methodology_version": "2.0.0"
+      "methodology_version": "2.1.1"
     }
   ],
   "failureSemantics": {
-    "required": "Required provider/evidence failure, UNKNOWN, UNAVAILABLE, PARTIAL, RATE_LIMITED, ERROR, missing or stale state yields NO_VERDICT.",
-    "optional": "Optional source failure is explicit and degrades evidence quality/provider health; it is not converted to PASS evidence.",
+    "required": "Provider failure, missing or invalid required signals other than a valid GoPlus cannot_sell_all omission, stale evidence and unresolved conflicts yield NO_VERDICT. The scoped valid omission remains UNKNOWN and degrades quality; it is never replaced with false.",
+    "optional": "Optional source failure remains explicit in quality and provider health. Unconfirmed exact-token liquidity yields WARN with zero score delta; it is never treated as zero liquidity or a PASS observation.",
     "noFalsePass": true
   },
   "conflictSemantics": {
@@ -668,14 +673,18 @@
     "v4": {
       "active": true,
       "supported": true,
-      "canonical": true,
+      "canonical": false,
       "contract": "unchanged"
     },
     "v5": {
-      "active": "feature-gated internal endpoint",
-      "canonical": false,
-      "publicRollout": false,
-      "mandatoryMigration": false
+      "active": "public canonical default and explicit endpoint",
+      "canonical": true,
+      "publicRollout": true,
+      "mandatoryMigration": false,
+      "default": true,
+      "endpoint": "https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-scan-v5",
+      "contract": "https://jepeta.dev/openapi-v5.json",
+      "schemaVersion": "5.0.0-internal.1"
     }
   },
   "brandingPolicy": {
@@ -697,5 +706,18 @@
       "endorsement claims"
     ]
   },
-  "methodologySummary": "Versioned deterministic methodology for Jepeta Risk Engine v3: raw observations are normalized, compared for conflicts, evaluated by Jepeta rules, then mapped to a verdict."
+  "methodologySummary": "Versioned deterministic methodology for Jepeta Risk Engine v3: raw observations are normalized, compared for conflicts, evaluated by Jepeta rules, then mapped to a verdict.",
+  "sellabilityPolicyV5": {
+    "signal": "permissions.cannot_sell_all",
+    "explicitTrue": "BLOCK through R3-BLOCK-CANNOT-SELL-ALL with unchanged score delta.",
+    "explicitFalse": "Observed false; continue unchanged risk rules when other required evidence is usable.",
+    "validProviderOmission": "UNKNOWN with reason PROVIDER_OMITTED_SIGNAL. A verdict may be issued with explicit degraded evidence quality, a zero-delta unmatched sellability trace, and no assertion of sellability.",
+    "malformedField": "INVALID_PROVIDER_SIGNAL; NO_VERDICT.",
+    "providerFailure": "NO_VERDICT for timeout, rate limit, partial, unavailable or error.",
+    "staleOrConflict": "NO_VERDICT.",
+    "independentProbe": "SHADOW_ONLY until semantic equivalence to the full-sale restriction predicate is demonstrated.",
+    "noProxyInference": true,
+    "noUnknownToFalse": true,
+    "v4ContractChanged": false
+  }
 }
