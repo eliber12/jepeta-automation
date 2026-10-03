@@ -5,7 +5,7 @@
     "version": "4.3.0",
     "description": "Fail-closed pre-trade risk guard for Base agents. GET-only Base ERC-20 risk intelligence for exact-token screening, recent public signals, and permanent evidence-rich public snapshots. PASS/WARN/BLOCK is screening, not a safety guarantee. Paid-only evidence remains separate through Virtuals ACP.",
     "x-canonical-url": "https://jepeta.dev/",
-    "x-last-updated": "2026-09-28",
+    "x-last-updated": "2026-09-29",
     "x-supported-chain": {
       "name": "Base",
       "chainId": 8453
@@ -2042,7 +2042,7 @@
     "name": "Jepeta Risk Guard",
     "description": "Fail-closed pre-trade risk guard for Base agents",
     "canonicalUrl": "https://jepeta.dev/",
-    "lastUpdated": "2026-09-28",
+    "lastUpdated": "2026-09-29",
     "methodology": "https://jepeta.dev/methodology.json",
     "changelog": "https://jepeta.dev/changelog.json",
     "priceUSDC": "0.03",
@@ -2077,12 +2077,16 @@
     "v4": {
       "active": true,
       "supported": true,
-      "canonical": true
+      "canonical": false
     },
     "v5": {
-      "releaseStatus": "internal",
-      "canonical": false,
-      "publicRollout": false
+      "releaseStatus": "public",
+      "canonical": true,
+      "publicRollout": true,
+      "default": true,
+      "endpoint": "https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-scan-v5",
+      "contract": "https://jepeta.dev/openapi-v5.json",
+      "schemaVersion": "5.0.0-internal.1"
     }
   },
   "x-jepeta-branding": {

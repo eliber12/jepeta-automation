@@ -1,7 +1,8 @@
 # Jepeta Risk Guard — agent discovery
 
 Canonical manifest: https://jepeta.dev/agent.json
-OpenAPI: https://jepeta.dev/openapi.json
+Canonical V5 OpenAPI: https://jepeta.dev/openapi-v5.json
+V4 compatibility OpenAPI: https://jepeta.dev/openapi.json
 LLM discovery: https://jepeta.dev/llms.txt
 Full integration guide: https://jepeta.dev/llms-full.txt
 Public scanner API: https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-scan
@@ -14,8 +15,8 @@ Decision contract: PASS | WARN | BLOCK.
 Paid offering: token_risk_scan (Token Risk Scan) / 0.03 USDC.
 Offering ID: 01a0bb7b-be32-73e8-abe6-1385a115ac16.
 
-Methodology version: 2.0.0
+V5 methodology version: 2.1.1
 Public Evidence schema: 2.0.0
 Sources / Trust Center: https://jepeta.dev/sources/
 Sources JSON: https://jepeta.dev/sources.json
-API V4 remains canonical; API V5 remains internal and non-canonical.
+API V5 is canonical at POST /jepeta-risk-scan. API V4 remains active at GET /jepeta-risk-scan-v4 and default GET.

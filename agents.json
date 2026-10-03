@@ -5,9 +5,12 @@
   "canonicalAgentManifest": "https://jepeta.dev/agent.json",
   "llms": "https://jepeta.dev/llms.txt",
   "fullGuide": "https://jepeta.dev/llms-full.txt",
-  "openapi": "https://jepeta.dev/openapi.json",
+  "openapi": "https://jepeta.dev/openapi-v5.json",
   "human": "https://jepeta.dev/",
   "publicApi": "https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-scan",
+  "publicApiMethod": "POST",
+  "explicitV4Api": "https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-scan-v4",
+  "explicitV5Api": "https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-scan-v5",
   "chainId": 8453,
   "decisions": [
     "PASS",
@@ -25,7 +28,7 @@
   },
   "riskFeed": "https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-feed",
   "canonicalUrl": "https://jepeta.dev/",
-  "lastUpdated": "2026-09-28",
+  "lastUpdated": "2026-10-03",
   "supportedChain": {
     "name": "Base",
     "chainId": 8453
@@ -40,15 +43,17 @@
     "source status and data quality"
   ],
   "freeVsPaid": {
-    "free": "Public GET exact-token preview plus public discovery risk feed.",
-    "paid": "Full evidence report through Virtuals ACP v2 / token_risk_scan.",
-    "priceUSDC": "0.03"
+    "free": "Public V5 POST exact-token scan, V4 GET compatibility preview, plus public discovery risk feed.",
+    "paid": "Human-readable report through Telegram Stars, or a structured ACP report through token_risk_scan; delivery contracts differ.",
+    "priceUSDC": "0.03",
+    "priceStars": 25
   },
   "methodology": "https://jepeta.dev/methodology.json",
   "changelog": "https://jepeta.dev/changelog.json",
   "examples": {
-    "request": "GET https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-scan?tokenAddress=0x532f27101965dd16442e59d40670faf5ebb142e4",
-    "responseShape": "https://jepeta.dev/methodology.json#exampleResponse"
+    "request": "POST https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-scan with JSON tokenAddress=0x532f27101965dd16442e59d40670faf5ebb142e4",
+    "responseShape": "https://jepeta.dev/openapi-v5.json#/components/schemas/RiskScanV5",
+    "v4CompatibilityRequest": "GET https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-scan-v4?tokenAddress=0x532f27101965dd16442e59d40670faf5ebb142e4"
   },
   "limitations": [
     "Screening only; not a smart-contract audit, safety guarantee, price prediction, or investment recommendation.",
@@ -68,6 +73,10 @@
   "riskIntelligence": "https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-intelligence",
   "riskIntelligenceCatalog": "https://jepeta.dev/research/",
   "riskIntelligenceSchemaVersion": "1.0.0",
+  "researchAssets": [
+    "https://jepeta.dev/research/base-risk-2026-09/",
+    "https://jepeta.dev/research/public-evidence-coverage-2026-09-27/"
+  ],
   "externalProfiles": {
     "github": "https://github.com/eliber12/jepeta-automation",
     "farcaster": "https://farcaster.xyz/jepeta",
@@ -75,24 +84,41 @@
     "agentsNet": "https://agents.net/directory/331",
     "aiAgentsDirectory": "https://aiagentsdirectory.com/agent/jepeta-risk-guard"
   },
-  "methodologyVersion": "2.0.0",
+  "methodologyVersion": "2.1.1",
   "sources": "https://jepeta.dev/sources.json",
   "trustCenter": "https://jepeta.dev/sources/",
   "apiStatus": {
     "v4": {
       "active": true,
       "supported": true,
-      "canonical": true
+      "canonical": false
     },
     "v5": {
-      "releaseStatus": "internal",
-      "canonical": false,
-      "publicRollout": false
+      "releaseStatus": "public",
+      "canonical": true,
+      "publicRollout": true,
+      "default": true,
+      "endpoint": "https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-scan-v5",
+      "contract": "https://jepeta.dev/openapi-v5.json",
+      "schemaVersion": "5.0.0-internal.1"
     }
   },
   "branding": {
     "decisionOwner": "Independent risk assessment by Jepeta",
     "providersAreSameAs": false,
     "partnershipClaimsRequireDocumentedPermission": true
+  },
+  "humanCommerce": {
+    "protocol": "Telegram Stars",
+    "product": "full_risk_report",
+    "price": {
+      "asset": "XTR",
+      "amount": 25
+    },
+    "directUrl": "https://t.me/Jepeta_bot",
+    "scope": "One Base ERC-20 token: permissions, taxes, liquidity, holders, activity, source status and risk rationale.",
+    "delivery": "Human-readable report in Telegram after confirmed payment.",
+    "contractBoundary": "Separate from the ACP v3 JSON and history contract.",
+    "priceConfirmation": "The bot confirms the current price and purchase terms before payment."
   }
 }

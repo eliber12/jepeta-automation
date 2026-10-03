@@ -1,6 +1,6 @@
 # Jepeta Risk Guard — Pre-Trade Risk Guard for Base Agents
 
-Last updated: 2026-09-28
+Last updated: 2026-10-03
 
 Fail-closed pre-trade risk guard for Base agents. Before a swap or buy, Jepeta evaluates an exact Base ERC-20 contract and returns PASS / WARN / BLOCK with risk signals, data quality and timestamp. The interactive scanner is the human preview.
 
@@ -8,9 +8,9 @@ Fail-closed pre-trade risk guard for Base agents. Before a swap or buy, Jepeta e
 
 Use the [interactive scanner](https://jepeta.dev/#scanner) or call:
 
-`GET https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-scan?tokenAddress=0x...`
+`POST https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-scan` with JSON body `{"tokenAddress":"0x..."}`. The [canonical V5 OpenAPI](https://jepeta.dev/openapi-v5.json) defines the response and failure contract.
 
-The free V4 response returns a strict PASS / WARN / BLOCK decision plus normalized public signals and source-quality status.
+The free V5 response returns a strict PASS / WARN / BLOCK verdict, logical signals, source provenance and evidence quality. V4 GET remains supported at the default endpoint and explicit `/jepeta-risk-scan-v4` for compatibility.
 
 ## Live Base risk intelligence
 
@@ -19,6 +19,8 @@ The free V4 response returns a strict PASS / WARN / BLOCK decision plus normaliz
 - [Permanent public risk evidence](https://jepeta.dev/risk/base/) (Evidence schema 2.0.0)
 - [Sources / Trust Center](https://jepeta.dev/sources/) and [sources.json](https://jepeta.dev/sources.json)
 - [Original Base risk research](https://jepeta.dev/research/)
+- [September 2026 observed Base risk snapshot](https://jepeta.dev/research/base-risk-2026-09/) (rolling aggregate; raw observations private)
+- [Public evidence coverage audit](https://jepeta.dev/research/public-evidence-coverage-2026-09-27/) (14 frozen public pages; reproducible counts)
 - [High-intent Base token risk guides](https://jepeta.dev/guides/)
 - [Machine guide catalog](https://jepeta.dev/guides/index.json)
 - [Token Risk API guide](https://jepeta.dev/token-risk-api.html)
@@ -34,9 +36,12 @@ The feed and monitor expose discovery signals only. Evidence-rich tokens that al
 
 ## Full evidence report
 
-The paid **Token Risk Scan** report adds dangerous permissions, liquidity-risk assessment, holder concentration, 24h trading activity, full warnings and a structured summary.
+For one Base token, paid reports cover contract permissions, taxes, liquidity risk, holder concentration, trading activity, source status and a risk summary.
 
-Price: **0.03 USDC** through Virtuals ACP.
+- **25 Telegram Stars**: a human-readable report delivered in [@Jepeta_bot](https://t.me/Jepeta_bot). The bot confirms the price and purchase terms before payment.
+- **0.03 USDC through Virtuals ACP**: the structured **Token Risk Scan** report for agents, including its v3 decision and history fields.
+
+Telegram delivery and the ACP JSON contract are distinct. The [synthetic ACP sample](sample-full-report.json) illustrates the machine contract, not a live token scan or a Telegram report.
 
 Live registry offering: `token_risk_scan` (`01a0bb7b-be32-73e8-abe6-1385a115ac16`).
 
@@ -55,7 +60,8 @@ Live registry offering: `token_risk_scan` (`01a0bb7b-be32-73e8-abe6-1385a115ac16
 - [Developer documentation](https://jepeta.dev/docs.html)
 - [llms.txt](llms.txt)
 - [Full agent guide](llms-full.txt)
-- [OpenAPI](openapi.json)
+- [Canonical V5 OpenAPI](openapi-v5.json)
+- [V4 compatibility OpenAPI](openapi.json)
 - [Agent manifest](agent.json)
 - [agents.json](agents.json)
 - [Illustrative paid v3 report](sample-full-report.json) (deterministic synthetic inputs; not a live scan)
@@ -65,9 +71,9 @@ Live registry offering: `token_risk_scan` (`01a0bb7b-be32-73e8-abe6-1385a115ac16
 
 ## API status and trust semantics
 
-- API V4 remains active, supported and canonical.
-- API V5 exists as an internal, feature-gated, non-canonical contract. Stage 8 does not perform a public rollout or client migration.
-- Methodology version: 2.0.0.
+- API V5 is canonical at `POST /jepeta-risk-scan`; its explicit `POST /jepeta-risk-scan-v5` route remains available.
+- API V4 remains active and supported at `GET /jepeta-risk-scan-v4` and default GET. There is no V4 deprecation or mandatory migration.
+- V5 methodology version: 2.1.1. V4 public Evidence version: 2.0.0.
 - Public Evidence schema: 2.0.0.
 - Raw provider payloads and paid/private evidence are not part of the public Evidence surface.
 - Independent risk assessment by Jepeta. Source attribution does not imply partnership or endorsement.

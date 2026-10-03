@@ -5,11 +5,11 @@
   "canonicalUrl": "https://jepeta.dev/sources/",
   "machineUrl": "https://jepeta.dev/sources.json",
   "generatedFrom": "config/providers.json",
-  "lastReviewed": "2026-09-28",
+  "lastReviewed": "2026-09-29",
   "policy": {
     "noPartnershipClaims": true,
     "requiredSecurityFailClosed": true,
-    "publicSuccessContract": "V4",
+    "publicSuccessContract": "V5",
     "providersAreJepetaSameAs": false,
     "providerLogosUsed": false
   },
@@ -51,6 +51,7 @@
       "critical": true,
       "criticalPaths": [
         "public_v4_scan",
+        "public_v5_scan",
         "internal_full_scan"
       ],
       "freshness": {
@@ -64,7 +65,9 @@
         "4029": "RATE_LIMITED -> HTTP 429 -> no verdict; Retry-After when applicable",
         "transport_429": "RATE_LIMITED -> HTTP 429 -> no verdict",
         "timeout_or_unavailable": "HTTP 503 -> no verdict",
-        "required_unknown": "HTTP 422 -> no verdict"
+        "required_unknown": "Required signals other than the valid-response cannot_sell_all omission: HTTP 422 -> no verdict",
+        "v5_cannot_sell_all_omission": "A valid code=1 response omitting only this field keeps the logical signal UNKNOWN with PROVIDER_OMITTED_SIGNAL; V5 may issue a verdict with degraded evidence quality, without asserting a false value.",
+        "v5_cannot_sell_all_invalid": "Malformed present field -> INVALID_PROVIDER_SIGNAL / NO_VERDICT. Stale, conflicting or unavailable evidence also yields NO_VERDICT."
       },
       "publicDocumentation": [
         {
@@ -82,6 +85,7 @@
       ],
       "limitations": [
         "Coverage is provider-dependent; TOKEN_NOT_COVERED is an explicit no-verdict condition.",
+        "The Base Token Security API may return code=1 while omitting cannot_sell_all. The omission is unknown, not false; V5 methodology 2.1.1 records this evidence gap and degrades quality.",
         "Jepeta uses normalized signals and does not expose or redistribute raw GoPlus payloads."
       ],
       "attributionRequirements": [
@@ -91,7 +95,7 @@
         "No partnership, endorsement, certification, co-branding, or logo-use claim without separate documented authorization."
       ],
       "status": "active_required",
-      "lastReview": "2026-09-28"
+      "lastReview": "2026-09-29"
     },
     {
       "id": "dexscreener",
@@ -164,7 +168,7 @@
         "semantics": "Sourcify shadow verification observations expire 300 seconds after retrieval."
       },
       "failureSemantics": {
-        "shadow_only": "EXACT_MATCH/MATCH/NOT_FOUND/UNAVAILABLE/RATE_LIMITED/ERROR are evidence-only and never affect V4 verdicts.",
+        "shadow_only": "EXACT_MATCH/MATCH/NOT_FOUND/UNAVAILABLE/RATE_LIMITED/ERROR are evidence-only and never affect V4 or V5 verdicts.",
         "not_found": "NOT_FOUND means only that Sourcify returned no record for the lookup; it is not proof that a contract is unverified.",
         "failure": "UNAVAILABLE/RATE_LIMITED/ERROR remain explicit evidence states and never become PASS."
       },
@@ -179,7 +183,7 @@
         }
       ],
       "limitations": [
-        "Stage 8 use remains optional shadow evidence only and does not independently set the public V4 verdict.",
+        "Stage 8 use remains optional shadow evidence only and does not independently set a public V4 or V5 verdict.",
         "NOT_FOUND means only that the lookup returned no Sourcify record; it is not proof that a contract is unverified."
       ],
       "attributionRequirements": [
@@ -223,6 +227,7 @@
       },
       "failureSemantics": {
         "public_v4_scan": "Shadow-only; RPC failure never changes or blocks the V4 response.",
+        "public_v5_scan": "Shadow-only sellability probe; RPC failure cannot create a V5 PASS or BLOCK and cannot resolve cannot_sell_all.",
         "shadow_failure": "Unavailable/rate-limited/error checks remain explicit evidence states and never become PASS.",
         "existing_settlement_failure": "Fail the affected settlement verification path; never infer successful settlement."
       },
@@ -230,11 +235,15 @@
         {
           "type": "network_notice",
           "url": "https://blog.base.org/base-mainnet-is-open-for-builders"
+        },
+        {
+          "type": "production_rpc_transport",
+          "url": "https://base.publicnode.com/"
         }
       ],
       "limitations": [
-        "Direct on-chain evidence remains optional shadow evidence for risk intelligence; it does not independently set the public V4 verdict.",
-        "Production shadow collection requires a fixed operator-configured production-suitable Base RPC; the public Base RPC is not used for production-scale evidence."
+        "Direct on-chain evidence remains optional shadow evidence for risk intelligence; it does not independently set a public V4 or V5 verdict.",
+        "Production shadow collection uses the fixed operator-selected PublicNode Base mainnet gateway unless an explicit operator override is configured; RPC failure remains optional degradation."
       ],
       "attributionRequirements": [
         "Record chain id 8453 and direct-on-chain provenance for derived observations."
@@ -267,7 +276,8 @@
       },
       "failureSemantics": {
         "discovery_failure": "Skip/defer discovery work and record the provider failure; manual/core scans remain available.",
-        "public_v4_scan": "Not a V4 verdict dependency and cannot create PASS/WARN/BLOCK."
+        "public_v4_scan": "Not a V4 verdict dependency and cannot create PASS/WARN/BLOCK.",
+        "public_v5_scan": "Not a V5 verdict dependency and cannot create PASS/WARN/BLOCK."
       },
       "publicDocumentation": [
         {

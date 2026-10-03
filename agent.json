@@ -420,7 +420,9 @@
   "endpoints": {
     "humanPreview": "https://jepeta.dev/",
     "previewApi": "https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-scan",
-    "openapi": "https://jepeta.dev/openapi.json",
+    "openapi": "https://jepeta.dev/openapi-v5.json",
+    "explicitV4Api": "https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-scan-v4",
+    "explicitV5Api": "https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-scan-v5",
     "llms": "https://jepeta.dev/llms.txt",
     "telegram": "https://t.me/jepeta_tools",
     "fullAgentGuide": "https://jepeta.dev/llms-full.txt",
@@ -438,7 +440,8 @@
     "agentsNet": "https://agents.net/directory/331",
     "aiAgentsDirectory": "https://aiagentsdirectory.com/agent/jepeta-risk-guard",
     "sources": "https://jepeta.dev/sources.json",
-    "trustCenter": "https://jepeta.dev/sources/"
+    "trustCenter": "https://jepeta.dev/sources/",
+    "telegramCheckout": "https://t.me/Jepeta_bot"
   },
   "resources": [
     {
@@ -466,8 +469,30 @@
       }
     },
     {
+      "name": "canonical_base_token_risk_scan",
+      "description": "Canonical public V5 scan for one exact Base ERC-20 token. POST a JSON tokenAddress; NO_VERDICT stops automation.",
+      "method": "POST",
+      "url": "https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-scan",
+      "contentType": "application/json",
+      "params": {
+        "type": "object",
+        "required": [
+          "tokenAddress"
+        ],
+        "properties": {
+          "tokenAddress": {
+            "type": "string",
+            "pattern": "^0x[a-fA-F0-9]{40}$",
+            "description": "ERC-20 token contract address on Base chain 8453"
+          }
+        },
+        "additionalProperties": false
+      },
+      "contract": "https://jepeta.dev/openapi-v5.json"
+    },
+    {
       "name": "free_base_token_risk_preview",
-      "description": "Free pre-trade Base ERC-20 risk preview for agents. Supply one exact token contract address before a swap or buy.",
+      "description": "Supported V4 GET compatibility preview for one exact Base ERC-20 token. New integrations can use the canonical V5 POST resource.",
       "method": "GET",
       "url": "https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-scan?tokenAddress={{tokenAddress}}",
       "params": {
@@ -486,7 +511,7 @@
     },
     {
       "name": "sample_full_report",
-      "description": "Illustrative paid v3 contract sample generated from deterministic synthetic source inputs; not a live token scan.",
+      "description": "Illustrative ACP paid v3 contract sample generated offline from deterministic synthetic source inputs; not a live token scan or a Telegram delivery example.",
       "method": "GET",
       "url": "https://jepeta.dev/sample-full-report.json"
     },
@@ -530,6 +555,7 @@
   ],
   "publicPreview": {
     "schemaVersion": "4.0.0",
+    "compatibilityV4": true,
     "limited": true,
     "method": "GET",
     "endpoint": "https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-scan?tokenAddress={{tokenAddress}}",
@@ -600,13 +626,19 @@
       "name": "Free Preview",
       "status": "LIVE",
       "price": "Free",
-      "delivery": "Public GET API / web scanner"
+      "delivery": "Canonical public V5 POST API / web scanner; V4 GET compatibility available"
     },
     {
       "name": "Full Report",
       "status": "LIVE",
       "price": "0.03 USDC",
       "delivery": "Virtuals ACP v2 / token_risk_scan"
+    },
+    {
+      "name": "Telegram Full Report",
+      "status": "LIVE",
+      "price": "25 Telegram Stars",
+      "delivery": "Human-readable report for one Base token in @Jepeta_bot"
     }
   ],
   "machineDiscovery": {
@@ -661,9 +693,13 @@
       "representativeOfAllBaseTokens": false
     }
   },
+  "researchAssets": [
+    "https://jepeta.dev/research/base-risk-2026-09/",
+    "https://jepeta.dev/research/public-evidence-coverage-2026-09-27/"
+  ],
   "description": "Fail-closed pre-trade risk guard for Base agents",
   "canonicalUrl": "https://jepeta.dev/",
-  "lastUpdated": "2026-09-28",
+  "lastUpdated": "2026-10-03",
   "checks": [
     "honeypot status",
     "mintability",
@@ -674,13 +710,15 @@
     "source status and data quality"
   ],
   "freeVsPaid": {
-    "free": "Public GET exact-token preview plus public discovery risk feed.",
-    "paid": "Full evidence report through Virtuals ACP v2 / token_risk_scan.",
-    "priceUSDC": "0.03"
+    "free": "Public V5 POST exact-token scan, V4 GET compatibility preview, plus public discovery risk feed.",
+    "paid": "Human-readable report through Telegram Stars, or a structured ACP report through token_risk_scan; delivery contracts differ.",
+    "priceUSDC": "0.03",
+    "priceStars": 25
   },
   "examples": {
-    "request": "GET https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-scan?tokenAddress=0x532f27101965dd16442e59d40670faf5ebb142e4",
-    "responseShape": "https://jepeta.dev/methodology.json#exampleResponse"
+    "request": "POST https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-scan with JSON tokenAddress=0x532f27101965dd16442e59d40670faf5ebb142e4",
+    "responseShape": "https://jepeta.dev/openapi-v5.json#/components/schemas/RiskScanV5",
+    "v4CompatibilityRequest": "GET https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-scan-v4?tokenAddress=0x532f27101965dd16442e59d40670faf5ebb142e4"
   },
   "limitations": [
     "Screening only; not a smart-contract audit, safety guarantee, price prediction, or investment recommendation.",
@@ -690,7 +728,8 @@
     "The public risk feed contains published discovery signals only and is not a census of Base or all Jepeta scans."
   ],
   "documentation": {
-    "openapi": "https://jepeta.dev/openapi.json",
+    "openapi": "https://jepeta.dev/openapi-v5.json",
+    "openapiV4": "https://jepeta.dev/openapi.json",
     "methodology": "https://jepeta.dev/methodology.json",
     "changelog": "https://jepeta.dev/changelog.json",
     "llms": "https://jepeta.dev/llms.txt",
@@ -699,17 +738,21 @@
     "sources": "https://jepeta.dev/sources.json",
     "trustCenter": "https://jepeta.dev/sources/"
   },
-  "methodologyVersion": "2.0.0",
+  "methodologyVersion": "2.1.1",
   "apiStatus": {
     "v4": {
       "active": true,
       "supported": true,
-      "canonical": true
+      "canonical": false
     },
     "v5": {
-      "releaseStatus": "internal",
-      "canonical": false,
-      "publicRollout": false
+      "releaseStatus": "public",
+      "canonical": true,
+      "publicRollout": true,
+      "default": true,
+      "endpoint": "https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-scan-v5",
+      "contract": "https://jepeta.dev/openapi-v5.json",
+      "schemaVersion": "5.0.0-internal.1"
     }
   },
   "sourceGovernance": {
@@ -722,5 +765,41 @@
     "decisionOwner": "Independent risk assessment by Jepeta",
     "partnershipClaimsRequireDocumentedPermission": true,
     "providerLogosUsedByDefault": false
+  },
+  "humanCommerce": {
+    "protocol": "Telegram Stars",
+    "product": "full_risk_report",
+    "price": {
+      "asset": "XTR",
+      "amount": 25
+    },
+    "directUrl": "https://t.me/Jepeta_bot",
+    "scope": "One Base ERC-20 token: permissions, taxes, liquidity, holders, activity, source status and risk rationale.",
+    "delivery": "Human-readable report in Telegram after confirmed payment.",
+    "contractBoundary": "Separate from the ACP v3 JSON and history contract.",
+    "priceConfirmation": "The bot confirms the current price and purchase terms before payment."
+  },
+  "canonicalPublicPreview": {
+    "schemaVersion": "5.0.0-internal.1",
+    "apiVersion": "v5",
+    "releaseStatus": "public",
+    "canonical": true,
+    "method": "POST",
+    "endpoint": "https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-scan",
+    "contract": "https://jepeta.dev/openapi-v5.json",
+    "requestExample": {
+      "tokenAddress": "0x532f27101965dd16442e59d40670faf5ebb142e4"
+    },
+    "statusEnum": [
+      "VERDICT",
+      "NO_VERDICT"
+    ],
+    "verdictEnum": [
+      "PASS",
+      "WARN",
+      "BLOCK",
+      null
+    ],
+    "compatibility": "publicPreview below describes the supported V4 GET response. The historical V5 schema identifier is retained for compatibility."
   }
 }
