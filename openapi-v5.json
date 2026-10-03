@@ -1209,5 +1209,13 @@
     "canonicalEndpoint": "https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-scan",
     "explicitV4Endpoint": "https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-scan-v4",
     "publicContract": "https://jepeta.dev/openapi-v5.json"
+  },
+  "x-jepeta-acp-availability": {
+    "status": "SITE_CHECKOUT_UNAVAILABLE",
+    "siteCheckoutAvailable": false,
+    "fulfillmentVerified": false,
+    "priceStatus": "listed",
+    "message": "ACP fulfillment is not currently verified; checkout is temporarily unavailable on this site.",
+    "detailsUrl": "https://jepeta.dev/docs.html#commerce"
   }
 }

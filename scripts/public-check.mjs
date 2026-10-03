@@ -75,7 +75,14 @@ assert.equal(agent.commerce.price.amount, '0.03');
 assert.equal(sample.decisionVersion, '3.0.0-alpha.2');
 assert.equal(sample.chainId, 8453);
 assert.ok(sample.historyContext);
-assert.ok(agent.productLadder.every(product => product.status === 'LIVE'));
+assert.equal(agent.commerce.availability.siteCheckoutAvailable,false);
+assert.equal(agent.commerce.availability.fulfillmentVerified,false);
+assert.equal(agent.commerce.availability.priceStatus,'listed');
+assert.deepEqual(agent.commerce.availability,agents.paid.availability);
+assert.deepEqual(agent.commerce.availability,openapi['x-jepeta-acp-availability']);
+assert.deepEqual(agent.commerce.availability,openapiV5['x-jepeta-acp-availability']);
+assert.ok(agent.productLadder.every(product => product.status ===
+  (product.delivery.startsWith('Virtuals ACP')?'SITE_CHECKOUT_UNAVAILABLE':'LIVE')));
 assert.deepEqual(methodology.exampleResponse, changelog.exampleResponse);
 assert.equal(methodology.exampleResponse.body.data_quality, 'HIGH');
 assert.equal(methodology.exampleResponse.body.source_status.dexscreener, 'OK');

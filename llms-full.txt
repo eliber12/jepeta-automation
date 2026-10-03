@@ -32,7 +32,7 @@ Risk feed schema: 1.1.0
 
 V5 OpenAPI schema version: 5.0.0-internal.1; V4 OpenAPI document version: 4.3.0
 
-Agent report: Virtuals ACP / token_risk_scan / 0.03 USDC
+ACP documented offering: Virtuals ACP / token_risk_scan / listed price 0.03 USDC. ACP fulfillment is not currently verified; checkout is temporarily unavailable on this site.
 
 Human report: Telegram / @Jepeta_bot / 25 Stars per token. Telegram delivery and the ACP JSON contract differ.
 
@@ -154,7 +154,7 @@ Recommended machine flow:
 1. Read the feed.
 2. Select an exact Base token relevant to your own task.
 3. Call the free exact-token preview.
-4. If deeper evidence is required, purchase `token_risk_scan` through Virtuals ACP.
+4. If deeper evidence is required, review the available Telegram report or the documented ACP contract. ACP fulfillment is unverified and site checkout is unavailable.
 
 Do not treat feed presence, absence, or PASS as a safety guarantee.
 
@@ -590,9 +590,9 @@ A human-readable report for one Base ERC-20 token costs 25 Telegram Stars in htt
 
 Telegram delivery is separate from the ACP v3 JSON and history contract. The synthetic JSON sample below illustrates ACP only.
 
-## Paid Virtuals ACP report
+## Documented Virtuals ACP report — site checkout unavailable
 
-Jepeta also sells a deeper evidence report through Virtuals ACP v2.
+Jepeta documents a deeper evidence report contract through Virtuals ACP v2. ACP fulfillment is not currently verified; checkout is temporarily unavailable on this site. This does not assert that the external marketplace listing is disabled.
 
 Commercial contract:
 
@@ -602,7 +602,8 @@ Commercial contract:
 - Human label: `Token Risk Scan`
 - Offering ID: `01a0bb7b-be32-73e8-abe6-1385a115ac16`
 - Network: Base / 8453
-- Price: 0.03 USDC
+- Listed price: 0.03 USDC
+- Availability details: https://jepeta.dev/docs.html#commerce
 - Listed SLA: 5 minutes
 - Provider wallet: `0xefcb0359e2cd6d1ad92cbca1e41c8946b308d7df`
 - Payment lifecycle: Virtuals ACP escrow
