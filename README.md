@@ -39,7 +39,7 @@ The feed and monitor expose discovery signals only. Evidence-rich tokens that al
 For one Base token, paid reports cover contract permissions, taxes, liquidity risk, holder concentration, trading activity, source status and a risk summary.
 
 - **25 Telegram Stars**: a human-readable report delivered in [@Jepeta_bot](https://t.me/Jepeta_bot). The bot confirms the price and purchase terms before payment.
-- **ACP listed price: 0.03 USDC** for the structured **Token Risk Scan** contract, including v3 decision and history fields. The offering is listed on Virtuals ACP. Paid fulfillment has not yet been verified. This website does not process ACP payments.
+- **ACP price: 0.03 USDC** for the structured **Token Risk Scan** contract, including v3 decision and history fields. Available through Virtuals ACP at the listed price. Checkout and payment are handled on Virtuals ACP.
 
 Telegram delivery and the ACP JSON contract are distinct. The [synthetic ACP sample](sample-full-report.json) illustrates the machine contract, not a live token scan or a Telegram report.
 

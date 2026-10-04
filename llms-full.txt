@@ -21,6 +21,7 @@ Risk feed: https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-fee
 Network: Base / chain ID 8453
 
 Canonical public schema: 5.0.0-internal.1 (V5 default POST)
+Version semantics: V5 is the canonical public API name. `5.0.0-internal.1` is the contract schema identifier, methodology `2.1.1` is the decision methodology, and risk-engine build `3.0.0-shadow.3` is implementation metadata. They are separate layers, not competing product versions.
 
 Supported V4 GET compatibility schema: 4.0.0 (default GET and explicit /jepeta-risk-scan-v4; contract: https://jepeta.dev/openapi.json)
 
@@ -32,7 +33,7 @@ Risk feed schema: 1.1.0
 
 V5 OpenAPI schema version: 5.0.0-internal.1; V4 OpenAPI document version: 4.3.0
 
-ACP documented offering: Virtuals ACP / token_risk_scan / listed price 0.03 USDC. The offering is listed on Virtuals ACP. Paid fulfillment has not yet been verified. This website does not process ACP payments.
+ACP documented offering: Virtuals ACP / token_risk_scan / 0.03 USDC per scan. Available through Virtuals ACP at the listed price. Checkout and payment are handled on Virtuals ACP.
 
 Human report: Telegram / @Jepeta_bot / 25 Stars per token. Telegram delivery and the ACP JSON contract differ.
 
@@ -154,7 +155,7 @@ Recommended machine flow:
 1. Read the feed.
 2. Select an exact Base token relevant to your own task.
 3. Call the free exact-token preview.
-4. If deeper evidence is required, review the available Telegram report or the documented ACP contract. The offering is listed on Virtuals ACP; paid fulfillment remains unverified.
+4. If deeper evidence is required, review the available Telegram report or the documented ACP contract. The offering is available through Virtuals ACP.
 
 Do not treat feed presence, absence, or PASS as a safety guarantee.
 
@@ -590,9 +591,9 @@ A human-readable report for one Base ERC-20 token costs 25 Telegram Stars in htt
 
 Telegram delivery is separate from the ACP v3 JSON and history contract. The synthetic JSON sample below illustrates ACP only.
 
-## Documented Virtuals ACP report — paid fulfillment unverified
+## Virtuals ACP structured report
 
-Jepeta documents a deeper evidence report contract through Virtuals ACP v2. The offering is listed on Virtuals ACP. Paid fulfillment has not yet been verified. This website does not process ACP payments.
+Jepeta documents a deeper evidence report contract through Virtuals ACP v2. Available through Virtuals ACP at the listed price. Checkout and payment are handled on Virtuals ACP.
 
 Commercial contract:
 

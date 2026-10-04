@@ -12,8 +12,8 @@ Virtuals ACP identity profile: https://app.virtuals.io/acp/agent/01a0b446-374c-7
 Purpose: fail-closed pre-trade risk guard for Base agents; exact-token scanning is the underlying screening component.
 Chain: Base / 8453.
 Decision contract: PASS | WARN | BLOCK.
-Documented ACP offering: token_risk_scan (Token Risk Scan) / listed price 0.03 USDC.
-Availability: The offering is listed on Virtuals ACP. Paid fulfillment has not yet been verified. This website does not process ACP payments.
+ACP offering: token_risk_scan (Token Risk Scan) / 0.03 USDC per scan.
+Availability: Available through Virtuals ACP at the listed price. Checkout and payment are handled on Virtuals ACP.
 Availability details: https://jepeta.dev/docs.html#commerce
 Offering ID: 01a0bb7b-be32-73e8-abe6-1385a115ac16.
 

@@ -1281,9 +1281,6 @@
                   "siteCheckoutAvailable": {
                     "type": "boolean"
                   },
-                  "fulfillmentVerified": {
-                    "type": "boolean"
-                  },
                   "priceStatus": {
                     "type": "string"
                   },
@@ -1783,9 +1780,6 @@
                   "siteCheckoutAvailable": {
                     "type": "boolean"
                   },
-                  "fulfillmentVerified": {
-                    "type": "boolean"
-                  },
                   "priceStatus": {
                     "type": "string"
                   },
@@ -2159,13 +2153,14 @@
     "partnershipClaimsRequireDocumentedPermission": true
   },
   "x-jepeta-acp-availability": {
-    "status": "LISTED_FULFILLMENT_UNVERIFIED",
+    "status": "AVAILABLE",
     "siteCheckoutAvailable": false,
-    "fulfillmentVerified": false,
     "priceStatus": "listed",
-    "message": "The offering is listed on Virtuals ACP. Paid fulfillment has not yet been verified. This website does not process ACP payments.",
+    "message": "Available through Virtuals ACP at the listed price. Checkout and payment are handled on Virtuals ACP.",
     "detailsUrl": "https://jepeta.dev/docs.html#commerce",
     "marketplaceListingAvailable": true,
-    "profileUrl": "https://app.virtuals.io/acp/agent/01a0b446-374c-7eb8-8fe8-cd1a9945ea70"
+    "profileUrl": "https://app.virtuals.io/acp/agent/01a0b446-374c-7eb8-8fe8-cd1a9945ea70",
+    "checkoutProvider": "Virtuals ACP",
+    "checkoutUrl": "https://app.virtuals.io/acp/agent/01a0b446-374c-7eb8-8fe8-cd1a9945ea70"
   }
 }

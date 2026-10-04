@@ -8,7 +8,14 @@
     "x-jepeta-canonical": true,
     "x-risk-engine": "3.0.0-shadow.3",
     "x-methodology-version": "2.1.1",
-    "x-jepeta-public-optional": false
+    "x-jepeta-public-optional": false,
+    "x-version-semantics": {
+      "publicApi": "V5",
+      "contractSchema": "5.0.0-internal.1",
+      "methodology": "2.1.1",
+      "riskEngineBuild": "3.0.0-shadow.3",
+      "note": "Separate layer identifiers; V5 is the canonical public API."
+    }
   },
   "servers": [
     {
@@ -1211,13 +1218,14 @@
     "publicContract": "https://jepeta.dev/openapi-v5.json"
   },
   "x-jepeta-acp-availability": {
-    "status": "LISTED_FULFILLMENT_UNVERIFIED",
+    "status": "AVAILABLE",
     "siteCheckoutAvailable": false,
-    "fulfillmentVerified": false,
     "priceStatus": "listed",
-    "message": "The offering is listed on Virtuals ACP. Paid fulfillment has not yet been verified. This website does not process ACP payments.",
+    "message": "Available through Virtuals ACP at the listed price. Checkout and payment are handled on Virtuals ACP.",
     "detailsUrl": "https://jepeta.dev/docs.html#commerce",
     "marketplaceListingAvailable": true,
-    "profileUrl": "https://app.virtuals.io/acp/agent/01a0b446-374c-7eb8-8fe8-cd1a9945ea70"
+    "profileUrl": "https://app.virtuals.io/acp/agent/01a0b446-374c-7eb8-8fe8-cd1a9945ea70",
+    "checkoutProvider": "Virtuals ACP",
+    "checkoutUrl": "https://app.virtuals.io/acp/agent/01a0b446-374c-7eb8-8fe8-cd1a9945ea70"
   }
 }
