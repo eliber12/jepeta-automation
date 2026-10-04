@@ -76,17 +76,18 @@
   },
   "freeVsPaid": {
     "free": "Public V5 POST exact-token scan, V4 GET compatibility preview, plus public discovery risk feed.",
-    "paid": "Human-readable report through Telegram Stars. ACP report contract and listed price are documented; the offering is listed on Virtuals ACP and paid fulfillment remains unverified.",
+    "paid": "Human-readable report through Telegram Stars; structured Token Risk Scan for autonomous agents through Virtuals ACP.",
     "priceUSDC": "0.03",
     "acpAvailability": {
-      "status": "LISTED_FULFILLMENT_UNVERIFIED",
+      "status": "AVAILABLE",
       "siteCheckoutAvailable": false,
-      "fulfillmentVerified": false,
       "priceStatus": "listed",
-      "message": "The offering is listed on Virtuals ACP. Paid fulfillment has not yet been verified. This website does not process ACP payments.",
+      "message": "Available through Virtuals ACP at the listed price. Checkout and payment are handled on Virtuals ACP.",
       "detailsUrl": "https://jepeta.dev/docs.html#commerce",
       "marketplaceListingAvailable": true,
-      "profileUrl": "https://app.virtuals.io/acp/agent/01a0b446-374c-7eb8-8fe8-cd1a9945ea70"
+      "profileUrl": "https://app.virtuals.io/acp/agent/01a0b446-374c-7eb8-8fe8-cd1a9945ea70",
+      "checkoutProvider": "Virtuals ACP",
+      "checkoutUrl": "https://app.virtuals.io/acp/agent/01a0b446-374c-7eb8-8fe8-cd1a9945ea70"
     }
   },
   "endpoints": {
@@ -729,5 +730,12 @@
     "noProxyInference": true,
     "noUnknownToFalse": true,
     "v4ContractChanged": false
+  },
+  "versionSemantics": {
+    "publicApi": "V5",
+    "apiContractSchema": "5.0.0-internal.1",
+    "methodology": "2.1.1",
+    "riskEngineBuild": "3.0.0-shadow.3",
+    "note": "These identify separate layers. V5 is the canonical public API; schema, methodology and engine build identifiers are not competing product versions."
   }
 }

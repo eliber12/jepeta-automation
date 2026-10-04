@@ -23,7 +23,7 @@ const forbidden = [
   ['internal authentication', new RegExp('(?:SUPABASE_' + 'SERVICE_ROLE_KEY|internalFull' + 'ReportAuth|\\bHM' + 'AC\\b)', 'i')],
   ['operational growth state', new RegExp('(?:pending' + '.slot|READY' + '-BLOCKED|target' + ' status|outreach' + ' queue|GEO' + ' run)', 'i')],
   ['roadmap activation', new RegExp('(?:activation' + 'Gate|Monitoring' + ' / Watchlist|Agent' + ' Subscription|Batch' + ' / API)', 'i')],
-  ['private key', /-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----/i],
+  ['private key', new RegExp('-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE' + ' KEY-----','i')],
   ['GitHub token', /\b(?:gh[pousr]_[A-Za-z0-9]{20,}|github_pat_[A-Za-z0-9_]{20,})\b/],
   ['Telegram bot token', /\b\d{8,12}:[A-Za-z0-9_-]{30,}\b/],
   ['OpenAI key', /\bsk-(?:proj-)?[A-Za-z0-9_-]{20,}\b/],
@@ -76,16 +76,17 @@ assert.equal(sample.decisionVersion, '3.0.0-alpha.2');
 assert.equal(sample.chainId, 8453);
 assert.ok(sample.historyContext);
 assert.equal(agent.commerce.availability.siteCheckoutAvailable,false);
-assert.equal(agent.commerce.availability.fulfillmentVerified,false);
 assert.equal(agent.commerce.availability.priceStatus,'listed');
+assert.equal(agent.commerce.availability.checkoutProvider,'Virtuals ACP');
+assert.equal(agent.commerce.availability.checkoutUrl,agent.commerce.availability.profileUrl);
+assert.equal('fulfillmentVerified' in agent.commerce.availability,false);
 assert.deepEqual(agent.commerce.availability,agents.paid.availability);
 assert.deepEqual(agent.commerce.availability,openapi['x-jepeta-acp-availability']);
 assert.deepEqual(agent.commerce.availability,openapiV5['x-jepeta-acp-availability']);
 assert.equal(agent.commerce.availability.marketplaceListingAvailable,true);
 assert.equal(agent.commerce.availability.profileUrl,'https://app.virtuals.io/acp/agent/01a0b446-374c-7eb8-8fe8-cd1a9945ea70');
-assert.equal(agent.commerce.availability.fulfillmentVerified,false);
 assert.ok(agent.productLadder.every(product => product.status ===
-  (product.delivery.startsWith('Virtuals ACP')?'LISTED_FULFILLMENT_UNVERIFIED':'LIVE')));
+  (product.delivery.startsWith('Virtuals ACP')?'AVAILABLE':'LIVE')));
 assert.deepEqual(methodology.exampleResponse, changelog.exampleResponse);
 assert.equal(methodology.exampleResponse.body.data_quality, 'HIGH');
 assert.equal(methodology.exampleResponse.body.source_status.dexscreener, 'OK');

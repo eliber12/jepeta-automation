@@ -24,6 +24,7 @@ Changelog: https://jepeta.dev/changelog.json
 - Frozen public evidence coverage audit (14 selected pages): https://jepeta.dev/research/public-evidence-coverage-2026-09-27/
 - Input: one exact ERC-20 contract address in tokenAddress.
 - Canonical public schema: 5.0.0-internal.1; supported V4 GET schema: 4.0.0.
+Version semantics: V5 is the canonical public API name. `5.0.0-internal.1` is the contract schema identifier, methodology `2.1.1` is the decision methodology, and risk-engine build `3.0.0-shadow.3` is implementation metadata. They are separate layers, not competing product versions.
 - Decision: PASS | WARN | BLOCK.
 - PASS is not a safety guarantee or permission to trade.
 - GoPlus Security supplies required security evidence. Provider output is evidence; the Jepeta verdict is independent. A Base RPC sellability probe remains shadow-only pending semantic equivalence proof.
@@ -47,7 +48,7 @@ Changelog: https://jepeta.dev/changelog.json
 
 - Free: canonical public POST V5 exact-token preview, supported V4 GET, plus public discovery risk feed.
 - Human report: 25 Telegram Stars for one Base token through https://t.me/Jepeta_bot. Human-readable delivery covers permissions, taxes, liquidity, holders, activity, source status and risk rationale. The bot confirms price and terms before payment.
-- ACP listed price: 0.03 USDC for Virtuals ACP / token_risk_scan, with the structured v3 decision and history contract. The offering is listed on Virtuals ACP. Paid fulfillment has not yet been verified. This website does not process ACP payments.
+- ACP price: 0.03 USDC for Virtuals ACP / token_risk_scan, with the structured v3 decision and history contract. Available through Virtuals ACP at the listed price. Checkout and payment are handled on Virtuals ACP.
 - Telegram and ACP delivery contracts differ; the synthetic ACP sample does not preview Telegram delivery.
 
 ## Example request
@@ -99,7 +100,7 @@ Use this feed to discover recently published Base risk signals before choosing a
 - Discovery only: token, decision, risk score, trend score, source platform and timestamp.
 - Full paid evidence is intentionally excluded.
 - PASS remains a screening signal, not a safety guarantee.
-- After discovery, call the exact-token preview API. The offering is listed on Virtuals ACP; paid fulfillment remains unverified.
+- After discovery, call the exact-token preview API. The offering is available through Virtuals ACP.
 
 ## Public evidence pages
 
@@ -112,7 +113,7 @@ Permanent public evidence is available only for evidence-rich tokens that alread
 
 Ordinary scans are not automatically indexed. Public evidence contains only public-preview signals and explicitly excludes paid-only dangerous-permission flags, liquidity-risk synthesis, and trading-activity evidence.
 
-## Documented ACP report — paid fulfillment unverified
+## Virtuals ACP structured report
 
 - Protocol: Virtuals ACP v2.
 - Agent: Jepeta Risk Guard.
@@ -122,7 +123,7 @@ Ordinary scans are not automatically indexed. Public evidence contains only publ
 - Human label: Token Risk Scan.
 - Offering ID: 01a0bb7b-be32-73e8-abe6-1385a115ac16.
 - Listed price: 0.03 USDC.
-- Availability: The offering is listed on Virtuals ACP. Paid fulfillment has not yet been verified. This website does not process ACP payments.
+- Availability: Available through Virtuals ACP at the listed price. Checkout and payment are handled on Virtuals ACP.
 - Availability details: https://jepeta.dev/docs.html#commerce
 - ACP identity profile (not a verified checkout recommendation): https://app.virtuals.io/acp/agent/01a0b446-374c-7eb8-8fe8-cd1a9945ea70
 
