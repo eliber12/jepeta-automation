@@ -5,7 +5,7 @@
   "description": "Fail-closed pre-trade risk guard for Base agents",
   "canonicalUrl": "https://jepeta.dev/changelog.json",
   "serviceCanonicalUrl": "https://jepeta.dev/",
-  "lastUpdated": "2026-09-29",
+  "lastUpdated": "2026-10-04",
   "supportedChain": {
     "name": "Base",
     "chainId": 8453
@@ -22,7 +22,12 @@
   "freeVsPaid": {
     "free": "Public V5 POST exact-token scan, V4 GET compatibility preview, plus public discovery risk feed.",
     "paid": "Full evidence report through Virtuals ACP v2 / token_risk_scan.",
-    "priceUSDC": "0.03"
+    "priceUSDC": "0.03",
+    "priceAsset": "USDC",
+    "billingUnit": "per_scan",
+    "billingModel": "per_request",
+    "subscription": false,
+    "recurring": false
   },
   "endpoints": {
     "canonical": "https://jepeta.dev/",
@@ -53,10 +58,10 @@
     "v4Explicit": "https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-scan-v4",
     "openapiV5": "https://jepeta.dev/openapi-v5.json"
   },
-  "exampleRequest": "GET https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-scan-v4?tokenAddress=0x532f27101965dd16442e59d40670faf5ebb142e4",
+  "exampleRequest": "POST https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-scan with JSON tokenAddress=0x532f27101965dd16442e59d40670faf5ebb142e4",
   "canonicalExampleRequest": "POST https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-scan with JSON tokenAddress=0x532f27101965dd16442e59d40670faf5ebb142e4",
   "exampleResponse": {
-    "note": "Illustrative response generated from synthetic source inputs using the public v4 preview logic; values and timestamp are not a live scan of the example token.",
+    "note": "Illustrative V4 compatibility response generated from synthetic source inputs. It is not the canonical V5 response and not a live scan.",
     "body": {
       "schema_version": "4.0.0",
       "chain_id": 8453,
@@ -86,7 +91,9 @@
         "priceUSDC": "0.03",
         "providerWallet": "0xefcb0359e2cd6d1ad92cbca1e41c8946b308d7df"
       }
-    }
+    },
+    "compatibilityOnly": true,
+    "apiVersion": "v4"
   },
   "limitations": [
     "Screening only; not a smart-contract audit, safety guarantee, price prediction, or investment recommendation.",
@@ -96,6 +103,18 @@
     "The public risk feed contains published discovery signals only and is not a census of Base or all Jepeta scans."
   ],
   "changes": [
+    {
+      "date": "2026-10-04",
+      "version": "GEO-AEO-SEO-HARDENING",
+      "summary": "Separated acquisition attribution from internal surfaces and hardened search/AI discovery semantics.",
+      "changes": [
+        "Evidence and Guides no longer use internal UTM sources as acquisition channels; first-touch, landing surface and current touch are separated.",
+        "Scanner/share state uses fragment-based URLs to avoid crawlable token/tracking query variants while retaining legacy query compatibility.",
+        "Public Evidence exposes snapshot-bounded on-chain token name/symbol when available and labels historical verdicts as snapshots.",
+        "Virtuals ACP pricing is machine-explicit as 0.03 USDC per scan, per request, non-recurring and not a subscription.",
+        "Canonical V5 POST examples are primary; V4 GET is explicitly compatibility-only."
+      ]
+    },
     {
       "date": "2026-09-29",
       "version": "STAGE12R-2.1.1",
@@ -207,5 +226,6 @@
     }
   ],
   "methodologyVersion": "2.1.1",
-  "sources": "https://jepeta.dev/sources.json"
+  "sources": "https://jepeta.dev/sources.json",
+  "v4CompatibilityExampleRequest": "GET https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-scan-v4?tokenAddress=0x532f27101965dd16442e59d40670faf5ebb142e4"
 }
