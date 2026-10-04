@@ -13,7 +13,7 @@ Purpose: fail-closed pre-trade risk guard for Base agents; exact-token scanning 
 Chain: Base / 8453.
 Decision contract: PASS | WARN | BLOCK.
 Documented ACP offering: token_risk_scan (Token Risk Scan) / listed price 0.03 USDC.
-Availability: ACP fulfillment is not currently verified; checkout is temporarily unavailable on this site.
+Availability: The offering is listed on Virtuals ACP. Paid fulfillment has not yet been verified. This website does not process ACP payments.
 Availability details: https://jepeta.dev/docs.html#commerce
 Offering ID: 01a0bb7b-be32-73e8-abe6-1385a115ac16.
 

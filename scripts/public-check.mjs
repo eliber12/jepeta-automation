@@ -81,8 +81,11 @@ assert.equal(agent.commerce.availability.priceStatus,'listed');
 assert.deepEqual(agent.commerce.availability,agents.paid.availability);
 assert.deepEqual(agent.commerce.availability,openapi['x-jepeta-acp-availability']);
 assert.deepEqual(agent.commerce.availability,openapiV5['x-jepeta-acp-availability']);
+assert.equal(agent.commerce.availability.marketplaceListingAvailable,true);
+assert.equal(agent.commerce.availability.profileUrl,'https://app.virtuals.io/acp/agent/01a0b446-374c-7eb8-8fe8-cd1a9945ea70');
+assert.equal(agent.commerce.availability.fulfillmentVerified,false);
 assert.ok(agent.productLadder.every(product => product.status ===
-  (product.delivery.startsWith('Virtuals ACP')?'SITE_CHECKOUT_UNAVAILABLE':'LIVE')));
+  (product.delivery.startsWith('Virtuals ACP')?'LISTED_FULFILLMENT_UNVERIFIED':'LIVE')));
 assert.deepEqual(methodology.exampleResponse, changelog.exampleResponse);
 assert.equal(methodology.exampleResponse.body.data_quality, 'HIGH');
 assert.equal(methodology.exampleResponse.body.source_status.dexscreener, 'OK');
