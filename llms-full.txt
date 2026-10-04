@@ -4,7 +4,7 @@
 
 Canonical site: https://jepeta.dev/
 
-Last updated: 2026-10-03
+Last updated: 2026-10-04
 
 Methodology: https://jepeta.dev/methodology.json (version 2.1.1)
 
@@ -33,7 +33,7 @@ Risk feed schema: 1.1.0
 
 V5 OpenAPI schema version: 5.0.0-internal.1; V4 OpenAPI document version: 4.3.0
 
-ACP documented offering: Virtuals ACP / token_risk_scan / 0.03 USDC per scan. Available through Virtuals ACP at the listed price. Checkout and payment are handled on Virtuals ACP.
+ACP documented offering: Virtuals ACP / token_risk_scan / 0.03 USDC per scan. Billing unit: one scan. Billing model: per request, non-recurring, not a subscription. Available through Virtuals ACP at the listed price. Checkout and payment are handled on Virtuals ACP.
 
 Human report: Telegram / @Jepeta_bot / 25 Stars per token. Telegram delivery and the ACP JSON contract differ.
 
@@ -551,12 +551,12 @@ Treat the scan as unavailable. Honor `Retry-After` when present. Do not manufact
 Canonical human scan link:
 
 ```text
-https://jepeta.dev/?token=0x...#scanner
+https://jepeta.dev/#scanner?token=0x...
 ```
 
-Opening a valid `?token=` link runs a fresh scan.
+Opening a valid `#scanner?token=` link runs a fresh scan without creating a crawlable parameter URL.
 
-Legacy `?tokenAddress=` links are accepted by the website and normalized to `?token=`.
+Legacy `?token=` and `?tokenAddress=` links remain accepted for compatibility and are normalized into the fragment-based scanner URL.
 
 A shared URL does not store or freeze a previous verdict.
 

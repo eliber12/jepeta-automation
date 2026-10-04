@@ -5,7 +5,7 @@
   "description": "Fail-closed pre-trade risk guard for Base agents",
   "canonicalUrl": "https://jepeta.dev/methodology.json",
   "serviceCanonicalUrl": "https://jepeta.dev/",
-  "lastUpdated": "2026-09-29",
+  "lastUpdated": "2026-10-04",
   "supportedChain": {
     "name": "Base",
     "chainId": 8453,
@@ -88,7 +88,12 @@
       "profileUrl": "https://app.virtuals.io/acp/agent/01a0b446-374c-7eb8-8fe8-cd1a9945ea70",
       "checkoutProvider": "Virtuals ACP",
       "checkoutUrl": "https://app.virtuals.io/acp/agent/01a0b446-374c-7eb8-8fe8-cd1a9945ea70"
-    }
+    },
+    "priceAsset": "USDC",
+    "billingUnit": "per_scan",
+    "billingModel": "per_request",
+    "subscription": false,
+    "recurring": false
   },
   "endpoints": {
     "canonical": "https://jepeta.dev/",
@@ -118,10 +123,10 @@
     "sources": "https://jepeta.dev/sources.json",
     "trustCenter": "https://jepeta.dev/sources/"
   },
-  "exampleRequest": "GET https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-scan?tokenAddress=0x532f27101965dd16442e59d40670faf5ebb142e4",
+  "exampleRequest": "POST https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-scan with JSON {tokenAddress: 0x532f27101965dd16442e59d40670faf5ebb142e4}",
   "canonicalExampleRequest": "POST https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-scan with JSON {tokenAddress: 0x532f27101965dd16442e59d40670faf5ebb142e4}",
   "exampleResponse": {
-    "note": "Illustrative response generated from synthetic source inputs using the public v4 preview logic; values and timestamp are not a live scan of the example token.",
+    "note": "Illustrative V4 compatibility response generated from synthetic source inputs. It is not the canonical V5 response and not a live scan.",
     "body": {
       "schema_version": "4.0.0",
       "chain_id": 8453,
@@ -151,7 +156,9 @@
         "priceUSDC": "0.03",
         "providerWallet": "0xefcb0359e2cd6d1ad92cbca1e41c8946b308d7df"
       }
-    }
+    },
+    "compatibilityOnly": true,
+    "apiVersion": "v4"
   },
   "limitations": [
     "Screening only; not a smart-contract audit, safety guarantee, price prediction, or investment recommendation.",
@@ -737,5 +744,6 @@
     "methodology": "2.1.1",
     "riskEngineBuild": "3.0.0-shadow.3",
     "note": "These identify separate layers. V5 is the canonical public API; schema, methodology and engine build identifiers are not competing product versions."
-  }
+  },
+  "v4CompatibilityExampleRequest": "GET https://aitgmgfumsdqecmanrab.supabase.co/functions/v1/jepeta-risk-scan-v4?tokenAddress=0x532f27101965dd16442e59d40670faf5ebb142e4"
 }

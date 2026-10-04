@@ -1,13 +1,21 @@
-# Jepeta Risk Guard
+# Jepeta
 
-> Fail-closed pre-trade risk guard for Base agents on chain 8453. Before a swap or buy, Jepeta returns a strict machine-readable PASS / WARN / BLOCK decision with risk signals, data quality and timestamp; the human scanner remains the free preview and acquisition surface.
+> Crypto security, practical tools and evidence-led intelligence. Jepeta publishes public security research, guides, risk evidence and the free Jepeta Risk Guard scanner for Base tokens.
 
 Canonical site: https://jepeta.dev/
-Last updated: 2026-10-03
+Last updated: 2026-10-04
 Methodology: https://jepeta.dev/methodology.json (version 2.1.1)
 Sources / Trust Center: https://jepeta.dev/sources/
 Sources JSON: https://jepeta.dev/sources.json
 Changelog: https://jepeta.dev/changelog.json
+
+## Brand and product architecture
+
+- Jepeta is the publisher and umbrella brand: Crypto Security, Tools & Intelligence.
+- Jepeta Risk Guard is the flagship security product and the stable agent/API identity.
+- Risk Guard purpose: Fail-closed pre-trade risk guard for Base agents.
+- Agent manifests and OpenAPI keep the Jepeta Risk Guard identity; the umbrella brand does not replace those machine contracts.
+- The website is the acquisition surface; https://t.me/jepeta_tools is the owned Telegram retention channel.
 
 ## Core facts
 
@@ -44,11 +52,11 @@ Version semantics: V5 is the canonical public API name. `5.0.0-internal.1` is th
 - Public Evidence exposes normalized provenance and public-safe conflicts; it never exposes raw provider payloads or paid/private fields.
 - No arbitrary confidence percentage is generated.
 
-## Free vs paid
+## Jepeta Risk Guard access
 
 - Free: canonical public POST V5 exact-token preview, supported V4 GET, plus public discovery risk feed.
 - Human report: 25 Telegram Stars for one Base token through https://t.me/Jepeta_bot. Human-readable delivery covers permissions, taxes, liquidity, holders, activity, source status and risk rationale. The bot confirms price and terms before payment.
-- ACP price: 0.03 USDC for Virtuals ACP / token_risk_scan, with the structured v3 decision and history contract. Available through Virtuals ACP at the listed price. Checkout and payment are handled on Virtuals ACP.
+- ACP price: 0.03 USDC per Token Risk Scan for Virtuals ACP / token_risk_scan. Billing unit: one scan; billing model: per request; non-recurring; not a subscription. The offering includes with the structured v3 decision and history contract. Available through Virtuals ACP at the listed price. Checkout and payment are handled on Virtuals ACP.
 - Telegram and ACP delivery contracts differ; the synthetic ACP sample does not preview Telegram delivery.
 
 ## Example request
@@ -122,7 +130,7 @@ Ordinary scans are not automatically indexed. Public evidence contains only publ
 - Offering registry name: token_risk_scan.
 - Human label: Token Risk Scan.
 - Offering ID: 01a0bb7b-be32-73e8-abe6-1385a115ac16.
-- Listed price: 0.03 USDC.
+- Listed price: 0.03 USDC per scan. Non-recurring; not a subscription.
 - Availability: Available through Virtuals ACP at the listed price. Checkout and payment are handled on Virtuals ACP.
 - Availability details: https://jepeta.dev/docs.html#commerce
 - ACP identity profile (not a verified checkout recommendation): https://app.virtuals.io/acp/agent/01a0b446-374c-7eb8-8fe8-cd1a9945ea70
