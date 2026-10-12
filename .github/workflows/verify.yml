@@ -1,9 +1,8 @@
 name: Verify public surface
 
+# Validation preserved for manual use only; no automatic GitHub Actions.
 on:
-  pull_request:
-  push:
-    branches: [main]
+  workflow_dispatch:
 
 permissions:
   contents: read
